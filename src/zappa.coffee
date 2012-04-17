@@ -326,6 +326,10 @@ zappa.app = (func) ->
         socket: socket
         id: socket.id
         client: c
+        join: (room) ->
+          socket.join room
+        leave: (room) ->
+          socket.leave room
         emit: ->
           if typeof arguments[0] isnt 'object'
             socket.emit.apply socket, arguments
@@ -338,6 +342,20 @@ zappa.app = (func) ->
           else
             for k, v of arguments[0]
               socket.broadcast.emit.apply socket.broadcast, [k, v]
+        broadcast_to: (room, args...) ->
+          if typeof args[0] isnt 'object'
+            socket.broadcast.to(room).emit.apply socket.broadcast, args
+          else
+            for k, v of args[0]
+              socket.broadcast.to(room).emit.apply socket.broadcast, [k, v]
+        broadcast_to_all: (room, args...) ->
+          if typeof args[0] isnt 'object'
+            socket.broadcast.to(room).emit.apply socket.broadcast, args
+            socket.emit.apply socket, args
+          else
+            for k, v of args[0]
+              socket.broadcast.to(room).emit.apply socket.broadcast, [k, v]
+              socket.emit.apply socket, [k, v]
 
       for name, helper of helpers
         do (name, helper) ->
