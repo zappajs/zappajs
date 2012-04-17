@@ -259,6 +259,7 @@ zappa.app = (func) ->
           response: res
           next: next
           send: -> res.send.apply res, arguments
+          json: -> res.json.apply res, arguments
           redirect: -> res.redirect.apply res, arguments
           render: ->
             if typeof arguments[0] isnt 'object'
