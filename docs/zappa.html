@@ -203,6 +203,7 @@ Views are kept at the module level.</p>             </td>             <td class=
           <span class="nv">response: </span><span class="nx">res</span>
           <span class="nv">next: </span><span class="nx">next</span>
           <span class="nv">send: </span><span class="o">-&gt;</span> <span class="nx">res</span><span class="p">.</span><span class="nx">send</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">arguments</span>
+          <span class="nv">json: </span><span class="o">-&gt;</span> <span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">arguments</span>
           <span class="nv">redirect: </span><span class="o">-&gt;</span> <span class="nx">res</span><span class="p">.</span><span class="nx">redirect</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">arguments</span>
           <span class="nv">render: </span><span class="o">-&gt;</span>
             <span class="k">if</span> <span class="k">typeof</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">isnt</span> <span class="s">&#39;object&#39;</span>
@@ -256,6 +257,10 @@ this app's inline templates.</p>             </td>             <td class="code">
         <span class="nv">socket: </span><span class="nx">socket</span>
         <span class="nv">id: </span><span class="nx">socket</span><span class="p">.</span><span class="nx">id</span>
         <span class="nv">client: </span><span class="nx">c</span>
+        <span class="nv">join: </span><span class="nf">(room) -&gt;</span>
+          <span class="nx">socket</span><span class="p">.</span><span class="nx">join</span> <span class="nx">room</span>
+        <span class="nv">leave: </span><span class="nf">(room) -&gt;</span>
+          <span class="nx">socket</span><span class="p">.</span><span class="nx">leave</span> <span class="nx">room</span>
         <span class="nv">emit: </span><span class="o">-&gt;</span>
           <span class="k">if</span> <span class="k">typeof</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">isnt</span> <span class="s">&#39;object&#39;</span>
             <span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">socket</span><span class="p">,</span> <span class="nx">arguments</span>
@@ -268,6 +273,20 @@ this app's inline templates.</p>             </td>             <td class="code">
           <span class="k">else</span>
             <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
               <span class="nx">socket</span><span class="p">.</span><span class="nx">broadcast</span><span class="p">.</span><span class="nx">emit</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">socket</span><span class="p">.</span><span class="nx">broadcast</span><span class="p">,</span> <span class="p">[</span><span class="nx">k</span><span class="p">,</span> <span class="nx">v</span><span class="p">]</span>
+        <span class="nv">broadcast_to: </span><span class="nf">(room, args...) -&gt;</span>
+          <span class="k">if</span> <span class="k">typeof</span> <span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">isnt</span> <span class="s">&#39;object&#39;</span>
+            <span class="nx">socket</span><span class="p">.</span><span class="nx">broadcast</span><span class="p">.</span><span class="nx">to</span><span class="p">(</span><span class="nx">room</span><span class="p">).</span><span class="nx">emit</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">socket</span><span class="p">.</span><span class="nx">broadcast</span><span class="p">,</span> <span class="nx">args</span>
+          <span class="k">else</span>
+            <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+              <span class="nx">socket</span><span class="p">.</span><span class="nx">broadcast</span><span class="p">.</span><span class="nx">to</span><span class="p">(</span><span class="nx">room</span><span class="p">).</span><span class="nx">emit</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">socket</span><span class="p">.</span><span class="nx">broadcast</span><span class="p">,</span> <span class="p">[</span><span class="nx">k</span><span class="p">,</span> <span class="nx">v</span><span class="p">]</span>
+        <span class="nv">broadcast_to_all: </span><span class="nf">(room, args...) -&gt;</span>
+          <span class="k">if</span> <span class="k">typeof</span> <span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">isnt</span> <span class="s">&#39;object&#39;</span>
+            <span class="nx">socket</span><span class="p">.</span><span class="nx">broadcast</span><span class="p">.</span><span class="nx">to</span><span class="p">(</span><span class="nx">room</span><span class="p">).</span><span class="nx">emit</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">socket</span><span class="p">.</span><span class="nx">broadcast</span><span class="p">,</span> <span class="nx">args</span>
+            <span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">socket</span><span class="p">,</span> <span class="nx">args</span>
+          <span class="k">else</span>
+            <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+              <span class="nx">socket</span><span class="p">.</span><span class="nx">broadcast</span><span class="p">.</span><span class="nx">to</span><span class="p">(</span><span class="nx">room</span><span class="p">).</span><span class="nx">emit</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">socket</span><span class="p">.</span><span class="nx">broadcast</span><span class="p">,</span> <span class="p">[</span><span class="nx">k</span><span class="p">,</span> <span class="nx">v</span><span class="p">]</span>
+              <span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">socket</span><span class="p">,</span> <span class="p">[</span><span class="nx">k</span><span class="p">,</span> <span class="nx">v</span><span class="p">]</span>
 
       <span class="k">for</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">helper</span> <span class="k">of</span> <span class="nx">helpers</span>
         <span class="nx">do</span> <span class="nf">(name, helper) -&gt;</span>

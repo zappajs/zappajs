@@ -1,3 +1,11 @@
+**v0.3.5** (2012-04-17):
+
+  - Updated documentation
+  - Updated to jquery 1.7.2 and sammy 0.7.1
+  - Closed mauricemach/zappa#116 [jacobrask]
+  - Closed mauricemach/zappa#123 [imzshh]
+  - Closed mauricemach/zappa#117 [scien]
+
 **v0.3.4** (2012-04-16):
 
   - Publishing as `zappajs`.
@@ -13,7 +21,7 @@
   - Updated to work with express 2.5.x and node 0.6.x.
 
 **v0.3.1** (2011-10-06):
-
+)
   - Changed dependency minors to ".x". Closes #98.
 
 **v0.3.0 "The Gumbo Variations"** (2011-09-29):
