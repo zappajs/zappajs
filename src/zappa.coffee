@@ -12,8 +12,8 @@ path = require 'path'
 uuid = require 'node-uuid'
 express = require 'express'
 socketio = require 'socket.io'
-jquery = fs.readFileSync(__dirname + '/../vendor/jquery-1.6.4.min.js').toString()
-sammy = fs.readFileSync(__dirname + '/../vendor/sammy-0.7.0.min.js').toString()
+jquery = fs.readFileSync(__dirname + '/../vendor/jquery-1.7.2.min.js').toString()
+sammy = fs.readFileSync(__dirname + '/../vendor/sammy-0.7.1.min.js').toString()
 uglify = require 'uglify-js'
 
 # Soft dependencies:
