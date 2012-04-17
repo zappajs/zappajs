@@ -1,3 +1,8 @@
+**v0.3.4** (2012-04-16):
+
+  - Publishing as `zappajs`.
+  - Workaround for express 3.0.0alpha1.
+
 **v0.3.3** (2011-11-22):
 
   - Fixed npm publishing error.
