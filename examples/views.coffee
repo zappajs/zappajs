@@ -1,4 +1,4 @@
-require('./zappa') ->
+require('./zappajs') ->
   @get
     '/': ->
       @render 'index', foo: 'bar'
@@ -10,16 +10,16 @@ require('./zappa') ->
       @render 'index.jade', foo: 'bar'
 
   @view index: ->
-    h2 'CoffeeKup inline template'
+    h2 'CoffeeCup inline template'
     p @foo
   
   @view layout: ->
     doctype 5
     html ->
       head ->
-        title 'CoffeeKup inline layout'
+        title 'CoffeeCup inline layout'
       body ->
-        h1 'CoffeeKup inline layout'
+        h1 'CoffeeCup inline layout'
         @body
   
   @view 'index.eco': '''

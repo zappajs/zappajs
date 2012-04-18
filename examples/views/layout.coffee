@@ -1,7 +1,7 @@
 doctype 5
 html ->
   head ->
-    title 'CoffeeKup file layout'
+    title 'CoffeeCup file layout'
   body ->
-    h1 'CoffeeKup file layout'
+    h1 'CoffeeCup file layout'
     @body

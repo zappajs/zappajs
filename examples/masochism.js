@@ -1,4 +1,4 @@
-require('./zappa')(function(c){
+require('./zappajs')(function(c){
   c.use('static', 'bodyParser')
   
   c.get('/', function(c){
