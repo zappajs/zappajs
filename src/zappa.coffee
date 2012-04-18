@@ -115,7 +115,7 @@ zappa.app = (func) ->
 
   # Zappa's default settings.
   app.set 'view engine', 'coffee'
-  app.register '.coffee', zappa.adapter require('coffeekup').adapters.express,
+  app.register '.coffee', zappa.adapter require('coffeecup').adapters.express,
     blacklist: ['format', 'autoescape', 'locals', 'hardcode', 'cache']
 
   # Sets default view dir to @root (`path.dirname(module.parent.filename)`).
