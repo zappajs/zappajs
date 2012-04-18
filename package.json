@@ -3,8 +3,8 @@
   "description": "CoffeeScript minimalist interface to express, socket.io and others",
   "version": "0.3.5",
   "author": "Stephane Alnet <stephane@shimaore.net>",
-  "homepage": "http://zappajs.org",
-  "repository": {"type": "git", "url": "git://github.com/shimaore/zappajs.git"},
+  "homepage": "http://zappajs.github.com/zappajs/",
+  "repository": {"type": "git", "url": "git://github.com/zappajs/zappajs.git"},
   "dependencies": {
     "express": "2.5.9",
     "socket.io": "0.8.x",
