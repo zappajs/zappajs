@@ -109,6 +109,10 @@ require('zappajs') ->
     h1 @title
 ```
 
+## Install
+
+    npm install zappajs
+
 ## Learn More
 
 - Get the gist with the [crash course](http://zappajs.org/docs/crashcourse)
