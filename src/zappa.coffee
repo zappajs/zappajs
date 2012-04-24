@@ -74,7 +74,12 @@ express.View.prototype.__defineGetter__ 'exists', ->
     fs.statSync(p)
     return true
   catch err
-    return false
+    p = @path
+    try
+      fs.statSync(p)
+      return true
+    catch err
+      return false
 
 express.View.prototype.__defineGetter__ 'contents', ->
   # Path given by zappa: /path/to/appid/foo.bar.
@@ -90,7 +95,11 @@ express.View.prototype.__defineGetter__ 'contents', ->
 
   # Try /path/to/foo.bar in filesystem (normal express behaviour).
   p = @path.replace id + '/', ''
-  fs.readFileSync p, 'utf8'
+  try
+    fs.readFileSync p, 'utf8'
+  catch err
+    p = @path
+    fs.readFileSync p, 'utf8'
 
 # Takes in a function and builds express/socket.io apps based on the rules contained in it.
 zappa.app = (func) ->
@@ -280,6 +289,16 @@ zappa.app = (func) ->
         
           if app.settings['databag']
             args[1].params = data
+
+          # Don't change layout: false
+          unless args[1].layout is false
+            # Use the default layout if one isn't given, or layout: true
+            if args[1].layout is true or not args[1].layout?
+              args[1].layout = 'layout'
+
+            # Don't add id if it's there already
+            if args[1].layout.split('/')[0] is not context.id
+              args[1].layout = context.id + '/' + args[1].layout
 
           if args[1].postrender?
             # Apply postrender before sending response.
