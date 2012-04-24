@@ -219,18 +219,22 @@ zappa.app = (func) ->
 
     use = (name, arg = null) ->
       zappa_used = yes if name is 'zappa'
-      
+
       if zappa_middleware[name]
         app.use zappa_middleware[name](arg)
       else if typeof express[name] is 'function'
         app.use express[name](arg)
-     
+
     for a in arguments
       switch typeof a
         when 'function' then app.use a
         when 'string' then use a
-        when 'object' then use k, v for k, v of a
-    
+        when 'object'
+          if a.stack? or a.route?
+            app.use a
+          else
+            use k, v for k, v of a
+
   context.configure = (p) ->
     if typeof p is 'function' then app.configure p
     else app.configure k, v for k, v of p
