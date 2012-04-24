@@ -111,7 +111,7 @@ port = 15200
     c = t.client(zapp.app)
     c.get '/zappa/sammy.js', (err, res) ->
       t.equal 'content-type', res.headers['content-type'], 'application/javascript'
-      t.equal 'length', res.headers['content-length'], '18585'
+      t.equal 'length', res.headers['content-length'], '18583'
 
   zappa: (t) ->
     t.expect 'content-type', 'snippet'
