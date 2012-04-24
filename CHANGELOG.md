@@ -1,3 +1,11 @@
+**v0.3.6** (2012-04-24):
+
+  - Migrated to coffeecup, closes #1
+  - Closed mauricemach/zappa#122 [cap10morgan]
+  - Closed mauricemach/zappa#103 [timshadel]
+  - Closed mauricemach/zappa#124 [Evangenieur]
+  - Updated documentation
+
 **v0.3.5** (2012-04-17):
 
   - Updated documentation
