@@ -100,7 +100,7 @@ A function that will be available to both the HTTP and sockets scopes. It will h
 
     @get '/': ->
       @sum 5, 7
-      
+
     @on connection: ->
       @sum 26, 18
 
@@ -109,12 +109,12 @@ A function that will be available to both the HTTP and sockets scopes. It will h
       console.log a         # 5 vs 26
       console.log @request  # available vs undefined
       console.log @emit     # undefined vs available
-      
+
 Since the parameter is actually an object, you can define any number of helpers in one go:
 
     @helper
-      @sum: (a, b) -> a + b
-      @subtract: (a, b) -> a - b
+      sum: (a, b) -> a + b
+      subtract: (a, b) -> a - b
 
 ### @view
 
