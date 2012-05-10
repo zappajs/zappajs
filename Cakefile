@@ -4,6 +4,9 @@ log = console.log
 task 'build', ->
   run 'coffee -o lib -c src/*.coffee'
     
+task 'watch', ->
+  run 'coffee -w -o lib -c src/*.coffee'
+    
 task 'test', ->
   run 'coffee tests/index.coffee'
     
