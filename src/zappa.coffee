@@ -396,9 +396,10 @@ zappa.app = (func,disable_io) ->
     for name, h of ws_handlers
       do (name, h) ->
         if name isnt 'connection' and name isnt 'disconnect'
-          socket.on name, (data) ->
+          socket.on name, (data, ack) ->
             ctx = build_ctx()
             ctx.data = data
+            ctx.ack = ack
             switch app.settings['databag']
               when 'this' then h.apply(data, [ctx])
               when 'param' then h.apply(ctx, [data])
