@@ -7,12 +7,12 @@ client = require './client'
 print = -> process.stdout.write.apply process.stdout, arguments
 timeout = (func, time) -> setTimeout time, func
 
-grey    = "\033[0;90m"
-red     = "\033[0;31m"
-green   = "\033[0;32m"
-yellow  = "\033[0;33m"
-blue    = "\033[0;34m"
-reset   = "\033[0m"
+grey    = "\x1b[0;90m"
+red     = "\x1b[0;31m"
+green   = "\x1b[0;32m"
+yellow  = "\x1b[0;33m"
+blue    = "\x1b[0;34m"
+reset   = "\x1b[0m"
 
 tests = {}
 done = {}
