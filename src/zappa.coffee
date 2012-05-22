@@ -102,7 +102,7 @@ express.View.prototype.__defineGetter__ 'contents', ->
     fs.readFileSync p, 'utf8'
 
 # Takes in a function and builds express/socket.io apps based on the rules contained in it.
-zappa.app = (func) ->
+zappa.app = (func,disable_io) ->
   context = {id: uuid(), zappa, express}
   
   context.root = path.dirname(module.parent.filename)
@@ -114,7 +114,7 @@ zappa.app = (func) ->
   postrenders = {}
   
   app = context.app = express.createServer()
-  io = context.io = socketio.listen(app)
+  io = if disable_io then null else context.io = socketio.listen(app)
 
   # Reference to the zappa client, the value will be set later.
   client = null
@@ -338,7 +338,7 @@ zappa.app = (func) ->
         else return result
   
   # Register socket.io handlers.
-  io.sockets.on 'connection', (socket) ->
+  io?.sockets.on 'connection', (socket) ->
     c = {}
     
     build_ctx = ->
@@ -443,6 +443,7 @@ zappa.run = ->
   host = null
   port = 3000
   root_function = null
+  disable_io = false
 
   for a in arguments
     switch typeof a
@@ -451,8 +452,13 @@ zappa.run = ->
         else port = (Number) a
       when 'number' then port = a
       when 'function' then root_function = a
+      when 'object'
+        for k, v of a
+          switch k
+            when 'port' then port = v
+            when 'disable_io' then disable_io = v
 
-  zapp = zappa.app(root_function)
+  zapp = zappa.app(root_function,disable_io)
   app = zapp.app
 
   if host then app.listen port, host
