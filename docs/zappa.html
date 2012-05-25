@@ -116,6 +116,12 @@ Views are kept at the module level.</p>             </td>             <td class=
         <span class="k">throw</span> <span class="nx">err</span> <span class="k">if</span> <span class="nx">err</span>
         <span class="nx">route</span> <span class="nv">verb: </span><span class="s">&#39;get&#39;</span><span class="p">,</span> <span class="nv">path: </span><span class="nx">k</span><span class="p">,</span> <span class="nv">handler: </span><span class="nx">css</span><span class="p">,</span> <span class="nv">contentType: </span><span class="s">&#39;css&#39;</span>
 
+  <span class="nv">context.less = </span><span class="nf">(obj) -&gt;</span>
+    <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">obj</span>
+      <span class="nv">css = </span><span class="nx">require</span><span class="p">(</span><span class="s">&#39;less&#39;</span><span class="p">).</span><span class="nx">render</span> <span class="nx">v</span><span class="p">,</span> <span class="nv">filename: </span><span class="nx">k</span><span class="p">,</span> <span class="nf">(err, css) -&gt;</span>
+        <span class="k">throw</span> <span class="nx">err</span> <span class="k">if</span> <span class="nx">err</span>
+        <span class="nx">route</span> <span class="nv">verb: </span><span class="s">&#39;get&#39;</span><span class="p">,</span> <span class="nv">path: </span><span class="nx">k</span><span class="p">,</span> <span class="nv">handler: </span><span class="nx">css</span><span class="p">,</span> <span class="nv">contentType: </span><span class="s">&#39;css&#39;</span>
+
   <span class="nv">context.helper = </span><span class="nf">(obj) -&gt;</span>
     <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">obj</span>
       <span class="nx">helpers</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="nx">v</span>

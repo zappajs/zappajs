@@ -169,6 +169,12 @@ zappa.app = (func,disable_io) ->
         throw err if err
         route verb: 'get', path: k, handler: css, contentType: 'css'
 
+  context.less = (obj) ->
+    for k, v of obj
+      css = require('less').render v, filename: k, (err, css) ->
+        throw err if err
+        route verb: 'get', path: k, handler: css, contentType: 'css'
+
   context.helper = (obj) ->
     for k, v of obj
       helpers[k] = v
