@@ -10,7 +10,7 @@ permalink: /reference/index.html
 
 ## EXPORTS
 
-`require 'zappa'` returns a function with the following attributes:
+`require 'zappajs'` returns a function with the following attributes:
 
 ### zappa.version
 
@@ -34,13 +34,23 @@ Same as `zappa.app`, but calls `app.listen` for you.
 
 The base export is actually a reference to this same function, so these are equivalent:
 
-    require('zappa').run ->
-      @get '/': 'hi'
-      
-    require('zappa') ->
+    require('zappajs').run ->
       @get '/': 'hi'
 
-You can pass the parameters in any order. Number is port, string is host, and function is your application. Port and host are optional. Omitted params will also be omitted in the `app.listen` call to express (defaulting to port 3000 and binding to INADDR_ANY).
+    require('zappajs') ->
+      @get '/': 'hi'
+
+You can pass the parameters in any order. Number is port, string is host, and function is your application. Port and host are optional. Omitted params will also be omitted in the `app.listen` call to express (defaulting to port 3000 and binding to `INADDR_ANY`).
+
+You can also pass the parameters in an object. The following options are available:
+
+* `port`
+* `host`
+* `disable_io`: if true, the Socket.IO interface will be disabled.
+* `css`: an array of CSS template modules names, or a string containing a single CSS template module name. Defaults to `["stylus"]`.
+
+        require('zappajs') css:'less', ->
+          @less '/index.css': 'body { color: black }'
 
 It will automatically print the equivalent to the following to stdout:
 
@@ -131,7 +141,7 @@ Ex.:
       <h1><%= @foo %></h1>
     '''
 
-By default, the templating engine is CoffeeKup. To use other engines, just use express' mechanisms:
+By default, the templating engine is CoffeeCup. To use other engines, just use express' mechanisms:
 
     @render 'index.jade'
 
@@ -139,9 +149,9 @@ Or:
 
     @set 'view engine': 'jade'
     
-All variables at `@`/`params` (request params + those you created) are automatically made available to templates as `params.foo` (in CoffeeKup, `@params.foo`).
+All variables at `@`/`params` (request params + those you created) are automatically made available to templates as `params.foo` (in CoffeeCup, `@params.foo`).
 
-In addition, if you're using the *zappa view adapter* (as is the case by default, with CoffeeKup), they're also made available at the template's "root namespace" (`foo` or CoffeeKup's `@foo`).
+In addition, if you're using the *zappa view adapter* (as is the case by default, with CoffeeCup), they're also made available at the template's "root namespace" (`foo` or CoffeeCup's `@foo`).
 
 Since in express templating data is usually mixed up with framework locals and template options, the adapter will only put variables in the template root if there isn't a variable there with the same name already, *and* the name is not blacklisted.
 
@@ -182,7 +192,7 @@ It receives an alternative reference to the context as an optional last paramete
 Will `require` the file at the path specified, and run a function exported as `include` against the same scope as the current function. Ex.:
 
     # app.coffee
-    require('zappa') ->
+    require('zappajs') ->
       @foo = 'bar'
       ping = 'pong'
       @get '/': 'main'
@@ -193,6 +203,10 @@ Will `require` the file at the path specified, and run a function exported as `i
       console.log @foo    # 'bar'
       console.log ping    # error
       get '/sub': 'sub'
+
+`@incldue require "module"`
+
+Allows to `require` arbitrary modules (using the standard Node.js algorithm). The module must export a function `include`.
 
 ### @client
 
@@ -270,12 +284,12 @@ Serves the string as `/foo.css`, with content-type `text/css`.
 
     @stylus '/foo.css': '''
       border-radius()
-        -webkit-border-radius arguments  
-        -moz-border-radius arguments  
-        border-radius arguments  
+        -webkit-border-radius arguments
+        -moz-border-radius arguments
+        border-radius arguments
 
       body
-        font 12px Helvetica, Arial, sans-serif  
+        font 12px Helvetica, Arial, sans-serif
 
       a.button
         border-radius 5px
@@ -284,6 +298,38 @@ Serves the string as `/foo.css`, with content-type `text/css`.
 Compiles the string with [stylus](http://learnboost.github.com/stylus) and serves the results as `/foo.css`, with content-type `text/css`.
 
 You must have stylus installed with `npm install stylus`.
+
+Note: To disable this method, use:
+
+    require('zappajs') css:[], ->
+
+### @less
+
+This is not enabled by default.
+
+    require('zappajs').run css:'less', ->
+
+      @less '/foo.css': '''
+        .border-radius(@radius) {
+          -webkit-border-radius: @radius;
+          -moz-border-radius: @radius;
+          border-radius: @radius;
+        }
+
+        body {
+          font: 12px Helvetica, Arial, sans-serif;
+        }
+
+        a.button {
+          .border-radius(5px);
+        }
+      '''
+
+Compiles the string with [less](http://lesscss.org/) and servers the results as '/foo.css', with content-type `text/css`.
+
+You must have less installed with `npm install less`.
+
+Note: Any other CSS template module that provides a `.render` method might be used in a similar way.
 
 ### @zappa
 
@@ -324,7 +370,7 @@ Currently available zappa middleware are:
 #### 'static'
 
 Same as `@express.static(root + '/public')`, where `root` is the directory of the first file that required zappa.
-    
+
 #### 'zappa'
 
 Serves `/zappa/zappa.js`, `/zappa/jquery.js` and `/zappa/sammy.js`. Automatically added by `@client` and `@shared` if not added before.
@@ -360,7 +406,7 @@ Shortcut to `@app.disable`. Accepts multiple params in one go. Ex.:
 Shortcut to `@app.register`. Accepts an object as param. Ex.:
 
     @register eco: require 'eco'
-    
+
 Note that while `@app.register '.eco'` uses a dot, `@register eco` doesn't.
 
 ## REQUEST HANDLERS SCOPE
@@ -425,6 +471,20 @@ Directly from socket.io.
 
 Directly from socket.io.
 
+### @ack
+
+Directly from socket.io. Provides acknowledgement of messages sent by @emit on the client.
+
+    @on foo: ->
+      @ack 'Got it!'
+
+    @client '/index.js', ->
+      @connect()
+
+      $ =>
+        @emit start: 'now', (data) ->
+          alert data  # 'Got it!'
+
 ### @id
 
 Shortcut to `@socket.id`.
@@ -446,6 +506,15 @@ Adds the following features:
 Shortcut to `socket.broadcast`.
 
   - You can use the syntax: `@broadcast name: {foo: 'bar'}`.
+
+### @join
+
+Shortcut to `socket.leave`.
+
+### @leave
+
+Shortcut to `socket.leave`.
+
 
 ## VIEW SCOPE
 
@@ -498,13 +567,20 @@ If enabled, zappa adds the following template with the name `layout`:
 
 Values: `this` or `param`.
 
-When `this`:
+When undefined (default):
+
+    @get '/:foo': ->
+      foo = @query.foo
+      foo += '!'
+      @render index: {foo}
+
+When `this` (use the alternative reference for the API):
 
     @get '/:foo': (c) ->
       @foo += '!'
       c.render 'index'
 
-When `param`:
+When `param` (keep @ for the API and use the alternative reference for data):
 
     @get '/:foo': (c) ->
       c.foo += '!'

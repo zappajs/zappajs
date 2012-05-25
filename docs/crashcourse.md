@@ -13,13 +13,13 @@ Yes indeed, here we are. Let's begin with the classic:
 Get a `cuppa.coffee`:
 
 {% highlight coffeescript %}
-require('zappa') ->
+require('zappajs') ->
   @get '/': 'hi'
 {% endhighlight %}
 
 And give your foot a push:
 
-    $ npm install zappa
+    $ npm install zappajs
     $ coffee cuppa.coffee    
        info  - socket.io started
     Express server listening on port 3000 in development mode
@@ -27,31 +27,31 @@ And give your foot a push:
 
 (hat tip to [sinatra](http://sinatrarb.com))
 
-If your thing is the bleeding edge, replace `npm install zappa` with:
+If your thing is the bleeding edge, replace `npm install zappajs` with:
 
-    $ git clone git@github.com:mauricemach/zappa.git && cd zappa
+    $ git clone git@github.com:zappajs/zappajs.git && cd zappajs
     $ cake setup
     $ cd /path/to/project
-    $ npm install /path/to/zappa
+    $ npm install /path/to/zappajs
 
 ## OK, so WTF did just happen?
 
 CoffeeScript is relatively new on the scene, so it might be worth it to compare that first example with the equivalent JavaScript:
 
 {% highlight javascript %}
-require('zappa')(function(){
+require('zappajs')(function(){
   this.get({'/': 'hi'});
 });
 {% endhighlight %}
 
-`require 'zappa'` returns a function you can use to run your apps. We're calling it right away and passing an anonymous function as the parameter.
+`require 'zappajs'` returns a function you can use to run your apps. We're calling it right away and passing an anonymous function as the parameter.
 
 The zappa function does the initial express and socket.io setup, then calls your function with the relevant stuff exposed at `this` (and its CoffeeScript alias `@`).
 
 You have direct access to the low-level APIs at `@app` and `@io`:
 
 {% highlight coffeescript %}
-require('zappa') ->
+require('zappajs') ->
   @app.get '/', (req, res) ->
     res.send 'boring!'
     
@@ -62,7 +62,7 @@ require('zappa') ->
 On top of that, you also have some handy shortcuts such as the `@get` you already know, `@on` (to define socket.io  handlers), `@use`, `@set`, `@configure`, etc. Those are not only shorter but also accept smarter parameters:
 
 {% highlight coffeescript %}
-require('zappa') ->
+require('zappajs') ->
   @get '/foo': 'bar', '/ping': 'pong', '/zig': 'zag'
   @use 'bodyParser', 'methodOverride', @app.router, 'static'
   @set 'view engine': 'jade', views: "#{__dirname}/custom/dir"
@@ -71,7 +71,7 @@ require('zappa') ->
 If you can't/don't want to use `this`, you can receive the context as a parameter and name it whatever you want:
 
 {% highlight coffeescript %}
-require('zappa') (foo) ->
+require('zappajs') (foo) ->
   foo.get '/': 'hi'
 {% endhighlight %}
 
@@ -82,20 +82,20 @@ After running your function, zappa automatically starts the whole thing and spit
 Of course you can run your app in a different port and/or host:
 
 {% highlight coffeescript %}
-require('zappa') 'domain.com', 80, ->
+require('zappajs') 'domain.com', 80, ->
   @get '/': 'hi'
 {% endhighlight %}
   
 Get a reference without running it automatically:
 
 {% highlight coffeescript %}
-chat = require('zappa').app ->
+chat = require('zappajs').app ->
   @get '/': 'hi'
   
 chat.app.listen 3000
 {% endhighlight %}
 
-And so on. To see all the options, check the [API reference](http://zappajs.org/docs/0.3-gumbo/reference).
+And so on. To see all the options, check the [API reference](http://zappajs.github.com/zappajs/docs/reference).
 
 ## Nice, but one-line string responses are mostly useless. Can you show me something closer to a real web app?
 
@@ -173,7 +173,7 @@ Another is that you can define inline views that `@render` "sees" as if they wer
     body @body
 {% endhighlight %}
 
-Note that zappa comes with a default templating engine, [CoffeeKup](http://coffeekup.org), and you don't have to setup anything to use it. You can also easily use other engines by specifying the file extension or the `'view engine'` setting; it's just express. Well, express + inline views support:
+Note that zappa comes with a default templating engine, [CoffeeCup](https://github.com/gradus/coffeekup), and you don't have to setup anything to use it. You can also easily use other engines by specifying the file extension or the `'view engine'` setting; it's just express. Well, express + inline views support:
 
 {% highlight coffeescript %}
  
@@ -214,7 +214,7 @@ Note that zappa comes with a default templating engine, [CoffeeKup](http://coffe
 If you don't feel like writing brain-dead HTML boilerplate, you can use a configurable template zappa provides:
 
 {% highlight coffeescript %}
-require('zappa') ->
+require('zappajs') ->
   @enable 'default layout'
 
   @get '/': ->
@@ -252,7 +252,7 @@ The following template will be added automatically:
 Using socket.io in zappa is just a matter of defining the event handlers with `@on`:
 
 {% highlight coffeescript %}
-require('zappa') ->
+require('zappajs') ->
   @get '/': ->
     @render 'index'
 
@@ -448,4 +448,4 @@ Finally, when using strings and objects, zappa will intercept some specific midd
 
 Thank you for coming to the show, hope you enjoyed it. [CoffeeScript](https://coffeescript.org) on guitar, [Express](http://expressjs.com) on the keyboards, [Socket.IO](http://socket.io) on drums. [Node.js](http://nodejs.org) on background vocals, [npm](http://npmjs.org) on bass. G'night everyone.
 
-To learn more, check out [the links](http://zappajs.org) at the home page.
+To learn more, check out [the links](http://zappajs.github.com/zappajs/) at the home page.
