@@ -23,6 +23,9 @@ task 'setup', 'build + vendor', ->
   invoke 'build'
   invoke 'vendor'
 
+task 'clean', ->
+  run 'rm -r vendor node_modules lib/*.js benchmarks/out/*.dat benchmarks/out/*.out tests/*.js'
+
 run = (args...) ->
   for a in args
     switch typeof a
