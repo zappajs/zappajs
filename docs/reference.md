@@ -204,7 +204,7 @@ Will `require` the file at the path specified, and run a function exported as `i
       console.log ping    # error
       get '/sub': 'sub'
 
-`@incldue require "module"`
+`@include require "module"`
 
 Allows to `require` arbitrary modules (using the standard Node.js algorithm). The module must export a function `include`.
 
@@ -518,27 +518,95 @@ Shortcut to `socket.leave`.
 
 ## VIEW SCOPE
 
+The normal view scope is a [CoffeeCup scope](https://github.com/gradus/coffeecup/blob/master/docs/reference.md#the-template-scope).
+
 ## CLIENT-SIDE ROOT SCOPE
 
-### @get, @post, @put, @del
+This is the scope inside a `@client` or `@shared` callback.
 
-Routes with sammy.js.
+### @get
+
+Route with sammy.js.
+
+### @connect
+
+Should be called first when the client is started to establish the Socket.IO websocket with the server.
 
 ### @on
 
 Event handlers with socket.io.
 
+### @emit
+
+Send a message to the server.
+
+    # Send a message but no data
+    @emit 'message'
+
+    # Send a message with associated data
+    @emit 'message', data
+    @emit message: data
+
+    # Send multiple messages at once
+    @emit message1: data1, message2: data2
+
+    # Callback receives acknowledgment from server's @ack
+    @emit -> alert 'Server received it'
+
+    # Callback receives acknowledgment from server with data
+    @emit (data) ->
+
 ### @helper
 
-Same as its server-side counterpart.
+Same as its server-side counterpart. Helper functions are available in routes and socket handlers.
 
 ## CLIENT-SIDE ROUTE HANDLERS SCOPE
 
+The client-side route-handler scope contains any helper function, and the following.
+
+### `@sammy_context`
+
+The [sammy.js EventContext](http://sammyjs.org/docs/api/master/all#Sammy.EventContext).
+
+### @render
+
+Sammy.js [render](http://sammyjs.org/docs/api/master/all#Sammy.EventContext-render)
+
+### @redirect
+
+Sammy.js [redirect](http://sammyjs.org/docs/api/master/all#Sammy.EventContext-redirect)
+
+### @params
+
+Sammy.js route parameters.
+
 ## CLIENT-SIDE SOCKETS HANDLERS SCOPE
+
+The client-side socket-handler scope contains any helper function, and the following.
+
+### @app
+
+The Sammy.js application.
+
+### @socket
+
+The Socket.IO socket created during `@connect()`.
+
+### @id
+
+The Socket.IO socket ID.
+
+### @data
+
+The message data (received from the server).
+
+### @emit
+
+Same as the client-side root scope's `@emit`.
 
 ## APP SETTINGS
 
-You can use the following options with `@set`, `@enable` and `@disable`:
+You can use the following options with `@set`, `@enable` and `@disable`.
 
 ### 'minify'
 
