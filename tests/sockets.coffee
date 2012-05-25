@@ -54,3 +54,9 @@ port = 15700
       t.equal 'data2', data.foo, 'bar'
       
     c.emit 'shout', foo: 'bar'
+
+  'server ack': ->
+
+  'server join': ->
+
+  'server leave': ->
