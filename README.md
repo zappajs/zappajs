@@ -117,7 +117,7 @@ require('zappajs') ->
 
 - Get the gist with the [crash course](http://zappajs.org/docs/crashcourse)
 
-- Check the [API reference](http://zappajs.org/docs/0.3-gumbo/reference)
+- Check the [API reference](http://zappajs.org/docs/reference)
 
 - See the [examples](https://github.com/zappajs/zappajs/tree/master/examples) included with the source
 
@@ -134,8 +134,6 @@ require('zappajs') ->
 - Found a bug? Open an [issue](http://github.com/zappajs/zappajs/issues) at github
 
 - Check the project's history at the [change log](https://github.com/zappajs/zappajs/blob/master/CHANGELOG.md)
-
-- Migrating from an earlier version? Read the announcements ([0.2.x](http://zappajs.org/docs/0.2-peaches/announcement)/[0.3.x](http://zappajs.org/docs/0.3-gumbo/announcement)) for an overview on changes, and follow the TL;DR migration guides ([0.2.x](http://zappajs.org/docs/0.2-peaches/migration)/[0.3.x](http://zappajs.org/docs/0.3-gumbo/migration))
 
 - Deploying to heroku? Check [this blog post](http://blog.superbigtree.com/blog/2011/08/19/hosting-zappa-0-2-x-on-heroku/)
 

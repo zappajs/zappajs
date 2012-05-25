@@ -1,3 +1,11 @@
+**v0.3.7** (2012-05-25):
+
+  * Chatroom example [scien]
+  * Added generic CSS template module support
+  * Added support for socket.io acknowledgments [Radagaisus]
+  * Made @include work with require'd modules [imzshh]
+  * Added option to disable socket.io [scien]
+
 **v0.3.6** (2012-04-24):
 
   - Migrated to coffeecup, closes #1

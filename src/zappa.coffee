@@ -2,9 +2,9 @@
 # [node.js](http://nodejs.org) runtime, integrating [express](http://expressjs.com), [socket.io](http://socket.io)
 # and other best-of-breed libraries.
 
-zappa = version: '0.3.6'
+zappa = version: '0.3.7'
 
-codename = 'It Must Be a Camel'
+codename = 'Overture to a Holiday in Berlin'
 
 log = console.log
 fs = require 'fs'
