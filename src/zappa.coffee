@@ -456,6 +456,7 @@ zappa.run = ->
       when 'object'
         for k, v of a
           switch k
+            when 'host' then host = v
             when 'port' then port = v
             when 'disable_io' then disable_io = v
 
