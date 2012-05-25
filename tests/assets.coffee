@@ -89,6 +89,42 @@ port = 15200
         
       '''
 
+  less: (t) ->
+    t.expect 'header', 'body'
+    t.wait 3000
+
+    zapp = zappa port++, css:'less', ->
+      @less '/index.css': '''
+        .border-radius(@radius) {
+          -webkit-border-radius: @radius;
+          -moz-border-radius: @radius;
+          border-radius: @radius;
+        }
+
+        body {
+          font: 12px Helvetica, Arial, sans-serif;
+        }
+
+        a.button {
+          .border-radius(5px);
+        }
+      '''
+
+    c = t.client(zapp.app)
+    c.get '/index.css', (err, res) ->
+      t.equal 'header', res.headers['content-type'], 'text/css'
+      t.equal 'body', res.body, '''
+        body {
+          font: 12px Helvetica, Arial, sans-serif;
+        }
+        a.button {
+          -webkit-border-radius: 5px;
+          -moz-border-radius: 5px;
+          border-radius: 5px;
+        }
+
+      '''
+
   jquery: (t) ->
     t.expect 'content-type', 'length'
     t.wait 3000
