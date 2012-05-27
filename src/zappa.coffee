@@ -282,6 +282,34 @@ zappa.app = (func,disable_io,require_css) ->
             else
               for k, v of arguments[0]
                 render.apply @, [k, v]
+          include: (paths) ->
+
+            _end = res.end
+            _write = res.write
+            _header = res.setHeader
+            body = ''
+            res.write = (chunk,encoding) ->
+              body += chunk
+            res.setHeader = (name,value) ->
+              if name isnt 'Content-Length'
+                _header name, value
+
+            completed = 0
+            iterate = ->
+              res.end = (chunk,encoding) ->
+                if chunk?
+                  res.write chunk, encoding
+                iterate()
+              if completed < paths.length
+                req.url = paths[completed++]
+                app.handle req, res, ->
+              else
+                res.end = _end
+                res.write = _write
+                res.setHeader = _header
+                res.end body
+            iterate()
+            return
 
         render = (args...) ->
           # Adds the app id to the view name so that the monkeypatched

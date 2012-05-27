@@ -64,3 +64,18 @@ port = 15000
     json = {zig: 'zag'}
     c.post '/bar?ping=pong', {headers, json}, (err, res) ->
       t.equal 2, res.body, 'barpongzag'
+
+  include: (t) ->
+    t.expect 'all'
+    t.wait 3000
+
+    zapp = zappa port++, ->
+      @use static: __dirname + '/public'
+
+      @js '/bar': '''alert('bar');'''
+      @get '/all': ->
+        @include ['/bar','/foo.txt','/bar','/foo.txt']
+
+    c = t.client(zapp.app)
+    c.get '/all', (err, res) ->
+      t.equal 'all', res.body, '''alert('bar');baralert('bar');bar'''
