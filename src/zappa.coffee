@@ -261,6 +261,17 @@ zappa.app = (func,options) ->
     sub = if typeof p is 'string' then require path.join(context.root, p) else p
     sub.include.apply(context, [context])
 
+  apply_helpers = (ctx) ->
+    for name, helper of helpers
+      do (name, helper) ->
+        if typeof helper is 'function'
+          ctx[name] = (args...) ->
+            args.push ctx
+            helper.apply ctx, args
+        else
+          ctx[name] = helper
+    ctx
+
   # Register a route with express.
   route = (r) ->
     r.middleware ?= []
@@ -326,14 +337,7 @@ zappa.app = (func,options) ->
             # Just forward params to express.
             res.render.apply res, args
 
-        for name, helper of helpers
-          do (name, helper) ->
-            if typeof helper is 'function'
-              ctx[name] = (args...) ->
-                args.push ctx
-                helper.apply ctx, args
-            else
-              ctx[name] = helper
+        apply_helpers ctx
 
         if app.settings['databag']
           data = {}
@@ -392,10 +396,7 @@ zappa.app = (func,options) ->
               socket.broadcast.to(room).emit.apply socket.broadcast, [k, v]
               socket.emit.apply socket, [k, v]
 
-      for name, helper of helpers
-        do (name, helper) ->
-          ctx[name] = ->
-            helper.apply(ctx, arguments)
+      apply_helpers ctx
       ctx
 
     ctx = build_ctx()
