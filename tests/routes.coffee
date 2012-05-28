@@ -64,3 +64,30 @@ port = 15000
     json = {zig: 'zag'}
     c.post '/bar?ping=pong', {headers, json}, (err, res) ->
       t.equal 2, res.body, 'barpongzag'
+
+  middleware: (t) ->
+    t.expect 1, 2, 3
+    t.wait 3000
+
+    zapp = zappa port++, ->
+
+      users =
+        bob: 'bob user'
+
+      load_user = (req,res,next) ->
+        user = users[req.params.id]
+        if user
+          req.user = user
+          next()
+        else
+          next "Failed to load user #{req.params.id}"
+
+      @get '/string/:id', load_user, -> 'string'
+      @get '/return/:id', load_user, -> 'return'
+      @get '/send/:id', load_user, -> @send 'send'
+
+    c = t.client(zapp.app)
+    c.get '/string/bob', (err, res) -> t.equal 1, res.body, 'string'
+    c.get '/return/bob', (err, res) -> t.equal 2, res.body, 'return'
+    c.get '/send/bob', (err, res) -> t.equal 3, res.body, 'send'
+    c.get '/send/bar', (err, res) -> t.equal 3, res.body, 'Failed to load user bar'

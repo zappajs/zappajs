@@ -132,9 +132,14 @@ zappa.app = (func,options) ->
 
   for verb in ['get', 'post', 'put', 'del']
     do (verb) ->
-      context[verb] = ->
-        if arguments.length > 1
-          route verb: verb, path: arguments[0], handler: arguments[1]
+      context[verb] = (args...) ->
+        arity = args.length
+        if arity > 1
+          route
+            verb: verb
+            path: args[0]
+            middleware: args[1...arity-1]
+            handler: args[arity-1]
         else
           for k, v of arguments[0]
             route verb: verb, path: k, handler: v
@@ -258,12 +263,13 @@ zappa.app = (func,options) ->
 
   # Register a route with express.
   route = (r) ->
+    r.middleware ?= []
     if typeof r.handler is 'string'
-      app[r.verb] r.path, (req, res) ->
+      app[r.verb] r.path, r.middleware..., (req, res) ->
         res.contentType r.contentType if r.contentType?
         res.send r.handler
     else
-      app[r.verb] r.path, (req, res, next) ->
+      app[r.verb] r.path, r.middleware..., (req, res, next) ->
         ctx =
           app: app
           settings: app.settings
