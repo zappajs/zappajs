@@ -35,3 +35,18 @@ port = 15100
         
     c = t.client(zapp.app)
     c.get '/'
+
+  objects: (t) ->
+    t.expect 1, 2
+    t.wait 3000
+
+    zapp = zappa port++, ->
+      @helper foo: [1,2,3]
+      @helper bar: "foo bar"
+
+      @get '/': ->
+        t.equal 1, @foo[2], 3
+        t.equal 2, @bar, "foo bar"
+
+    c = t.client(zapp.app)
+    c.get '/'

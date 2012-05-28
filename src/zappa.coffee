@@ -321,9 +321,12 @@ zappa.app = (func,disable_io,require_css) ->
 
         for name, helper of helpers
           do (name, helper) ->
-            ctx[name] = (args...) ->
-              args.push ctx
-              helper.apply ctx, args
+            if typeof helper is 'function'
+              ctx[name] = (args...) ->
+                args.push ctx
+                helper.apply ctx, args
+            else
+              ctx[name] = helper
 
         if app.settings['databag']
           data = {}
