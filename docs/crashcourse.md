@@ -12,10 +12,10 @@ Yes indeed, here we are. Let's begin with the classic:
 
 Get a `cuppa.coffee`:
 
-{% highlight coffeescript %}
+```coffeescript
 require('zappajs') ->
   @get '/': 'hi'
-{% endhighlight %}
+```
 
 And give your foot a push:
 
@@ -38,11 +38,11 @@ If your thing is the bleeding edge, replace `npm install zappajs` with:
 
 CoffeeScript is relatively new on the scene, so it might be worth it to compare that first example with the equivalent JavaScript:
 
-{% highlight javascript %}
+```javascript
 require('zappajs')(function(){
   this.get({'/': 'hi'});
 });
-{% endhighlight %}
+```
 
 `require 'zappajs'` returns a function you can use to run your apps. We're calling it right away and passing an anonymous function as the parameter.
 
@@ -50,30 +50,30 @@ The zappa function does the initial express and socket.io setup, then calls your
 
 You have direct access to the low-level APIs at `@app` and `@io`:
 
-{% highlight coffeescript %}
+```coffeescript
 require('zappajs') ->
   @app.get '/', (req, res) ->
     res.send 'boring!'
     
   @io.sockets.on 'connection', (socket) ->
     socket.emit 'boring'
-{% endhighlight %}
+```
 
 On top of that, you also have some handy shortcuts such as the `@get` you already know, `@on` (to define socket.io  handlers), `@use`, `@set`, `@configure`, etc. Those are not only shorter but also accept smarter parameters:
 
-{% highlight coffeescript %}
+```coffeescript
 require('zappajs') ->
   @get '/foo': 'bar', '/ping': 'pong', '/zig': 'zag'
   @use 'bodyParser', 'methodOverride', @app.router, 'static'
   @set 'view engine': 'jade', views: "#{__dirname}/custom/dir"
-{% endhighlight %}
+```
 
 If you can't/don't want to use `this`, you can receive the context as a parameter and name it whatever you want:
 
-{% highlight coffeescript %}
+```coffeescript
 require('zappajs') (foo) ->
   foo.get '/': 'hi'
-{% endhighlight %}
+```
 
 After running your function, zappa automatically starts the whole thing and spits out a message with some useful info.
 
@@ -81,25 +81,25 @@ After running your function, zappa automatically starts the whole thing and spit
 
 Of course you can run your app in a different port and/or host:
 
-{% highlight coffeescript %}
+```coffeescript
 require('zappajs') 'domain.com', 80, ->
   @get '/': 'hi'
-{% endhighlight %}
+```
   
 Get a reference without running it automatically:
 
-{% highlight coffeescript %}
+```coffeescript
 chat = require('zappajs').app ->
   @get '/': 'hi'
   
 chat.app.listen 3000
-{% endhighlight %}
+```
 
 And so on. To see all the options, check the [API reference](http://zappajs.github.com/zappajs/docs/reference).
 
 ## Nice, but one-line string responses are mostly useless. Can you show me something closer to a real web app?
 
-{% highlight coffeescript %}
+```coffeescript
 @get '*': '''
   <!DOCTYPE html>
   <html>
@@ -107,34 +107,34 @@ And so on. To see all the options, check the [API reference](http://zappajs.gith
     <body><h1>Sorry, check back in a few minutes!</h1></body>
   </html>
 '''
-{% endhighlight %}
+```
 
 ## Seriously.
 
 Right. This is what a basic route with a handler function looks like:
 
-{% highlight coffeescript %}
+```coffeescript
 @get '/:name': ->
   "Hi, #{@params.name}"
-{% endhighlight %}
+```
 
 As you can see, the value of `this` is modified in the handler function too, giving you quick access to everything you need to handle the request. The low level API lives at `@request`, `@response` and `@next`, but you also have handy shortcuts such as `@render`, `@redirect`, `@query`, `@params`, etc.
 
 Of course, you can receive the context as a param here too:
 
-{% highlight coffeescript %}
+```coffeescript
 @get '/:name': (foo) ->
   "Hi, #{foo.params.name}"
-{% endhighlight %}
+```
 
 If you return a string, it will automatically be sent as the response. But most of the time you'll be doing something asynchronous, and in this case you have to call `@send`:
 
-{% highlight coffeescript %}
+```coffeescript
 @get '/ponchos/:id': ->
   Poncho.findById @params.id, (err, poncho) =>
     # Is that a real poncho, or is that a sears poncho?
     @send poncho.type
-{% endhighlight %}
+```
 
 Note that we're using a fat arrow (`=>`) here, to preserve the value of `this`. We could be just as well using the alternative reference (`foo.send`) and a normal arrow.
 
@@ -142,21 +142,21 @@ Note that we're using a fat arrow (`=>`) here, to preserve the value of `this`. 
 
 Generally `@render` works just like `@response.render`:
 
-{% highlight coffeescript %}
+```coffeescript
 @get '/': ->
   @render 'index', foo: 'bar'
-{% endhighlight %}
+```
 
 One difference is that it also works with the "key: value syntax":
 
-{% highlight coffeescript %}
+```coffeescript
 @get '/': ->
   @render index: {foo: 'bar'}
-{% endhighlight %}
+```
 
 Another is that you can define inline views that `@render` "sees" as if they were in the filesystem:
 
-{% highlight coffeescript %}
+```coffeescript
  
 @get '/': ->
   @render index: {foo: 'bar'}
@@ -171,11 +171,11 @@ Another is that you can define inline views that `@render` "sees" as if they wer
   html ->
     head -> title @title
     body @body
-{% endhighlight %}
+```
 
 Note that zappa comes with a default templating engine, [CoffeeCup](https://github.com/gradus/coffeekup), and you don't have to setup anything to use it. You can also easily use other engines by specifying the file extension or the `'view engine'` setting; it's just express. Well, express + inline views support:
 
-{% highlight coffeescript %}
+```coffeescript
  
 @set 'view engine': 'eco'
 
@@ -209,11 +209,11 @@ Note that zappa comes with a default templating engine, [CoffeeCup](https://gith
       title= title
     body!= body
 '''
-{% endhighlight %}
+```
 
 If you don't feel like writing brain-dead HTML boilerplate, you can use a configurable template zappa provides:
 
-{% highlight coffeescript %}
+```coffeescript
 require('zappajs') ->
   @enable 'default layout'
 
@@ -224,11 +224,11 @@ require('zappajs') ->
     @title = 'Inline template'
     h1 @title
     p @foo
-{% endhighlight %}
+```
 
 The following template will be added automatically:
 
-{% highlight coffeescript %}
+```coffeescript
 @view layout: ->
   doctype 5
   html ->
@@ -245,13 +245,13 @@ The following template will be added automatically:
         link(rel: 'stylesheet', href: @stylesheet + '.css')
       style @style if @style
     body @body
-{% endhighlight %}
+```
 
 ## Knock your sockets off
 
 Using socket.io in zappa is just a matter of defining the event handlers with `@on`:
 
-{% highlight coffeescript %}
+```coffeescript
 require('zappajs') ->
   @get '/': ->
     @render 'index'
@@ -261,7 +261,7 @@ require('zappajs') ->
   
   @on shout: ->
     @broadcast shouted: {@id, text: @data.text}
-{% endhighlight %}
+```
 
 Socket.io is automatically required and attached to the express server, intercepting WebSockets/comet traffic on the same port.
 
@@ -273,7 +273,7 @@ On the client-side, you can use the vanilla socket.io API if you like, but that 
 
 With `@coffee`, you can define client-side code inline, and serve it in JS form with the correct content-type set. No compilation involved, since we already have its string representation from the runtime:
 
-{% highlight coffeescript %}
+```coffeescript
  
 @get '/': ->
   @render 'index'
@@ -290,11 +290,11 @@ With `@coffee`, you can define client-side code inline, and serve it in JS form 
     head -> title 'bla'
     script src: '/index.js'
   body @body
-{% endhighlight %}
+```
 
 On a step further, you have `@client`, which gives you access to a matching client-side zappa API:
 
-{% highlight coffeescript %}
+```coffeescript
  
 @enable 'serve jquery', 'serve sammy'
 
@@ -324,11 +324,11 @@ On a step further, you have `@client`, which gives you access to a matching clie
       script src: '/zappa/zappa.js'
       script src: '/index.js'
     body ''
-{% endhighlight %}
+```
 
 Finally, there's `@shared`. This block of code is not only served to the client, but also executed on the server.
 
-{% highlight coffeescript %}
+```coffeescript
  
 @shared '/shared.js': ->
   root = window ? global
@@ -342,13 +342,13 @@ Finally, there's `@shared`. This block of code is not only served to the client,
   $ =>
     $('button').click =>
       $('#result').html(sum $('#x').html(), $('#y').html())
-{% endhighlight %}
+```
 
 ## Santa's little helpers
 
 Zappa helpers are functions with automatic access to the same context (`this`/`@`) as whatever called them (request or event handlers):
 
-{% highlight coffeescript %}
+```coffeescript
  
 @helper map: (name) ->
   map = maps[name]
@@ -365,7 +365,7 @@ Zappa helpers are functions with automatic access to the same context (`this`/`@
 
 @on 'enter dungeon': ->
   @map 'dungeon'
-{% endhighlight %}
+```
 
 ## Post-rendering with server-side jQuery
 
@@ -373,7 +373,7 @@ Rendering things linearly is often the approach that makes more sense, but somet
 
 Zappa makes it trivial to post-process your rendered templates by manipulating them with jQuery:
 
-{% highlight coffeescript %}
+```coffeescript
  
 @postrender plans: ($) ->
   $('.staff').remove() if @user.plan isnt 'staff'
@@ -382,35 +382,35 @@ Zappa makes it trivial to post-process your rendered templates by manipulating t
 @get '/postrender': ->
   @user = plan: 'staff'
   @render index: {postrender: 'plans'}
-{% endhighlight %}
+```
 
 ## Including modules
 
 Besides good ol' `require`, zappa also provides `@include`, which not only requires a file, but also calls an exported function named `include`, setting the value of `this` to the same context:
 
-{% highlight coffeescript %}
+```coffeescript
 @include 'http'
 @include 'websockets'
-{% endhighlight %}
+```
     
 Then in `http.coffee`:
 
-{% highlight coffeescript %}
+```coffeescript
 # Same as module.exports.include
 @include = ->
   @get '/foo': -> @render 'foo'
   @get '/bar': -> @render 'bar'
   # ...
-{% endhighlight %}
+```
 
 And `websockets.coffee`:
 
-{% highlight coffeescript %}
+```coffeescript
 @include = ->
   @on foo: -> @emit 'foo'
   @on bar: -> @emit 'bar'
   # ...
-{% endhighlight %}
+```
 
 ## Connect(ing) middleware
 
@@ -418,31 +418,31 @@ You can specify your middleware through the standard `@app.use`, or zappa's shor
 
 It accepts many params in a row. Ex.:
 
-{% highlight coffeescript %}
+```coffeescript
 @use @express.bodyParser(), @app.router, @express.cookies()
-{% endhighlight %}
+```
 
 It accepts strings as parameters. This is syntactic sugar to the equivalent express middleware with no arguments. Ex.:
 
-{% highlight coffeescript %}
+```coffeescript
 @use 'bodyParser', @app.router, 'cookies'
-{% endhighlight %}
+```
 
 You can also specify parameters by using objects. Ex.:
 
-{% highlight coffeescript %}
+```coffeescript
 @use 'bodyParser', static: __dirname + '/public', session: {secret: 'fnord'}, 'cookies'
-{% endhighlight %}
+```
 
 Finally, when using strings and objects, zappa will intercept some specific middleware and add behaviour, usually default parameters. Ex.:
 
-{% highlight coffeescript %}
+```coffeescript
  
 @use 'static'
 
 # Syntactic sugar for:
 @app.use @express.static(__dirname + '/public')
-{% endhighlight %}
+```
 
 ## Aaaaaand that's it for tonight.
 
