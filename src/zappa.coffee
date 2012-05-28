@@ -275,6 +275,32 @@ zappa.app = (func,options) ->
   # Register a route with express.
   route = (r) ->
     r.middleware ?= []
+
+    # Rewrite middleware
+    r.middleware = r.middleware.map (f) ->
+      (req,res,next) ->
+        ctx =
+          app: app
+          settings: app.settings
+          request: req
+          query: req.query
+          params: req.params
+          body: req.body
+          session: req.session
+          response: res
+          next: next
+
+        apply_helpers ctx
+
+        if app.settings['databag']
+          data = {}
+          copy_data_to data, [req.query, req.params, req.body]
+
+        switch app.settings['databag']
+          when 'this' then f.apply(data, [ctx])
+          when 'param' then f.apply(ctx, [data])
+          else result = f.apply(ctx, [ctx])
+
     if typeof r.handler is 'string'
       app[r.verb] r.path, r.middleware..., (req, res) ->
         res.contentType r.contentType if r.contentType?

@@ -74,13 +74,13 @@ port = 15000
       users =
         bob: 'bob user'
 
-      load_user = (req,res,next) ->
-        user = users[req.params.id]
+      load_user = ->
+        user = users[@params.id]
         if user
-          req.user = user
-          next()
+          @request.user = user
+          @next()
         else
-          next "Failed to load user #{req.params.id}"
+          @next "Failed to load user #{@params.id}"
 
       @get '/string/:id', load_user, -> 'string'
       @get '/return/:id', load_user, -> 'return'
