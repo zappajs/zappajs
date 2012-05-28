@@ -102,7 +102,7 @@ express.View.prototype.__defineGetter__ 'contents', ->
     fs.readFileSync p, 'utf8'
 
 # Takes in a function and builds express/socket.io apps based on the rules contained in it.
-zappa.app = (func,disable_io,require_css) ->
+zappa.app = (func,options) ->
   context = {id: uuid(), zappa, express}
   
   context.root = path.dirname(module.parent.filename)
@@ -114,7 +114,7 @@ zappa.app = (func,disable_io,require_css) ->
   postrenders = {}
   
   app = context.app = express.createServer()
-  io = if disable_io then null else context.io = socketio.listen(app)
+  io = if options.disable_io then null else context.io = socketio.listen(app)
 
   # Reference to the zappa client, the value will be set later.
   client = null
@@ -163,8 +163,9 @@ zappa.app = (func,disable_io,require_css) ->
       css = String(v)
       route verb: 'get', path: k, handler: css, contentType: 'css'
 
-  if typeof require_css is 'string' then require_css = [require_css]
-  for name in require_css
+  if typeof options.require_css is 'string'
+    options.require_css = [options.require_css]
+  for name in options.require_css
     context[name] = (obj) ->
       for k, v of obj
         css = require(name).render v, filename: k, (err, css) ->
@@ -449,8 +450,9 @@ zappa.run = ->
   host = null
   port = 3000
   root_function = null
-  disable_io = false
-  require_css = ['stylus']
+  options =
+    disable_io: false
+    require_css: ['stylus']
 
   for a in arguments
     switch typeof a
@@ -464,10 +466,10 @@ zappa.run = ->
           switch k
             when 'host' then host = v
             when 'port' then port = v
-            when 'css' then require_css = v
-            when 'disable_io' then disable_io = v
+            when 'css' then options.require_css = v
+            when 'disable_io' then options.disable_io = v
 
-  zapp = zappa.app(root_function,disable_io,require_css)
+  zapp = zappa.app(root_function,options)
   app = zapp.app
 
   if host then app.listen port, host
