@@ -12,6 +12,17 @@ skeleton = ->
     ws_handlers = {}
     helpers = {}
 
+    apply_helpers = (ctx) ->
+      for name, helper of helpers
+        do (name, helper) ->
+          if typeof helper is 'function'
+            ctx[name] = (args...) ->
+              args.push ctx
+              helper.apply ctx, args
+          else
+            ctx[name] = helper
+      ctx
+
     app = context.app = Sammy() if Sammy?
 
     context.get = ->
@@ -42,9 +53,7 @@ skeleton = ->
     route = (r) ->
       ctx = {app}
 
-      for name, helper of helpers
-        ctx[name] = ->
-          helper.apply(ctx, arguments)
+      apply_helpers ctx
 
       app.get r.path, (sammy_context) ->
         ctx.params = sammy_context.params
@@ -71,10 +80,7 @@ skeleton = ->
               data: data
               emit: context.emit
 
-            for name, helper of helpers
-              do (name, helper) ->
-                ctx[name] = ->
-                  helper.apply(ctx, arguments)
+            apply_helpers ctx
 
             switch settings['databag']
               when 'this' then h.apply(data, [ctx])
