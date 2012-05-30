@@ -113,9 +113,13 @@ Define handlers for events emitted by the client through socket.io.
 
 Shortcut to socket.io's `socket.on 'event'`.
 
-The handler functions will have access to all variables described in the **Socket.io handlers scope** section. They won't have access to their parent scope. To make variables available to these handlers, use `def` or `helper`.
+The handler functions will have access to all variables described in the **Socket.io handlers scope** section. They won't have access to their parent scope. To make variables available to these handlers, use `helper`.
 
 ### @helper
+
+`@helper name: data`
+
+The helper will provide the associated data.
 
 `@helper name: function`
 
@@ -575,7 +579,7 @@ Same as its server-side counterpart. Helper functions are available in routes an
 
 ## CLIENT-SIDE ROUTE HANDLERS SCOPE
 
-The client-side route-handler scope contains any helper function, and the following.
+The client-side route-handler scope contains any client-side helper, and the following.
 
 ### `@sammy_context`
 
