@@ -69,11 +69,13 @@ The function you pass to `zappa.app` or `zappa.run` will be called with `this`/`
 
 `@get '/path': handler`
 
+`@get '/path', middleware, ..., handler`
+
 Define handlers for HTTP requests.
 
-Shortcuts to express' `app.[verb]`. Params will just be passed forward unmodified (except for the handler function, which will be re-scoped), unless a single object is passed. In which case, each key in the object will be a route path, and the value its respective handler. The handler can be a function or a string. In the latter case, the handler passed to express will be a function that only calls `res.send` with this string.
+Shortcuts to express' `app.[verb]`. Params will just be passed forward unmodified (except for the middleware and handler functions, which will be re-scoped), unless a single object is passed. In which case, each key in the object will be a route path, and the value its respective handler. The handler can be a function or a string. In the latter case, the handler passed to express will be a function that only calls `res.send` with this string.
 
-The handler functions will have access to all variables described in the **HTTP handlers scope** section.
+The handler and middleware functions will have access to all variables described in the **HTTP handlers scope** section.
 
 If a handler returns a string, `res.send(string)` will be called automatically.
 
@@ -91,6 +93,17 @@ Ex.:
       '/': -> 'hi'
       '/wiki': 'wiki'
       '/chat': -> response.send 'chat'
+
+    # Route Middleware example
+    load_user = ->
+      user = users[@params.id]
+        if user
+          @request.user = user
+          @next()
+        else
+          @next "Failed to load user #{@params.id}"
+
+    @get '/', load_user, -> 'hi'
 
 ### @on
 
