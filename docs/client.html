@@ -9,6 +9,17 @@
     </pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Storage for the functions provided by the user.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nv">ws_handlers = </span><span class="p">{}</span>
     <span class="nv">helpers = </span><span class="p">{}</span>
 
+    <span class="nv">apply_helpers = </span><span class="nf">(ctx) -&gt;</span>
+      <span class="k">for</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">helper</span> <span class="k">of</span> <span class="nx">helpers</span>
+        <span class="nx">do</span> <span class="nf">(name, helper) -&gt;</span>
+          <span class="k">if</span> <span class="k">typeof</span> <span class="nx">helper</span> <span class="o">is</span> <span class="s">&#39;function&#39;</span>
+            <span class="nx">ctx</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="nf">(args...) -&gt;</span>
+              <span class="nx">args</span><span class="p">.</span><span class="nx">push</span> <span class="nx">ctx</span>
+              <span class="nx">helper</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">ctx</span><span class="p">,</span> <span class="nx">args</span>
+          <span class="k">else</span>
+            <span class="nx">ctx</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="nx">helper</span>
+      <span class="nx">ctx</span>
+
     <span class="nv">app = context.app = </span><span class="nx">Sammy</span><span class="p">()</span> <span class="k">if</span> <span class="nx">Sammy</span><span class="o">?</span>
 
     <span class="nv">context.get = </span><span class="o">-&gt;</span>
@@ -39,9 +50,7 @@
     <span class="nv">route = </span><span class="nf">(r) -&gt;</span>
       <span class="nv">ctx = </span><span class="p">{</span><span class="nx">app</span><span class="p">}</span>
 
-      <span class="k">for</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">helper</span> <span class="k">of</span> <span class="nx">helpers</span>
-        <span class="nx">ctx</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="o">-&gt;</span>
-          <span class="nx">helper</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">)</span>
+      <span class="nx">apply_helpers</span> <span class="nx">ctx</span>
 
       <span class="nx">app</span><span class="p">.</span><span class="nx">get</span> <span class="nx">r</span><span class="p">.</span><span class="nx">path</span><span class="p">,</span> <span class="nf">(sammy_context) -&gt;</span>
         <span class="nv">ctx.params = </span><span class="nx">sammy_context</span><span class="p">.</span><span class="nx">params</span>
@@ -62,10 +71,7 @@
               <span class="nv">data: </span><span class="nx">data</span>
               <span class="nv">emit: </span><span class="nx">context</span><span class="p">.</span><span class="nx">emit</span>
 
-            <span class="k">for</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">helper</span> <span class="k">of</span> <span class="nx">helpers</span>
-              <span class="nx">do</span> <span class="nf">(name, helper) -&gt;</span>
-                <span class="nx">ctx</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="o">-&gt;</span>
-                  <span class="nx">helper</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">)</span>
+            <span class="nx">apply_helpers</span> <span class="nx">ctx</span>
 
             <span class="k">switch</span> <span class="nx">settings</span><span class="p">[</span><span class="s">&#39;databag&#39;</span><span class="p">]</span>
               <span class="k">when</span> <span class="s">&#39;this&#39;</span> <span class="k">then</span> <span class="nx">h</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="p">[</span><span class="nx">ctx</span><span class="p">])</span>

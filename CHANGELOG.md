@@ -1,3 +1,12 @@
+**v0.3.8** (2012-05-30):
+
+  * Added examples for connect-assets usage. (#18) [scien]
+  * Added support for route middleware (solves #11).
+  * Added support of non-function helpers [grncdr]
+  * Unified helpers application.
+  * Made crashcourse.md compatible with git-markdown (#19) [edubkendo]
+  * Documentation update and cleanup.
+
 **v0.3.7** (2012-05-25):
 
   * Chatroom example [scien]

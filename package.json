@@ -1,7 +1,7 @@
 {
   "name": "zappajs",
   "description": "CoffeeScript minimalist interface to express, socket.io and others",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "author": "Stephane Alnet <stephane@shimaore.net>",
   "homepage": "http://zappajs.github.com/zappajs/",
   "repository": {"type": "git", "url": "git://github.com/zappajs/zappajs.git"},
@@ -47,6 +47,8 @@
     "Wes Morgan <cap10morgan@gmail.com>",
     "Evangenieur",
     "Radagaisus <radagaisus@gmail.com>",
-    "Fossil Jue <imzshh@gmail.com>"
+    "Fossil Jue <imzshh@gmail.com>",
+    "Stephen Sugden",
+    "edubkendo"
   ]
 }
