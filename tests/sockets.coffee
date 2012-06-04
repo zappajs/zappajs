@@ -69,6 +69,44 @@ port = 15700
       t.reached 'acked'
       t.equal 'data', data.foo, 'bar'
 
-  'server join': ->
+  'server rooms': (t) ->
+    t.expect 'joined1', 'room1', 'joined2', 'room2',
+      'reached1', 'reached2', 'data1', 'data2'
+    t.wait 3000
 
-  'server leave': ->
+    zapp = zappa port++, ->
+      @on join: ->
+        @leave(@client.room) if @client.room
+        @client.room = @data.room
+        @join @data.room
+        @emit 'joined', room:@data.room
+      @on said: ->
+        @broadcast_to @client.room, 'said', @data
+      # TODO test broadcast_to_all
+
+    c = t.client(zapp.app)
+    c.connect()
+    c2 = t.client(zapp.app)
+    c2.connect()
+
+    c.on 'joined': ->
+      console.log 'OK2'
+      t.reached 'joined1'
+      t.equal 'room1', data.room, 'main'
+      c.emit said: {msg:'said2'}
+
+    c2.on 'joined': ->
+      t.reached 'joined2'
+      t.equal 'room2', data.room, 'main'
+      c2.emit said: {msg:'said1'}
+
+    c.on 'said': ->
+      t.reached 'reached1'
+      t.equal 'data1', data.msg, 'said1'
+
+    c2.on 'said': ->
+      t.reached 'reached2'
+      t.equal 'data2', data.msg, 'said2'
+
+    c.emit 'join', room:'main'
+    c2.emit 'join', room:'main'
