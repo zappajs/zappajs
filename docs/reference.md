@@ -512,7 +512,7 @@ An empty object unique for each socket. You can put data pertaining to the clien
 
 ### @emit
 
-Shortcut to `socket.emit`.
+Shortcut to `socket.emit`. Send a message to the client.
 
 Adds the following features:
 
@@ -520,18 +520,25 @@ Adds the following features:
 
 ### @broadcast
 
-Shortcut to `socket.broadcast`.
+Shortcut to `socket.broadcast`. Send a message to all clients except ours.
 
   - You can use the syntax: `@broadcast name: {foo: 'bar'}`.
 
-### @join
+### @join (room)
 
 Shortcut to `socket.leave`.
 
-### @leave
+### @leave (room)
 
 Shortcut to `socket.leave`.
 
+### `@broadcast_to` (room,...)
+
+Broadcast to a room. Do not copy our client.
+
+### `@broadcast_to_all` (room,...)
+
+Broadcast to a room, including our client.
 
 ## VIEW SCOPE
 
