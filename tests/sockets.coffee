@@ -55,7 +55,21 @@ port = 15700
       
     c.emit 'shout', foo: 'bar'
 
-  'server ack': ->
+  'server ack': (t) ->
+    t.expect 'got-foo', 'acked', 'data'
+    t.wait 3000
+
+    zapp = zappa port++, ->
+      @on foo: ->
+        t.reached 'got-foo'
+        @ack foo:'bar'
+
+    c = t.client(zapp.app)
+    c.connect()
+
+    c.emit 'foo', bar:'foo', (data) ->
+      t.reached 'acked'
+      t.equal 'data', data.foo, 'bar'
 
   'server join': ->
 
