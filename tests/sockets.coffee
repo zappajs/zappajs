@@ -1,9 +1,6 @@
 zappa = require '../src/zappa'
 port = 15700
 
-# socket.io-client currently (2011-11-22) not working in node 0.6.x
-# https://github.com/LearnBoost/socket.io-client/issues/336
-
 @tests =
   connects: (t) ->
     t.expect 1
@@ -36,7 +33,7 @@ port = 15700
     
     zapp = zappa port++, ->
       @on shout: ->
-        @io.sockets.emit 'shout', @data
+        @emit 'shout', @data
 
     c = t.client(zapp.app)
     c.connect()
@@ -48,11 +45,12 @@ port = 15700
     c.on 'shout', (data) ->
       t.reached 'reached1'
       t.equal 'data1', data.foo, 'bar'
-    
+
+    # FIXME c2 should not be receiving messages!
     c2.on 'shout', (data) ->
       t.reached 'reached2'
       t.equal 'data2', data.foo, 'bar'
-      
+
     c.emit 'shout', foo: 'bar'
 
   'server ack': (t) ->
