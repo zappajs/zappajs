@@ -13,10 +13,10 @@
     "uglify-js": "1.1.x"
   },
   "devDependencies": {
-    "jsdom": "0.2.10",
+    "jsdom": "0.2.14",
     "underscore": "1.2.2",
     "request": "2.2.5",
-    "socket.io-client": "0.8.7",
+    "socket.io-client": "0.9.6",
     "eco": "1.1.0-rc-1",
     "jade": "0.18.0",
     "stylus": "0.19.3",
