@@ -2,7 +2,7 @@
 
 # First version, using views/assets.coffee
 
-require('zappajs') 3000, ->
+require('./zappajs') 3000, ->
 
   assets = require 'connect-assets'
   @use assets

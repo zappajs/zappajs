@@ -1,4 +1,4 @@
-require('zappa') ->
+require('./zappajs') ->
   @enable 'serve jquery'
   
   @get '/': ->
