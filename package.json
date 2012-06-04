@@ -7,7 +7,7 @@
   "repository": {"type": "git", "url": "git://github.com/zappajs/zappajs.git"},
   "dependencies": {
     "express": "2.5.9",
-    "socket.io": "0.8.x",
+    "socket.io": "0.9.x",
     "coffeecup": "0.3.x",
     "node-uuid": "1.2.0",
     "uglify-js": "1.1.x"
