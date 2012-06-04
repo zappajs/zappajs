@@ -34,7 +34,7 @@ port = 15700
     t.expect 'reached1', 'reached2', 'data1', 'data2'
     t.wait 3000
     
-    zapp = zappa port++, {t}, ->
+    zapp = zappa port++, ->
       @on shout: ->
         @io.sockets.emit 'shout', @data
 
