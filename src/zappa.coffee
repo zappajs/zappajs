@@ -112,7 +112,7 @@ zappa.app = (func,options) ->
   ws_handlers = {}
   helpers = {}
   postrenders = {}
-  
+
   if options.https?
     app = context.app = express.createServer options.https
   else
@@ -121,7 +121,7 @@ zappa.app = (func,options) ->
 
   # Reference to the zappa client, the value will be set later.
   client = null
-  
+
   # Tracks if the zappa middleware is already mounted (`@use 'zappa'`).
   zappa_used = no
 
@@ -474,14 +474,11 @@ zappa.app = (func,options) ->
 
   context
 
+# zappa.run [host,] [port,] [{options},] root_function
 # Takes a function and runs it as a zappa app. Optionally accepts a port number, and/or
 # a hostname (any order). The hostname must be a string, and the port number must be
 # castable as a number.
 # Returns an object where `app` is the express server and `io` is the socket.io handle.
-# Ex.:
-#     require('zappa') -> get '/': 'hi'
-#     require('zappa').run 80, -> get '/': 'hi'
-#     require('zappa') -> 'domain.com', 80, -> get '/': 'hi'
 zappa.run = ->
   host = null
   port = 3000
