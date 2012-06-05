@@ -113,7 +113,10 @@ zappa.app = (func,options) ->
   helpers = {}
   postrenders = {}
   
-  app = context.app = express.createServer()
+  if options.https?
+    app = context.app = express.createServer options.https
+  else
+    app = context.app = express.createServer()
   io = if options.disable_io then null else context.io = socketio.listen(app)
 
   # Reference to the zappa client, the value will be set later.
@@ -501,6 +504,7 @@ zappa.run = ->
             when 'port' then port = v
             when 'css' then options.require_css = v
             when 'disable_io' then options.disable_io = v
+            when 'https' then options.https = v
 
   zapp = zappa.app(root_function,options)
   app = zapp.app
