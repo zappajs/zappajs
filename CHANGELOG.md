@@ -1,3 +1,12 @@
+**v0.3.9** (2012-06-05):
+
+  * Added support for https server.
+  * Added test for rooms (#4).
+  * Added test for @ack
+  * Updated jsdom & socket.io-client
+  * Updated examples so that they can be used for testing.
+  * Bumped socket.io to 0.9.x fix #21 [Radagaisus]
+
 **v0.3.8** (2012-05-30):
 
   * Added examples for connect-assets usage. (#18) [scien]

@@ -1,6 +1,6 @@
 ---
 layout: default
-title: API Reference (v0.3.8)
+title: API Reference (v0.3.9)
 permalink: /reference/index.html
 ---
 
