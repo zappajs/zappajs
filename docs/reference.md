@@ -52,6 +52,12 @@ You can also pass the parameters in an object. The following options are availab
         require('zappajs') css:'less', ->
           @less '/index.css': 'body { color: black }'
 
+* `https`: object containing [options for HTTPS](http://nodejs.org/api/tls.html#tls_tls_createserver_options_secureconnectionlistener). Generally `key` and `cert` are all you need:
+
+        # Start a HTTPS server on port 3443
+        require('zappajs') 3443, https:{ key: ... , cert: ... }, ->
+          @get '/': 'hi'
+
 It will automatically print the equivalent to the following to stdout:
 
     Express server listening on port xxxx in [development/production] mode
