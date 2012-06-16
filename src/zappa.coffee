@@ -113,7 +113,7 @@ zappa.app = (func,options) ->
   helpers = {}
   postrenders = {}
   
-  app = context.app = express.createServer()
+  app = context.app = express()
   io = if options.disable_io then null else context.io = socketio.listen(app)
 
   # Reference to the zappa client, the value will be set later.
@@ -124,6 +124,7 @@ zappa.app = (func,options) ->
 
   # Zappa's default settings.
   app.set 'view engine', 'coffee'
+  # In Express 3, app.register is replaced by app.engine
   app.register '.coffee', zappa.adapter require('coffeecup').adapters.express,
     blacklist: ['format', 'autoescape', 'locals', 'hardcode', 'cache']
 
