@@ -9,7 +9,6 @@ codename = 'Overture to a Holiday in Berlin'
 log = console.log
 fs = require 'fs'
 path = require 'path'
-uuid = require 'node-uuid'
 express = require 'express'
 socketio = require 'socket.io'
 jquery = fs.readFileSync(__dirname + '/../vendor/jquery-1.7.2.min.js').toString()
@@ -51,70 +50,158 @@ copy_data_to = (recipient, sources) ->
     for k, v of obj
       recipient[k] = v unless recipient[k]
 
-# Keep inline views at the module level and namespaced by app id
-# so that the monkeypatched express can look them up.
-views = {}
-  
-# Monkeypatch express to support lookup of inline templates. Such is life.
-express.View.prototype.__defineGetter__ 'exists', ->
-  # Path given by zappa: /path/to/appid/foo.bar.
-  
-  # Try appid/foo.bar in memory.
-  p = @path.replace @root + '/', ''
-  id = p.split('/')[0]
-  return true if views[p]
-
-  # Try appid/foo in memory.
-  p = p.replace(path.extname(p), '')
-  return true if views[p]
-
-  # Try /path/to/foo.bar in filesystem (normal express behaviour).
-  p = @path.replace id + '/', ''
-  try
-    fs.statSync(p)
-    return true
-  catch err
-    p = @path
-    try
-      fs.statSync(p)
-      return true
-    catch err
-      return false
-
-express.View.prototype.__defineGetter__ 'contents', ->
-  # Path given by zappa: /path/to/appid/foo.bar.
-
-  # Try appid/foo.bar in memory.
-  p = @path.replace @root + '/', ''
-  id = p.split('/')[0]
-  return views[p] if views[p]
-
-  # Try appid/foo in memory.
-  p = p.replace(path.extname(p), '')
-  return views[p] if views[p]
-
-  # Try /path/to/foo.bar in filesystem (normal express behaviour).
-  p = @path.replace id + '/', ''
-  try
-    fs.readFileSync p, 'utf8'
-  catch err
-    p = @path
-    fs.readFileSync p, 'utf8'
-
 # Takes in a function and builds express/socket.io apps based on the rules contained in it.
 zappa.app = (func,options) ->
-  context = {id: uuid(), zappa, express}
-  
+  context = {zappa, express}
+
   context.root = path.dirname(module.parent.filename)
 
   # Storage for user-provided stuff.
-  # Views are kept at the module level.
   ws_handlers = {}
   helpers = {}
   postrenders = {}
   
   app = context.app = express()
   io = if options.disable_io then null else context.io = socketio.listen(app)
+
+  # Re-implement Express 2's `register`.
+  app._compilers = {}
+
+  app.register = (ext,obj) ->
+    # The object must follow Express 2 conventions.
+    compile = obj.compile
+    if not compile or typeof compile isnt 'function'
+      throw new Error "register() requires an object with a compile() member."
+
+    # Register inside our private extension to Express.
+    app._compilers[ext] = compile
+
+    # Register as an engine (Express 3).
+    app.engine ext, (path,options,next) ->
+      if typeof options is 'function'
+        next = options
+        options = {}
+      try
+        src = fs.readFileSync path
+        next null, compile src, options
+      catch err
+        next err
+
+  # Use Zappa's version of `render()`, with inline views.
+  unless options.express_render
+
+    views = {}
+
+    context.view = (obj) ->
+      for k, v of obj
+        views[k] = v
+
+    # Functions used by Express 3 code.
+    fs_exists = fs.existsSync or path.existsSync
+
+    # From https://github.com/senchalabs/connect/blob/master/lib/utils.js#L67
+    merge = (a,b) ->
+      if a and b
+        for k of b
+          a[k] = b[k]
+      return a
+
+    # From https://github.com/visionmedia/express/blob/master/lib/utils.js#L41
+    isAbsolute = (path) ->
+      if path[0] is '/' then return true
+      if path[1] is ':' and path[2] is '\\' then return true
+
+    # This is a copy of Express 3's lib/view.js
+    # , using our version of `exists`
+    # , using our `_compilers` extension.
+    class View
+      constructor: (name,options) ->
+        options ||= {}
+        @name = name
+        @root = options.root
+        engines = options.engines
+        compilers = options.compilers
+        @defaultEngine = options.defaultEngine
+        ext = @ext = path.extname(name)
+        if not ext
+          name += (ext = @ext = '.'+@defaultEngine)
+        @engine = engines[ext] or (engines[ext] = require(ext.slice(1)).__express)
+        @compiler = compilers[ext] or (compilers[ext] = require(ext.slice(1)).compile)
+        @path = @lookup name
+
+      lookup: (name) ->
+        ext = @ext
+
+        # <path>.<engine>
+        if not isAbsolute(name) then name = path.join(@root, name)
+        found = @exists name
+        return found if found
+
+        # <path>/index.<engine>
+        name = path.join dirname(name), basename(name,ext), 'index'+ext
+        found = @exists name
+        return found if found
+
+      render: (options,next) ->
+        @engine @path, options, next
+
+      exists: (location) ->
+        # Try foo.bar in memory.
+        p = location.replace @root + '/', ''
+        if views[p]
+          @engine = @build_engine views[p]
+          return p
+
+        # Try foo in memory.
+        p = p.replace @ext, ''
+        if views[p]
+          @engine = @build_engine views[p]
+          return p
+
+        # Try /path/to/foo.bar in filesystem (normal express behaviour).
+        if fs_exists location
+          return location
+        false
+
+      build_engine: (src,ext) ->
+        if @engine and not @compiler
+          throw new Error "Cannot use the engine for #{ext} to render Zappa @view."
+        if not @compiler
+          throw new Error "No compiler for #{ext}"
+        template = @compiler src, {}
+        (_path,locals,next) =>
+          next null, template locals
+
+    # Overwrite Express 3.0 render()
+    # This should be identical to
+    # https://github.com/visionmedia/express/blob/master/lib/application.js#L457
+    # except that it uses our version of View and adds a `@_compilers` private.
+    app.render = (name,options,next) ->
+      opts = {}
+      if typeof options is 'function'
+        next = options
+        options = {}
+      merge opts, @locals
+      if options.locals # redundant, given the definition of merge
+        merge opts, options.locals
+      merge opts, options
+      opts.cache ?= @enabled 'view cache'
+      if opts.cache
+        view = @cache[name]
+      if not view
+        view = new View name,
+          defaultEngine: @get 'view engine'
+          root: @get('views') || process.cwd()+'/views'
+          engines: @engines
+          compilers: @_compilers
+        if not view.path
+          return f new Error "Failed to lookup view \"#{name}\""
+        if opts.cache
+          @cache[name] = view
+      try
+        view.render opts, next
+      catch err
+        next err
 
   # Reference to the zappa client, the value will be set later.
   client = null
@@ -124,7 +211,6 @@ zappa.app = (func,options) ->
 
   # Zappa's default settings.
   app.set 'view engine', 'coffee'
-  # In Express 3, app.register is replaced by app.engine
   app.register '.coffee', zappa.adapter require('coffeecup').adapters.express,
     blacklist: ['format', 'autoescape', 'locals', 'hardcode', 'cache']
 
@@ -190,10 +276,6 @@ zappa.app = (func,options) ->
   context.on = (obj) ->
     for k, v of obj
       ws_handlers[k] = v
-
-  context.view = (obj) ->
-    for k, v of obj
-      views["#{context.id}/#{k}"] = v
 
   context.register = (obj) ->
     for k, v of obj
@@ -329,11 +411,6 @@ zappa.app = (func,options) ->
                 render.apply @, [k, v]
 
         render = (args...) ->
-          # Adds the app id to the view name so that the monkeypatched
-          # express.View.exists and express.View.contents can lookup
-          # this app's inline templates.
-          args[0] = context.id + '/' + args[0]
-        
           # Make sure the second arg is an object.
           args[1] ?= {}
           args.splice 1, 0, {} if typeof args[1] is 'function'
@@ -346,10 +423,6 @@ zappa.app = (func,options) ->
             # Use the default layout if one isn't given, or layout: true
             if args[1].layout is true or not args[1].layout?
               args[1].layout = 'layout'
-
-            # Don't add id if it's there already
-            if args[1].layout.split('/')[0] is not context.id
-              args[1].layout = context.id + '/' + args[1].layout
 
           if args[1].postrender?
             # Apply postrender before sending response.
@@ -506,11 +579,13 @@ zappa.run = ->
   zapp = zappa.app(root_function,options)
   app = zapp.app
 
-  if host then app.listen port, host
-  else app.listen port
+  if host
+    server = app.listen port, host
+  else
+    server = app.listen port
 
   log 'Express server listening on port %d in %s mode',
-    app.address()?.port, app.settings.env
+    server.address()?.port, app.settings.env
 
   log "Zappa #{zappa.version} \"#{codename}\" orchestrating the show"
 
