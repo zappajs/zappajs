@@ -15,6 +15,7 @@ log(){
 bm(){
   local file=$1
   log benchmarking $file
+  # rm v8.log; coffee --nodejs --prof $file.coffee &
   coffee $file.coffee &
   pid=$!
   sleep $SLEEP
@@ -25,5 +26,6 @@ bm(){
 
 log ab $ABFLAGS $ADDR
 
-bm zappa
+bm zappa-engine
+# bm zappa
 bm express

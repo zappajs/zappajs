@@ -1,12 +1,18 @@
 app = require('express').createServer()
+fs = require 'fs'
 
-app.register '.coffee', require('coffeekup').adapters.express
+compile = require('coffeecup').adapters.express.compile
+cache = {}
+
+app.engine '.coffee', (path,options,next) ->
+  cache[path] ?= compile fs.readFileSync( path, 'utf8' ), options
+  next null, cache[path] options
 
 app.get '/', (req, res) ->
   res.render 'index.jade', foo: 'Express + Jade'
 
 app.get '/coffeekup', (req, res) ->
-  res.render 'index.coffee', foo: 'Express + CoffeeKup'
+  res.render 'index.coffee', foo: 'Express + CoffeeCup'
 
 app.listen 3000
 
