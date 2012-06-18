@@ -1,6 +1,6 @@
 ---
 layout: default
-title: API Reference (v0.3.9)
+title: API Reference (v0.4.0)
 permalink: /reference/index.html
 ---
 
@@ -12,7 +12,7 @@ permalink: /reference/index.html
 
 ### zappa.version
 
-Version of zappa running. If you're running a version not released on npm (directly from the repo), it will have `-edge` appended to it. Ex.: `0.3.0-edge`.
+Version of zappa running.
 
 ### zappa.app
 
@@ -56,6 +56,8 @@ You can also pass the parameters in the `options` object. The following options 
         require('zappajs') 3443, https:{ key: ... , cert: ... }, ->
           @get '/': 'hi'
 
+* `export_views`: (experimental) string pointing to a subdirectory of `@get 'views'` where Zappa inline views should be exported. This should allow you to reference them from templates that support including other templates.
+
 It will automatically print the equivalent to the following to stdout:
 
     Express server listening on port xxxx in [development/production] mode
@@ -84,13 +86,13 @@ The handler and middleware functions will have access to all variables described
 If a handler returns a string, `res.send(string)` will be called automatically.
 
 Ex.:
-    
+
     @get '/': 'hi'
 
     @get '/', -> 'hi'
-    
+
     @get /regex/, -> 'hi'
-    
+
     @get '/': 'hi', '/wiki': 'wiki', '/chat': 'chat'
 
     @get
@@ -151,13 +153,13 @@ Since the parameter is actually an object, you can define any number of helpers 
 
 `@view path: contents`
 
-Define an inline template. For all purposes it's like you had a file on disk at `path`. It will have precedence over a template on disk.
+Define an inline template. It's like you had a file on disk at `path`. It will have precedence over a template on disk.
 
 Ex.:
 
     @view index: ->
       h1 @foo
-      
+
     @view 'index.eco': '''
       <h1><%= @foo %></h1>
     '''
@@ -169,7 +171,7 @@ By default, the templating engine is CoffeeCup. To use other engines, just use e
 Or:
 
     @set 'view engine': 'jade'
-    
+
 All variables at `@`/`params` (request params + those you created) are automatically made available to templates as `params.foo` (in CoffeeCup, `@params.foo`).
 
 In addition, if you're using the *zappa view adapter* (as is the case by default, with CoffeeCup), they're also made available at the template's "root namespace" (`foo` or CoffeeCup's `@foo`).
@@ -184,6 +186,8 @@ To use this feature with other templating engines:
 To disable it on default zappa:
 
     @register coffee: require('coffeekup').adapters.express
+
+Although inline templates defined by `@view` are visible inside Express (and can be used e.g. with `@app.render`), they are not visible to the template engines, which means they cannot be used as `include` in engines that support this. (Although see `export_views`.)
 
 ### @postrender
 
@@ -200,7 +204,7 @@ To use this feature, `npm install jsdom` first.
     @get '/postrender': ->
       @user = plan: 'staff'
       @render index: {postrender: 'plans'}
-      
+
 It receives an alternative reference to the context as an optional last parameter:
 
     @postrender plans: ($, foo) ->
@@ -218,7 +222,7 @@ Will `require` the file at the path specified, and run a function exported as `i
       ping = 'pong'
       @get '/': 'main'
       @include './sub'
-      
+
     # sub.coffee
     @include = ->
       console.log @foo    # 'bar'
@@ -233,18 +237,18 @@ Allows to `require` arbitrary modules (using the standard Node.js algorithm). Th
 
     @client '/foo.js': ->
       sum = (a, b) -> a + b
-      
+
       @helper foo: (param) ->
         console.log param                       # 'bar' or 'pong'
         sum 1, 2                                # 3
         console.log @zig                        # A request or event input param.
         if @render? then console.log 'route'
         else if @emit? then console.log 'event'
-    
+
       @get '#/': ->
         @foo 'bar'
         console.log 'A client-side route.'
-        
+
       @on welcome: ->
         @foo 'pong'
         console.log 'A socket.io event.'
@@ -267,10 +271,10 @@ To use it, you must also include `/zappa/zappa.js` in your page, before `/foo.js
     @get '/admin': ->
       @role 'admin'
       # admin stuff
-  
+
     @on 'delete everything': ->
       @role 'admin'
-  
+
     @client '/index.js': ->
       @get '#/admin': ->
         @role 'admin'
@@ -424,11 +428,18 @@ Shortcut to `@app.disable`. Accepts multiple params in one go. Ex.:
 
 ### @register
 
-Shortcut to `@app.register`. Accepts an object as param. Ex.:
+Similarly to Express `@app.engine`, allows to register specific template engines.
+
+This is normally not needed unless you want to change the behavior of the engine, for example to benefit from `zappa.adapter`.
+
+Accepts an object as param. Ex.:
 
     @register eco: require 'eco'
 
-Note that while `@app.register '.eco'` uses a dot, `@register eco` doesn't.
+Note that most template engines do not support the new Express 3.x conventions at this time, if you want to use them with Zappa you should either register them as shown above,
+or use the [consolidate](https://github.com/visionmedia/consolidate.js) package:
+
+    @app.engine 'eco', require('consolidate').eco
 
 ## REQUEST HANDLERS SCOPE
 
@@ -474,7 +485,9 @@ Adds the following features:
 
   - You can use inline views (see `@view`).
 
-  - You can use `postrender`s: `render 'index', postrender: 'foo'`.
+  - You can use post-rendering (see `@postrender`): `render 'index', postrender: 'foo'`.
+
+  - You can use layouts: `render 'index', layout:'layout'`. The default layout is called `layout` and is active by default. To disable layout processing: `render 'index', layout: no`.
 
   - If the setting `databag` is on, the databag will be automatically available to templates as `params`.
 
