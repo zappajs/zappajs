@@ -26,6 +26,5 @@ bm(){
 
 log ab $ABFLAGS $ADDR
 
-bm zappa-engine
-# bm zappa
+bm zappa
 bm express
