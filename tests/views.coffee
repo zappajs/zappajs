@@ -3,18 +3,22 @@ port = 15600
 
 @tests =
   inline: (t) ->
-    t.expect 1
+    t.expect 1, 2
     t.wait 3000
     
     zapp = zappa port++, ->
-      @get '/': ->
+      @get '/bar': ->
         @render 'index', foo: 'bar', layout: no
+      @get '/foobar': ->
+        @render 'index', foo: 'foobar', layout: no
 
       @view index: -> h2 "CoffeeKup inline template: #{@foo}"
     
     c = t.client(zapp.app)
-    c.get '/', (err, res) ->
+    c.get '/bar', (err, res) ->
       t.equal 1, res.body, '<h2>CoffeeKup inline template: bar</h2>'
+    c.get '/foobar', (err, res) ->
+      t.equal 2, res.body, '<h2>CoffeeKup inline template: foobar</h2>'
 
   'inline + inline layout': (t) ->
     t.expect 1
