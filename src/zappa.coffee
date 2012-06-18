@@ -200,7 +200,7 @@ zappa.app = (func,options) ->
   context.set = (obj) ->
     for k, v of obj
       app.set k, v
-      
+
   context.enable = ->
     app.enable i for i in arguments
 
@@ -245,7 +245,7 @@ zappa.app = (func,options) ->
   context.configure = (p) ->
     if typeof p is 'function' then app.configure p
     else app.configure k, v for k, v of p
-    
+
   context.settings = app.settings
 
   context.shared = (obj) ->
@@ -384,15 +384,15 @@ zappa.app = (func,options) ->
           when 'this' then result = r.handler.apply(data, [ctx])
           when 'param' then result = r.handler.apply(ctx, [data])
           else result = r.handler.apply(ctx, [ctx])
-        
+
         res.contentType(r.contentType) if r.contentType?
         if typeof result is 'string' then res.send result
         else return result
-  
+
   # Register socket.io handlers.
   io?.sockets.on 'connection', (socket) ->
     c = {}
-    
+
     build_ctx = ->
       ctx =
         app: app
@@ -526,7 +526,7 @@ zappa.run = ->
   zapp
 
 # Creates a zappa view adapter for templating engine `engine`. This adapter
-# can be used with `app.register` and creates params "shortcuts".
+# can be used with `context.register` and creates params "shortcuts".
 # 
 # Zappa, by default, automatically sends all request params to templates,
 # but inside the `params` local.
