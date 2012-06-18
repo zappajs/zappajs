@@ -83,13 +83,16 @@ port = 15600
     
     c = t.client(zapp.app)
     c.get '/', (err, res) ->
-      t.equal 1, res.body, '<!DOCTYPE html><html><head><title>CoffeeKup file layout</title></head><body><h2>CoffeeKup file template: bar</h2></body></html>'
+      # Express 3 no longer supports layout.
+      # t.equal 1, res.body, '<!DOCTYPE html><html><head><title>CoffeeKup file layout</title></head><body><h2>CoffeeKup file template: bar</h2></body></html>'
+      t.equal 1, res.body, '<h2>CoffeeKup file template: bar</h2>'
 
   'eco, inline': (t) ->
     t.expect 1
     t.wait 3000
     
     zapp = zappa port++, ->
+      @app.engine 'eco', require('consolidate').eco
       @set 'view engine': 'eco'
       
       @get '/': ->
@@ -106,6 +109,7 @@ port = 15600
     t.wait 3000
     
     zapp = zappa port++, ->
+      @app.engine 'eco', require('consolidate').eco
       @set 'view engine': 'eco'
       
       @get '/': ->
@@ -132,6 +136,7 @@ port = 15600
     t.wait 3000
     
     zapp = zappa port++, ->
+      @app.engine 'eco', require('consolidate').eco
       @set 'view engine': 'eco'
       
       @get '/': ->
@@ -146,6 +151,7 @@ port = 15600
     t.wait 3000
     
     zapp = zappa port++, ->
+      @app.engine 'eco', require('consolidate').eco
       @set 'view engine': 'eco'
       
       @get '/': ->

@@ -9,7 +9,6 @@ codename = 'Overture to a Holiday in Berlin'
 log = console.log
 fs = require 'fs'
 path = require 'path'
-uuid = require 'node-uuid'
 express = require 'express'
 socketio = require 'socket.io'
 jquery = fs.readFileSync(__dirname + '/../vendor/jquery-1.7.2.min.js').toString()
@@ -51,60 +50,10 @@ copy_data_to = (recipient, sources) ->
     for k, v of obj
       recipient[k] = v unless recipient[k]
 
-# Keep inline views at the module level and namespaced by app id
-# so that the monkeypatched express can look them up.
-views = {}
-  
-# Monkeypatch express to support lookup of inline templates. Such is life.
-express.View.prototype.__defineGetter__ 'exists', ->
-  # Path given by zappa: /path/to/appid/foo.bar.
-  
-  # Try appid/foo.bar in memory.
-  p = @path.replace @root + '/', ''
-  id = p.split('/')[0]
-  return true if views[p]
-
-  # Try appid/foo in memory.
-  p = p.replace(path.extname(p), '')
-  return true if views[p]
-
-  # Try /path/to/foo.bar in filesystem (normal express behaviour).
-  p = @path.replace id + '/', ''
-  try
-    fs.statSync(p)
-    return true
-  catch err
-    p = @path
-    try
-      fs.statSync(p)
-      return true
-    catch err
-      return false
-
-express.View.prototype.__defineGetter__ 'contents', ->
-  # Path given by zappa: /path/to/appid/foo.bar.
-
-  # Try appid/foo.bar in memory.
-  p = @path.replace @root + '/', ''
-  id = p.split('/')[0]
-  return views[p] if views[p]
-
-  # Try appid/foo in memory.
-  p = p.replace(path.extname(p), '')
-  return views[p] if views[p]
-
-  # Try /path/to/foo.bar in filesystem (normal express behaviour).
-  p = @path.replace id + '/', ''
-  try
-    fs.readFileSync p, 'utf8'
-  catch err
-    p = @path
-    fs.readFileSync p, 'utf8'
-
 # Takes in a function and builds express/socket.io apps based on the rules contained in it.
 zappa.app = (func,options) ->
-  context = {id: uuid(), zappa, express}
-  
+  context = {zappa, express}
+
   context.root = path.dirname(module.parent.filename)
 
   # Storage for user-provided stuff.
@@ -113,11 +62,12 @@ zappa.app = (func,options) ->
   helpers = {}
   postrenders = {}
 
+  app = context.app = express()
   if options.https?
-    app = context.app = express.createServer options.https
+    app.server = require('https').createServer options.https, app
   else
-    app = context.app = express.createServer()
-  io = if options.disable_io then null else context.io = socketio.listen(app)
+    app.server = require('http').createServer app
+  io = if options.disable_io then null else context.io = socketio.listen(app.server)
 
   # Reference to the zappa client, the value will be set later.
   client = null
@@ -125,10 +75,30 @@ zappa.app = (func,options) ->
   # Tracks if the zappa middleware is already mounted (`@use 'zappa'`).
   zappa_used = no
 
+  # Force view-cache (so that we can populate it).
+  unless options.export_views
+    app.enable 'view cache'
+
+  # Provide register (as in Express 2)
+  compilers = {}
+  register = (ext,obj) ->
+    if ext[0] isnt '.'
+      ext = '.' + ext
+    compile = obj.compile
+    if not compile
+      throw new Error "register #{ext} must provide a .compile"
+    # Register the compiler so that context.view may use it.
+    compilers[ext] = compile
+    # Register it with Express natively.
+    app.engine ext, (path,options,next) ->
+      src = fs.readFileSync(path,options.encoding ? 'utf8')
+      template = compile src, options
+      next null, template options
+
   # Zappa's default settings.
   app.set 'view engine', 'coffee'
-  app.register '.coffee', zappa.adapter require('coffeecup').adapters.express,
-    blacklist: ['format', 'autoescape', 'locals', 'hardcode', 'cache']
+  register '.coffee', zappa.adapter require('coffeecup').adapters.express,
+      blacklist: ['format', 'autoescape', 'locals', 'hardcode', 'cache']
 
   # Sets default view dir to @root (`path.dirname(module.parent.filename)`).
   app.set 'views', path.join(context.root, '/views')
@@ -195,11 +165,37 @@ zappa.app = (func,options) ->
 
   context.view = (obj) ->
     for k, v of obj
-      views["#{context.id}/#{k}"] = v
+      ext = path.extname(k)
+      if not ext
+        ext = '.' + app.get 'view engine'
+        kl = k + ext
+
+      if options.export_views
+        # Support both foo.bar and foo
+        loc = path.join( app.get('views'), options.export_views, k )
+        fs.writeFileSync loc, v
+        if kl
+          loc = path.join( app.get('views'), options.export_views, kl )
+          fs.writeFileSync loc, v
+      else
+        compile = compilers[ext]
+        if not compile?
+          compile = compilers[ext] = require(ext.slice 1).compile
+        if not compile?
+          throw new Error "Cannot find a compiler for #{ext}"
+        r =
+          render: (options,next) ->
+            template = compile v, options
+            next null, template options
+
+        # Support both foo.bar and foo
+        app.cache[k] = r
+        if kl
+          app.cache[kl] = r
 
   context.register = (obj) ->
     for k, v of obj
-      app.register '.' + k, v
+      register '.' + k, v
 
   context.set = (obj) ->
     for k, v of obj
@@ -330,41 +326,52 @@ zappa.app = (func,options) ->
               for k, v of arguments[0]
                 render.apply @, [k, v]
 
-        render = (args...) ->
-          # Adds the app id to the view name so that the monkeypatched
-          # express.View.exists and express.View.contents can lookup
-          # this app's inline templates.
-          args[0] = context.id + '/' + args[0]
-        
+        render = (name,opts,next) ->
+          # Default callback to send
+          next ?= (err,str) ->
+            if err then return req.next err
+            res.send.call res, str
+
           # Make sure the second arg is an object.
-          args[1] ?= {}
-          args.splice 1, 0, {} if typeof args[1] is 'function'
-        
+          if typeof opts is 'function'
+            next = opts
+            opts = {}
+
           if app.settings['databag']
-            args[1].params = data
+            opts.params = data
 
-          # Don't change layout: false
-          unless args[1].layout is false
-            # Use the default layout if one isn't given, or layout: true
-            if args[1].layout is true or not args[1].layout?
-              args[1].layout = 'layout'
+          apply_layout = (str,fn) ->
+            # Don't change layout: false
+            if opts.layout is false
+              fn null, str
+            else
+              # Use the default layout if one isn't given, or layout: true
+              if opts.layout is true or not opts.layout?
+                opts.layout = 'layout'
+              opts.body = str
+              res.render.call res, opts.layout, opts, fn
 
-            # Don't add id if it's there already
-            if args[1].layout.split('/')[0] is not context.id
-              args[1].layout = context.id + '/' + args[1].layout
-
-          if args[1].postrender?
-            # Apply postrender before sending response.
-            res.render args[0], args[1], (err, str) ->
+          postrender = (str,fn) ->
+            if opts.postrender?
+              # Apply postrender before sending response.
               jsdom.env html: str, src: [jquery], done: (err, window) ->
+                if err then return fn err
                 ctx.window = window
-                rendered = postrenders[args[1].postrender].apply(ctx, [window.$, ctx])
+                rendered = postrenders[opts.postrender].apply(ctx, [window.$, ctx])
 
                 doctype = (window.document.doctype or '') + "\n"
-                res.send doctype + window.document.documentElement.outerHTML
-          else
-            # Just forward params to express.
-            res.render.apply res, args
+                fn null, doctype + window.document.documentElement.outerHTML
+            else
+              fn null, str
+
+          report = (err) ->
+            return false if not err
+            next err
+            return true
+
+          res.render.call res, name, opts, (err,str) ->
+            report(err) or apply_layout str, (err,str) ->
+              report(err) or postrender str, next
 
         apply_helpers ctx
 
@@ -506,11 +513,13 @@ zappa.run = ->
   zapp = zappa.app(root_function,options)
   app = zapp.app
 
-  if host then app.listen port, host
-  else app.listen port
+  if host
+    app.server.listen port, host
+  else
+    app.server.listen port
 
   log 'Express server listening on port %d in %s mode',
-    app.address()?.port, app.settings.env
+    app.server.address()?.port, app.settings.env
 
   log "Zappa #{zappa.version} \"#{codename}\" orchestrating the show"
 

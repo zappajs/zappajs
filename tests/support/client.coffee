@@ -17,8 +17,8 @@ class Client
       @app = arg
       check = =>
         try
-          @host = @app.address().address
-          @port = @app.address().port
+          @host = @app.server.address().address
+          @port = @app.server.address().port
         catch err
           process.nextTick check
       check()
