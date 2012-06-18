@@ -327,10 +327,6 @@ zappa.app = (func,options) ->
                 render.apply @, [k, v]
 
         render = (name,opts,next) ->
-          # Default callback to send
-          next ?= (err,str) ->
-            if err then return req.next err
-            res.send.call res, str
 
           # Make sure the second arg is an object.
           if typeof opts is 'function'
@@ -340,38 +336,36 @@ zappa.app = (func,options) ->
           if app.settings['databag']
             opts.params = data
 
-          apply_layout = (str,fn) ->
-            # Don't change layout: false
-            if opts.layout is false
-              fn null, str
-            else
-              # Use the default layout if one isn't given, or layout: true
-              if opts.layout is true or not opts.layout?
-                opts.layout = 'layout'
-              opts.body = str
-              res.render.call res, opts.layout, opts, fn
-
-          postrender = (str,fn) ->
-            if opts.postrender?
+          if not opts.postrender?
+            postrender = next
+          else
+            postrender = (err, str) ->
+              if err then return next err
               # Apply postrender before sending response.
               jsdom.env html: str, src: [jquery], done: (err, window) ->
-                if err then return fn err
+                if err then return next err
                 ctx.window = window
                 rendered = postrenders[opts.postrender].apply(ctx, [window.$, ctx])
 
                 doctype = (window.document.doctype or '') + "\n"
-                fn null, doctype + window.document.documentElement.outerHTML
-            else
-              fn null, str
+                html = doctype + window.document.documentElement.outerHTML
+                if next?
+                  next null, html
+                else
+                  res.send.call res, html
 
-          report = (err) ->
-            return false if not err
-            next err
-            return true
+          if opts.layout is false
+            layout = postrender
+          else
+            # Use the default layout if one isn't given, or layout: true
+            if opts.layout is true or not opts.layout?
+              opts.layout = 'layout'
+            layout = (err,str) ->
+              if err then return next err
+              opts.body = str
+              res.render.call res, opts.layout, opts, postrender
 
-          res.render.call res, name, opts, (err,str) ->
-            report(err) or apply_layout str, (err,str) ->
-              report(err) or postrender str, next
+          res.render.call res, name, opts, layout
 
         apply_helpers ctx
 
