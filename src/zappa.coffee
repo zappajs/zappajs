@@ -90,10 +90,10 @@ zappa.app = (func,options) ->
     # Register the compiler so that context.view may use it.
     compilers[ext] = compile
     # Register it with Express natively.
-    app.engine ext, (path,options,next) ->
-      src = fs.readFileSync(path,options.encoding ? 'utf8')
-      template = compile src, options
-      next null, template options
+    renderFile = (path,options,next) ->
+      renderFile[path] ?= compile fs.readFileSync(path,options.encoding ? 'utf8'), options
+      next null, renderFile[path] options
+    app.engine ext, renderFile
 
   # Zappa's default settings.
   app.set 'view engine', 'coffee'
@@ -185,8 +185,8 @@ zappa.app = (func,options) ->
           throw new Error "Cannot find a compiler for #{ext}"
         r =
           render: (options,next) ->
-            template = compile v, options
-            next null, template options
+            r.cache ?= compile v, options
+            next null, r.cache options
 
         # Support both foo.bar and foo
         app.cache[k] = r
