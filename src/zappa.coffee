@@ -326,35 +326,34 @@ zappa.app = (func,options) ->
               for k, v of arguments[0]
                 render.apply @, [k, v]
 
-        render = (name,opts,next) ->
+        render = (name,opts,fn) ->
 
           opts ?= {}
 
+          report = fn ? next
+
           # Make sure the second arg is an object.
           if typeof opts is 'function'
-            next = opts
+            fn = opts
             opts = {}
 
           if app.settings['databag']
             opts.params = data
 
           if not opts.postrender?
-            postrender = next
+            postrender = fn
           else
             postrender = (err, str) ->
-              if err then return next err
+              if err then return report err
               # Apply postrender before sending response.
               jsdom.env html: str, src: [jquery], done: (err, window) ->
-                if err then return next err
+                if err then return report err
                 ctx.window = window
                 rendered = postrenders[opts.postrender].apply(ctx, [window.$, ctx])
 
                 doctype = (window.document.doctype or '') + "\n"
                 html = doctype + window.document.documentElement.outerHTML
-                if next?
-                  next null, html
-                else
-                  res.send.call res, html
+                report null, html
 
           if opts.layout is false
             layout = postrender
@@ -363,7 +362,7 @@ zappa.app = (func,options) ->
             if opts.layout is true or not opts.layout?
               opts.layout = 'layout'
             layout = (err,str) ->
-              if err then return next err
+              if err then return report err
               opts.body = str
               res.render.call res, opts.layout, opts, postrender
 
