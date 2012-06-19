@@ -364,9 +364,7 @@ zappa.app = (func,options) ->
               for k, v of arguments[0]
                 render.apply @, [k, v]
 
-        render = (name,opts,fn) ->
-
-          opts ?= {}
+        render = (name,opts = {},fn) ->
 
           report = fn ? next
 
