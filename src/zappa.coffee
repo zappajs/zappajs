@@ -81,6 +81,15 @@ zappa.app = (func,options) ->
 
   # Provide register (as in Express 2)
   compilers = {}
+
+  get_compiler = (ext) ->
+    compile = compilers[ext]
+    if not compile?
+      compile = compilers[ext] = require(ext.slice 1).compile
+    if not compile?
+      throw new Error "Cannot find a compiler for #{ext}"
+    compile
+
   register = (ext,obj) ->
     if ext[0] isnt '.'
       ext = '.' + ext
@@ -105,7 +114,7 @@ zappa.app = (func,options) ->
 
   # Zappa's default settings.
   app.set 'view engine', 'coffee'
-  register '.coffee', zappa.adapter require('coffeecup').adapters.express,
+  register '.coffee', zappa.adapter 'coffeecup',
       blacklist: ['format', 'autoescape', 'locals', 'hardcode', 'cache']
 
   # Sets default view dir to @root (`path.dirname(module.parent.filename)`).
@@ -171,6 +180,28 @@ zappa.app = (func,options) ->
     for k, v of obj
       ws_handlers[k] = v
 
+  partial = (k,options) ->
+
+    ext = path.extname k
+    if not ext
+      ext = '.' + app.get 'view engine'
+
+    # Inline view
+    view = app.cache[k]
+    if view? and view.renderSync?
+      return view.renderSync options
+
+    # Disk template
+    compile = get_compiler ext
+    tpl = partial[k]
+    # Use cached renderer
+    if options.cache and tpl
+      return tpl options
+    # Compiler renderer
+    tpl = compile fs.readFileSync(path, 'utf8'), options
+    if options.cache then partial[k] = tpl
+    tpl options
+
   context.view = (obj) ->
     for k, v of obj
       ext = path.extname(k)
@@ -186,15 +217,14 @@ zappa.app = (func,options) ->
           loc = path.join( app.get('views'), options.export_views, kl )
           fs.writeFileSync loc, v
       else
-        compile = compilers[ext]
-        if not compile?
-          compile = compilers[ext] = require(ext.slice 1).compile
-        if not compile?
-          throw new Error "Cannot find a compiler for #{ext}"
+        compile = get_compiler ext
         r =
           render: (options,next) ->
             r.cache ?= compile v, options
             next null, r.cache options
+          renderSync: (options) ->
+            r.cache ?= compile v, options
+            r.cache options
 
         # Support both foo.bar and foo
         app.cache[k] = r
@@ -373,6 +403,10 @@ zappa.app = (func,options) ->
               if err then return report err
               opts.body = str
               res.render.call res, opts.layout, opts, postrender
+
+          opts.locals ?= {}
+          opts.locals.partial = (name) ->
+            partial name, opts
 
           res.render.call res, name, opts, layout
 
