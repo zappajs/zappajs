@@ -581,6 +581,8 @@ zappa.adapter = (engine, options = {}) ->
   compile: (template, data) ->
     template = engine.compile(template, data)
     (data) ->
+      # Merge down `@params` into `@`
+      # Bonus: if `databag` is enabled, `@params` will be the complete databag.
       for k, v of data.params
         if typeof data[k] is 'undefined' and k not in options.blacklist
           data[k] = v
