@@ -20,6 +20,24 @@ port = 15600
     c.get '/foobar', (err, res) ->
       t.equal 2, res.body, '<h2>CoffeeKup inline template: foobar</h2>'
 
+  'inline + default layout': (t) ->
+    t.expect 1
+    t.wait 3000
+
+    zapp = zappa port++, ->
+      @enable 'default layout'
+
+      @get '/': ->
+        @render 'index', foo: 'bar'
+
+      @view index: ->
+        @title = 'CoffeeKup default layout'
+        h2 "CoffeeKup inline template: #{@foo}"
+
+    c = t.client(zapp.app)
+    c.get '/', (err, res) ->
+      t.equal 1, res.body, '<!DOCTYPE html><html><head><title>CoffeeKup default layout</title></head><body><h2>CoffeeKup inline template: bar</h2></body></html>'
+
   'inline + inline layout': (t) ->
     t.expect 1
     t.wait 3000
