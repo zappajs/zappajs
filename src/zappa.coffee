@@ -91,8 +91,16 @@ zappa.app = (func,options) ->
     compilers[ext] = compile
     # Register it with Express natively.
     renderFile = (path,options,next) ->
-      renderFile[path] ?= compile fs.readFileSync(path,options.encoding ? 'utf8'), options
-      next null, renderFile[path] options
+      # Use cached renderer if present.
+      tpl = renderFile[path]
+      if tpl
+        return next null, tpl options
+      # Build renderer.
+      fs.readFile path, 'utf8', (err,str) ->
+        if err then return next err
+        tpl = compile str, options
+        if options.cache then renderFile[path] = tpl
+        next null, tpl options
     app.engine ext, renderFile
 
   # Zappa's default settings.
