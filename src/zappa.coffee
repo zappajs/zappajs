@@ -328,6 +328,8 @@ zappa.app = (func,options) ->
 
         render = (name,opts,next) ->
 
+          opts ?= {}
+
           # Make sure the second arg is an object.
           if typeof opts is 'function'
             next = opts
