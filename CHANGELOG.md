@@ -1,3 +1,14 @@
+**v0.4.2** (2012-06-22)
+
+  * Reverted previous `view` changes (from v0.4.0); implemented ZappaFS. (#7)
+  * In Express 3.x the view can no longer modify its environment.
+  * Initial documentation test suite.
+  * Fixed zappa.app options defaults.
+
+**v0.4.1** (2012-06-19)
+
+  * Added `partial` (#23)
+
 **v0.4.0** (2012-06-18)
 
   * Added Express 3 support (#7)
