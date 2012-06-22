@@ -51,7 +51,7 @@ copy_data_to = (recipient, sources) ->
       recipient[k] = v unless recipient[k]
 
 # Takes in a function and builds express/socket.io apps based on the rules contained in it.
-zappa.app = (func,options) ->
+zappa.app = (func,options={}) ->
   context = {zappa, express}
 
   context.root = path.dirname(module.parent.filename)
@@ -158,6 +158,7 @@ zappa.app = (func,options) ->
       css = String(v)
       route verb: 'get', path: k, handler: css, contentType: 'css'
 
+  options.require_css ?= []
   if typeof options.require_css is 'string'
     options.require_css = [options.require_css]
   for name in options.require_css
