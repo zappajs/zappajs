@@ -28,10 +28,12 @@ port = 15600
       @enable 'default layout'
 
       @get '/': ->
-        @render 'index', foo: 'bar'
+        # @render 'index', foo: 'bar'
+        @render 'index', foo: 'bar', title: 'CoffeeKup default layout'
 
       @view index: ->
-        @title = 'CoffeeKup default layout'
+        # This no longer works in Express 3.x
+        # @title = 'CoffeeKup default layout'
         h2 "CoffeeKup inline template: #{@foo}"
 
     c = t.client(zapp.app)
