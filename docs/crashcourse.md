@@ -143,7 +143,7 @@ Another is that you can define inline views that `@render` "sees" as if they wer
         head -> title @title
         body @body
 
-Note that zappa comes with a default templating engine, [CoffeeCup](https://github.com/gradus/coffeekup), and you don't have to setup anything to use it. You can also easily use other engines by specifying the file extension or the `'view engine'` setting; it's just express. Well, express + inline views support:
+Note that zappa comes with a default templating engine, [CoffeeCup](https://github.com/gradus/coffeecup), and you don't have to setup anything to use it. You can also easily use other engines by specifying the file extension or the `'view engine'` setting; it's just express. Well, express + inline views support:
 
     @set 'view engine': 'eco'
 
