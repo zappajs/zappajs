@@ -9,8 +9,7 @@ codename = 'Wowie Zowie'
 log = console.log
 fs = require 'fs'
 path = require 'path'
-express = require 'express'
-socketio = require 'socket.io'
+uuid = require 'node-uuid'
 jquery = fs.readFileSync(__dirname + '/../vendor/jquery-1.7.2.min.js').toString()
 sammy = fs.readFileSync(__dirname + '/../vendor/sammy-0.7.1.min.js').toString()
 uglify = require 'uglify-js'
@@ -50,11 +49,50 @@ copy_data_to = (recipient, sources) ->
     for k, v of obj
       recipient[k] = v unless recipient[k]
 
+# Zappa FS
+zappa_fs = {}
+
+# Patch Node.js's `fs`.
+native_readFileSync = fs.readFileSync
+native_readFile = fs.readFile
+
+native_name = (p) ->
+  p.replace /\/.zappa-[^\/]+/, ''
+
+fs.readFileSync = (p,encoding) ->
+  zappa_fs[p] ? native_readFileSync.apply fs, [native_name(p), encoding]
+
+fs.readFile = (p,encoding,callback) ->
+  view = zappa_fs[p]
+  if view
+    if typeof encoding is 'function' and not callback?
+      callback = encoding
+    callback null, view
+  else
+    native_readFile.apply fs, [native_name(p),encoding,callback]
+
+native_existsSync = path.existsSync
+native_exists = path.exists
+
+path.existsSync = fs.existsSync = (p) ->
+  zappa_fs[p]? or native_existsSync native_name(p)
+
+path.exists = fs.exists = (p,callback) ->
+  if zappa_fs[p]?
+    callback true
+  else
+    native_exists.apply p, [native_name(p),callback]
+
+# Express must first be called after we modify the `fs` module.
+express = require 'express'
+socketio = require 'socket.io'
+
 # Takes in a function and builds express/socket.io apps based on the rules contained in it.
 zappa.app = (func,options={}) ->
-  context = {zappa, express}
+  context = {id: uuid(), zappa, express}
 
-  context.root = path.dirname(module.parent.filename)
+  context.real_root = path.dirname(module.parent.filename)
+  context.root =  path.join context.real_root, ".zappa-#{context.id}"
 
   # Storage for user-provided stuff.
   # Views are kept at the module level.
@@ -74,10 +112,6 @@ zappa.app = (func,options={}) ->
 
   # Tracks if the zappa middleware is already mounted (`@use 'zappa'`).
   zappa_used = no
-
-  # Force view-cache (so that we can populate it).
-  unless options.export_views
-    app.enable 'view cache'
 
   # Provide register (as in Express 2)
   compilers = {}
@@ -186,51 +220,27 @@ zappa.app = (func,options={}) ->
     ext = path.extname k
     if not ext
       ext = '.' + app.get 'view engine'
+      k = k + ext
 
-    # Inline view
-    view = app.cache[k]
-    if view? and view.renderSync?
-      return view.renderSync options
-
-    # Disk template
-    compile = get_compiler ext
     tpl = partial[k]
     # Use cached renderer
     if options.cache and tpl
       return tpl options
-    # Compiler renderer
-    tpl = compile fs.readFileSync(path, 'utf8'), options
+    # Compile renderer
+    file = path.join context.root, k
+    compile = get_compiler ext
+    tpl = compile fs.readFileSync(file, 'utf8'), options
     if options.cache then partial[k] = tpl
     tpl options
 
   context.view = (obj) ->
     for k, v of obj
-      ext = path.extname(k)
+      ext = path.extname k
+      p = path.join app.get('views'), k
+      zappa_fs[p] = v # I'm not even sure this is needed -- Express doesn't ask for it
       if not ext
         ext = '.' + app.get 'view engine'
-        kl = k + ext
-
-      if options.export_views
-        # Support both foo.bar and foo
-        loc = path.join( app.get('views'), options.export_views, k )
-        fs.writeFileSync loc, v
-        if kl
-          loc = path.join( app.get('views'), options.export_views, kl )
-          fs.writeFileSync loc, v
-      else
-        compile = get_compiler ext
-        r =
-          render: (options,next) ->
-            r.cache ?= compile v, options
-            next null, r.cache options
-          renderSync: (options) ->
-            r.cache ?= compile v, options
-            r.cache options
-
-        # Support both foo.bar and foo
-        app.cache[k] = r
-        if kl
-          app.cache[kl] = r
+        zappa_fs[p+ext] = v
 
   context.register = (obj) ->
     for k, v of obj
@@ -248,7 +258,8 @@ zappa.app = (func,options={}) ->
 
   context.use = ->
     zappa_middleware =
-      static: (p = path.join(context.root, '/public')) ->
+      # Connect `static` middlewate uses fs.stat().
+      static: (p = path.join(context.real_root, '/public')) ->
         express.static(p)
       zappa: ->
         (req, res, next) ->
