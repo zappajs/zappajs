@@ -262,6 +262,7 @@ zappa.app = (func,options={}) ->
       static: (p = path.join(context.real_root, '/public')) ->
         express.static(p)
       zappa: ->
+        zappa_used = yes
         (req, res, next) ->
           send = (code) ->
             res.contentType 'js'
@@ -275,8 +276,6 @@ zappa.app = (func,options={}) ->
               else next()
 
     use = (name, arg = null) ->
-      zappa_used = yes if name is 'zappa'
-
       if zappa_middleware[name]
         app.use zappa_middleware[name](arg)
       else if typeof express[name] is 'function'
