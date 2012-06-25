@@ -21,7 +21,8 @@
     "eco": "1.1.0-rc-3",
     "jade": "0.26.1",
     "stylus": "0.19.3",
-    "less": ">=1.3.0"
+    "less": ">=1.3.0",
+    "express-partials": ">=0.0.4"
   },
   "keywords": ["framework", "websockets", "coffeescript", "express", "socket.io", "sammy", "sinatra", "dsl"],
   "main": "./lib/zappa",

@@ -25,6 +25,7 @@ port = 15600
     t.wait 3000
 
     zapp = zappa port++, ->
+      @use 'partials'
       @enable 'default layout'
 
       @get '/': ->
@@ -45,6 +46,7 @@ port = 15600
     t.wait 3000
     
     zapp = zappa port++, ->
+      @use 'partials'
       @get '/': ->
         @render 'index', foo: 'bar'
 
@@ -78,6 +80,7 @@ port = 15600
     t.wait 3000
     
     zapp = zappa port++, ->
+      @use 'partials'
       @get '/': ->
         @render 'index', foo: 'bar'
     
@@ -102,14 +105,13 @@ port = 15600
     t.wait 3000
     
     zapp = zappa port++, ->
+      @use 'partials'
       @get '/': ->
         @response.render 'index', foo: 'bar'
     
     c = t.client(zapp.app)
     c.get '/', (err, res) ->
-      # Express 3 no longer supports layout.
-      # t.equal 1, res.body, '<!DOCTYPE html><html><head><title>CoffeeKup file layout</title></head><body><h2>CoffeeKup file template: bar</h2></body></html>'
-      t.equal 1, res.body, '<h2>CoffeeKup file template: bar</h2>'
+      t.equal 1, res.body, '<!DOCTYPE html><html><head><title>CoffeeKup file layout</title></head><body><h2>CoffeeKup file template: bar</h2></body></html>'
 
   'eco, inline': (t) ->
     t.expect 1
@@ -134,6 +136,7 @@ port = 15600
     
     zapp = zappa port++, ->
       @app.engine 'eco', require('consolidate').eco
+      @use 'partials'
       @set 'view engine': 'eco'
       
       @get '/': ->
@@ -161,6 +164,7 @@ port = 15600
     
     zapp = zappa port++, ->
       @app.engine 'eco', require('consolidate').eco
+      @use 'partials'
       @set 'view engine': 'eco'
       
       @get '/': ->
@@ -176,6 +180,7 @@ port = 15600
     
     zapp = zappa port++, ->
       @app.engine 'eco', require('consolidate').eco
+      @use 'partials'
       @set 'view engine': 'eco'
       
       @get '/': ->
@@ -191,7 +196,9 @@ port = 15600
     
     zapp = zappa port++, ->
       @set 'view engine': 'eco'
-      @register eco: @zappa.adapter('eco')
+      @app.engine 'eco', require('consolidate').eco
+      @use 'partials'
+        eco: zappa.adapter 'eco'
       
       @get '/': ->
         @render 'index', foo: 'bar'
@@ -233,6 +240,7 @@ port = 15600
     t.wait 3000
     
     zapp = zappa port++, ->
+      @use 'partials'
       @set 'view engine': 'jade'
       
       @get '/': ->
@@ -271,6 +279,7 @@ port = 15600
     t.wait 3000
     
     zapp = zappa port++, ->
+      @use 'partials'
       @set 'view engine': 'jade'
       
       @get '/': ->
@@ -286,7 +295,8 @@ port = 15600
     
     zapp = zappa port++, ->
       @set 'view engine': 'jade'
-      @register jade: @zappa.adapter('jade')
+      @use 'partials'
+        jade: zappa.adapter 'jade'
       
       @get '/': ->
         @render 'index', foo: 'bar'

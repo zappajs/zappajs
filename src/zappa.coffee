@@ -16,6 +16,7 @@ uglify = require 'uglify-js'
 
 # Soft dependencies:
 jsdom = null
+express_partials = null
 
 # CoffeeScript-generated JavaScript may contain anyone of these; when we "rewrite"
 # a function (see below) though, it loses access to its parent scope, and consequently to
@@ -99,6 +100,7 @@ zappa.app = (func,options={}) ->
   ws_handlers = {}
   helpers = {}
   postrenders = {}
+  partials = {}
 
   app = context.app = express()
   if options.https?
@@ -113,43 +115,9 @@ zappa.app = (func,options={}) ->
   # Tracks if the zappa middleware is already mounted (`@use 'zappa'`).
   zappa_used = no
 
-  # Provide register (as in Express 2)
-  compilers = {}
-
-  get_compiler = (ext) ->
-    compile = compilers[ext]
-    if not compile?
-      compile = compilers[ext] = require(ext.slice 1).compile
-    if not compile?
-      throw new Error "Cannot find a compiler for #{ext}"
-    compile
-
-  register = (ext,obj) ->
-    if ext[0] isnt '.'
-      ext = '.' + ext
-    compile = obj.compile
-    if not compile
-      throw new Error "register #{ext} must provide a .compile"
-    # Register the compiler so that context.view may use it.
-    compilers[ext] = compile
-    # Register it with Express natively.
-    renderFile = (path,options,next) ->
-      # Use cached renderer if present.
-      tpl = renderFile[path]
-      if tpl
-        return next null, tpl options
-      # Build renderer.
-      fs.readFile path, 'utf8', (err,str) ->
-        if err then return next err
-        tpl = compile str, options
-        if options.cache then renderFile[path] = tpl
-        next null, tpl options
-    app.engine ext, renderFile
-
   # Zappa's default settings.
   app.set 'view engine', 'coffee'
-  register '.coffee', zappa.adapter 'coffeecup',
-      blacklist: ['format', 'autoescape', 'locals', 'hardcode', 'cache']
+  app.engine 'coffee', coffeecup_adapter
 
   # Sets default view dir to @root (`path.dirname(module.parent.filename)`).
   app.set 'views', path.join(context.root, '/views')
@@ -215,24 +183,6 @@ zappa.app = (func,options={}) ->
     for k, v of obj
       ws_handlers[k] = v
 
-  partial = (k,options) ->
-
-    ext = path.extname k
-    if not ext
-      ext = '.' + app.get 'view engine'
-      k = k + ext
-
-    tpl = partial[k]
-    # Use cached renderer
-    if options.cache and tpl
-      return tpl options
-    # Compile renderer
-    file = path.join context.root, k
-    compile = get_compiler ext
-    tpl = compile fs.readFileSync(file, 'utf8'), options
-    if options.cache then partial[k] = tpl
-    tpl options
-
   context.view = (obj) ->
     for k, v of obj
       ext = path.extname k
@@ -242,9 +192,9 @@ zappa.app = (func,options={}) ->
         ext = '.' + app.get 'view engine'
         zappa_fs[p+ext] = v
 
-  context.register = (obj) ->
+  context.engine = (obj) ->
     for k, v of obj
-      register '.' + k, v
+      app.engine k, v
 
   context.set = (obj) ->
     for k, v of obj
@@ -274,6 +224,13 @@ zappa.app = (func,options={}) ->
               when '/zappa/jquery.js' then send jquery
               when '/zappa/sammy.js' then send sammy
               else next()
+      partials: (maps = {}) ->
+        express_partials ?= require 'express-partials'
+        partials = express_partials()
+        partials.register 'coffee', coffeecup_adapter.render
+        for k,v of maps
+          partials.register k, v
+        partials
 
     use = (name, arg = null) ->
       if zappa_middleware[name]
@@ -402,22 +359,7 @@ zappa.app = (func,options={}) ->
                 html = doctype + window.document.documentElement.outerHTML
                 report null, html
 
-          if opts.layout is false
-            layout = postrender
-          else
-            # Use the default layout if one isn't given, or layout: true
-            if opts.layout is true or not opts.layout?
-              opts.layout = 'layout'
-            layout = (err,str) ->
-              if err then return report err
-              opts.body = str
-              res.render.call res, opts.layout, opts, postrender
-
-          opts.locals ?= {}
-          opts.locals.partial = (name) ->
-            partial name, opts
-
-          res.render.call res, name, opts, layout
+          res.render.call res, name, opts, postrender
 
         apply_helpers ctx
 
@@ -572,8 +514,9 @@ zappa.run = ->
   zapp
 
 # Creates a zappa view adapter for templating engine `engine`. This adapter
-# can be used with `context.register` and creates params "shortcuts".
-# 
+# can be used with `context.engine` or `context.use partials:`
+# and creates params "shortcuts".
+#
 # Zappa, by default, automatically sends all request params to templates,
 # but inside the `params` local.
 #
