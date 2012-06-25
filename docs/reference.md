@@ -103,11 +103,11 @@ Ex.:
     # Route Middleware example
     load_user = ->
       user = users[@params.id]
-        if user
-          @request.user = user
-          @next()
-        else
-          @next "Failed to load user #{@params.id}"
+      if user
+        @request.user = user
+        @next()
+      else
+        @next "Failed to load user #{@params.id}"
 
     @get '/', load_user, -> 'hi'
 
