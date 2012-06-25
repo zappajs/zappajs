@@ -586,10 +586,13 @@ zappa.run = ->
 #
 # If `engine` is a string, the adapter will use `require(engine)`. Otherwise,
 # it will assume the `engine` param is an object with a `compile` function.
+#
+# Return an Express 2.x as well as an Express 3.x compatible object.
+# The Express 2.x object supports both `compile` and `render`.
 zappa.adapter = (engine, options = {}) ->
   options.blacklist ?= []
   engine = require(engine) if typeof engine is 'string'
-  compile: (template, data) ->
+  compile = (template, data) ->
     template = engine.compile(template, data)
     (data) ->
       # Merge down `@params` into `@`
@@ -598,6 +601,24 @@ zappa.adapter = (engine, options = {}) ->
         if typeof data[k] is 'undefined' and k not in options.blacklist
           data[k] = v
       template(data)
+  render = (template,data) ->
+    template = compile template, data
+    template data
+  # Express 3.x object:
+  renderFile = (name,data,fn) ->
+    try
+      template = fs.readFileSync(name,'utf8')
+      template = compile template, data
+    catch err
+      return fn err
+    fn null, template data
+  # Express 2.x extensions:
+  renderFile.compile = compile
+  renderFile.render = render
+  renderFile
+
+coffeecup_adapter = zappa.adapter 'coffeecup',
+  blacklist: ['format', 'autoescape', 'locals', 'hardcode', 'cache']
 
 module.exports = zappa.run
 module.exports.run = zappa.run
