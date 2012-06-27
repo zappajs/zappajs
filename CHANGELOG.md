@@ -1,3 +1,7 @@
+**v0.3.10** (2012-06-28):
+
+  * Updated express version (#28)
+
 **v0.3.9** (2012-06-05):
 
   * Added support for https server.
