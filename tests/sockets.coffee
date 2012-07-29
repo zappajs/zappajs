@@ -89,22 +89,21 @@ port = 15700
     c2 = t.client(zapp.app)
     c2.connect()
 
-    c.on 'joined': ->
-      console.log 'OK2'
+    c.on 'joined', (data) ->
       t.reached 'joined1'
       t.equal 'room1', data.room, 'main'
       c.emit said: {msg:'said2'}
 
-    c2.on 'joined': ->
+    c2.on 'joined', (data) ->
       t.reached 'joined2'
       t.equal 'room2', data.room, 'main'
       c2.emit said: {msg:'said1'}
 
-    c.on 'said': ->
+    c.on 'said', (data) ->
       t.reached 'reached1'
       t.equal 'data1', data.msg, 'said1'
 
-    c2.on 'said': ->
+    c2.on 'said', (data) ->
       t.reached 'reached2'
       t.equal 'data2', data.msg, 'said2'
 
