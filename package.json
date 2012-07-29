@@ -8,7 +8,7 @@
   "dependencies": {
     "express": "3.0.x",
     "socket.io": "0.9.x",
-    "coffeecup": "0.3.x",
+    "coffeecup": "0.3.x >=0.3.16",
     "node-uuid": "1.2.0",
     "uglify-js": "1.1.x"
   },
