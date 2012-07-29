@@ -72,13 +72,13 @@ fs.readFile = (p,encoding,callback) ->
   else
     native_readFile.apply fs, [native_name(p),encoding,callback]
 
-native_existsSync = fs.existsSync
-native_exists = fs.exists
+native_existsSync = fs.existsSync ? path.existsSync
+native_exists = fs.exists ? path.exists
 
-fs.existsSync = (p) ->
+path.existsSync = fs.existsSync = (p) ->
   zappa_fs[p]? or native_existsSync native_name(p)
 
-fs.exists = (p,callback) ->
+path.exists = fs.exists = (p,callback) ->
   if zappa_fs[p]?
     callback true
   else
