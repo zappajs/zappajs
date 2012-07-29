@@ -63,6 +63,28 @@ port = 15600
     c.get '/', (err, res) ->
       t.equal 1, res.body, '<!DOCTYPE html><html><head><title>CoffeeKup inline layout</title></head><body><h2>CoffeeKup inline template: bar</h2></body></html>'
 
+  'inline + inline non-default layout': (t) ->
+    t.expect 1
+    t.wait 3000
+
+    zapp = zappa port++, ->
+      @use 'partials'
+      @get '/': ->
+        @render 'index', foo: 'bar', layout: 'layout'
+
+      @view index: -> h2 "CoffeeCup inline template: #{@foo}"
+
+      @view 'layout': ->
+        doctype 5
+        html ->
+          head ->
+            title 'CoffeeCup inline layout'
+          body @body
+
+    c = t.client(zapp.app)
+    c.get '/', (err, res) ->
+      t.equal 1, res.body, '<!DOCTYPE html><html><head><title>CoffeeCup inline layout</title></head><body><h2>CoffeeCup inline template: bar</h2></body></html>'
+
   file: (t) ->
     t.expect 1
     t.wait 3000

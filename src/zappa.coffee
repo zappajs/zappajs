@@ -225,7 +225,7 @@ zappa.app = (func,options={}) ->
               when '/zappa/sammy.js' then send sammy
               else next()
       partials: (maps = {}) ->
-        express_partials ?= require 'express-partials'
+        express_partials ?= require 'zappajs-partials'
         partials = express_partials()
         partials.register 'coffee', coffeecup_adapter.render
         for k,v of maps
