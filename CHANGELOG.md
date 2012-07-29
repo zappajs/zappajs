@@ -1,3 +1,8 @@
+**v0.4.3** (2012-07-30)
+
+  * Re-introduced support for partials (`@use 'partials'`)
+  * Corrected tests
+
 **v0.4.2** (2012-06-22)
 
   * Reverted previous `view` changes (from v0.4.0); implemented ZappaFS. (#7)
