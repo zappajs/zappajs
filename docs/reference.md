@@ -56,8 +56,6 @@ You can also pass the parameters in the `options` object. The following options 
         require('zappajs') 3443, https:{ key: ... , cert: ... }, ->
           @get '/': 'hi'
 
-* `export_views`: (experimental) string pointing to a subdirectory of `@get 'views'` where Zappa inline views should be exported. This should allow you to reference them from templates that support including other templates.
-
 It will automatically print the equivalent to the following to stdout:
 
     Express server listening on port xxxx in [development/production] mode
@@ -186,8 +184,6 @@ To use this feature with other templating engines:
 To disable it on default zappa:
 
     @register coffee: require('coffeekup').adapters.express
-
-Although inline templates defined by `@view` are visible inside Express (and can be used e.g. with `@app.render`), they are not visible to the template engines, which means they cannot be used as `include` in engines that support this. (Although see `export_views`.)
 
 ### @postrender
 
