@@ -72,17 +72,17 @@ fs.readFile = (p,encoding,callback) ->
   else
     native_readFile.apply fs, [native_name(p),encoding,callback]
 
-native_existsSync = path.existsSync
-native_exists = path.exists
+native_existsSync = fs.existsSync
+native_exists = fs.exists
 
-path.existsSync = fs.existsSync = (p) ->
+fs.existsSync = (p) ->
   zappa_fs[p]? or native_existsSync native_name(p)
 
-path.exists = fs.exists = (p,callback) ->
+fs.exists = (p,callback) ->
   if zappa_fs[p]?
     callback true
   else
-    native_exists.apply p, [native_name(p),callback]
+    native_exists.apply fs, [native_name(p),callback]
 
 # Express must first be called after we modify the `fs` module.
 express = require 'express'
