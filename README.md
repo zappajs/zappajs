@@ -113,6 +113,11 @@ require('zappajs') ->
 
     npm install zappajs
 
+This will install v0.3, which depends on Express 2.5.
+If you would rather use Express 3.0 alpha:
+
+    npm install zappajs@0.4
+
 ## Learn More
 
 - Get the gist with the [crash course](http://zappajs.github.com/zappajs/docs/crashcourse)
