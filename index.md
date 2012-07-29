@@ -121,8 +121,6 @@ require('zappa') ->
 
 - Questions, suggestions? Drop us a line on the [mailing list](http://groups.google.com/group/zappajs)
 
-- Rather do it realtime? Join the IRC channel on freenode: [#zappajs]((irc://irc.freenode.net/zappajs)
-
 - Found a bug? Open an [issue](http://github.com/zappajs/zappajs/issues) at github
 
 - Check the project's history at the [change log](https://github.com/zappajs/zappajs/blob/master/CHANGELOG.md)
