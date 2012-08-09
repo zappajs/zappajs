@@ -1,3 +1,7 @@
+**v0.4.4** (2012-08-09)
+
+  * Re-published since 0.4.3 was missing `lib` and `vendor`.
+
 **v0.4.3** (2012-07-30)
 
   * Re-introduced support for partials (`@use 'partials'`)

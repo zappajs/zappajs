@@ -1,7 +1,7 @@
 {
   "name": "zappajs",
   "description": "CoffeeScript minimalist interface to express, socket.io and others",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "author": "Stephane Alnet <stephane@shimaore.net>",
   "homepage": "http://zappajs.github.com/zappajs/",
   "repository": {"type": "git", "url": "git://github.com/zappajs/zappajs.git"},
@@ -26,6 +26,12 @@
   },
   "keywords": ["framework", "websockets", "coffeescript", "express", "socket.io", "sammy", "sinatra", "dsl"],
   "main": "./lib/zappa",
+  "files": [
+    "lib/zappa.js",
+    "lib/client.js",
+    "vendor/jquery-1.7.2.min.js",
+    "vendor/sammy-0.7.1.min.js"
+  ],
   "contributors": [
     "Maurice Machado <maurice@bitbending.com>",
     "Nicholas Kinsey <nicholas.kinsey@feistystudios.com>",
