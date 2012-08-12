@@ -29,7 +29,7 @@ port = 15700
 
   'server broadcasts': (t) ->
     t.expect 'reached1', 'reached2', 'data1', 'data2'
-    t.wait 3000
+    t.wait 10000
     
     zapp = zappa port++, ->
       @on shout: ->
@@ -54,7 +54,7 @@ port = 15700
 
   'server ack': (t) ->
     t.expect 'got-foo', 'acked', 'data'
-    t.wait 3000
+    t.wait 10000
 
     zapp = zappa port++, ->
       @on foo: ->
@@ -71,7 +71,7 @@ port = 15700
   'server rooms': (t) ->
     t.expect 'joined1', 'room1', 'joined2', 'room2',
       'reached1', 'reached2', 'data1', 'data2'
-    t.wait 3000
+    t.wait 10000
 
     zapp = zappa port++, ->
       @on join: ->
