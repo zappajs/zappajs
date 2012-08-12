@@ -400,11 +400,12 @@ zappa.app = (func,options={}) ->
             for k, v of arguments[0]
               socket.emit.apply socket, [k, v]
         broadcast: ->
+          broadcast = socket.broadcast
           if typeof arguments[0] isnt 'object'
-            socket.broadcast.emit.apply socket.broadcast, arguments
+            broadcast.emit.apply broadcast, arguments
           else
             for k, v of arguments[0]
-              socket.broadcast.emit.apply socket.broadcast, [k, v]
+              broadcast.emit.apply broadcast, [k, v]
         broadcast_to: (room, args...) ->
           room = io.sockets.in room
           if typeof args[0] isnt 'object'
