@@ -53,15 +53,19 @@ copy_data_to = (recipient, sources) ->
 # Zappa FS
 zappa_fs = {}
 
+native_name = (p) ->
+  p.replace /\/\.zappa-[^\/]+/, ''
+
 # Patch Node.js's `fs`.
 native_readFileSync = fs.readFileSync
 native_readFile = fs.readFile
 
-native_name = (p) ->
-  p.replace /\/.zappa-[^\/]+/, ''
+native_array = (args...) ->
+  args[0] = native_name args[0]
+  args
 
 fs.readFileSync = (p,encoding) ->
-  zappa_fs[p] ? native_readFileSync.apply fs, [native_name(p), encoding]
+  zappa_fs[p] ? native_readFileSync.apply fs, native_array arguments...
 
 fs.readFile = (p,encoding,callback) ->
   view = zappa_fs[p]
@@ -70,19 +74,19 @@ fs.readFile = (p,encoding,callback) ->
       callback = encoding
     callback null, view
   else
-    native_readFile.apply fs, [native_name(p),encoding,callback]
+    native_readFile.apply fs, native_array arguments...
 
 native_existsSync = fs.existsSync ? path.existsSync
 native_exists = fs.exists ? path.exists
 
 path.existsSync = fs.existsSync = (p) ->
-  zappa_fs[p]? or native_existsSync native_name(p)
+  zappa_fs[p]? or native_existsSync.apply fs, native_array arguments...
 
 path.exists = fs.exists = (p,callback) ->
   if zappa_fs[p]?
     callback true
   else
-    native_exists.apply fs, [native_name(p),callback]
+    native_exists.apply fs, native_array arguments...
 
 # Express must first be called after we modify the `fs` module.
 express = require 'express'
