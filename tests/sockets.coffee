@@ -92,20 +92,19 @@ port = 15700
     c.on 'joined', (data) ->
       t.reached 'joined1'
       t.equal 'room1', data.room, 'main'
-      @emit said: {msg:'said2'}
+      c.emit 'said', msg:'done'
 
     c2.on 'joined', (data) ->
       t.reached 'joined2'
       t.equal 'room2', data.room, 'main'
-      @emit said: {msg:'said1'}
 
     c.on 'said', (data) ->
       t.reached 'reached1'
-      t.equal 'data1', data.msg, 'said1'
+      t.equal 'data1', data.msg, 'done'
 
     c2.on 'said', (data) ->
       t.reached 'reached2'
-      t.equal 'data2', data.msg, 'said2'
+      t.equal 'data2', data.msg, 'done'
 
     c.emit 'join', room:'main'
     c2.emit 'join', room:'main'
