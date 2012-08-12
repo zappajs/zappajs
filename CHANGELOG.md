@@ -1,3 +1,15 @@
+**v0.4.5** (2012-08-13)
+
+  * Updated dependencies to current versions.
+  * Updated jquery to 1.8.0.
+  * Updated examples.
+  * Fixed postrender.
+  * Added test for socket.io.js.
+  * Corrected bugs introduced by abusive use of `arguments`.
+  * Corrected `broadcast_to` for socket.io post-0.7
+  * `broadcast_to_all` doesn't exist (`broadcast_to` already broadcasts to self)
+  * Corrected socket.io rooms test
+
 **v0.4.4** (2012-08-09)
 
   * Re-published since 0.4.3 was missing `lib` and `vendor`.
