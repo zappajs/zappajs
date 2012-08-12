@@ -33,7 +33,7 @@ port = 15700
     
     zapp = zappa port++, ->
       @on shout: ->
-        @emit 'shout', @data
+        @broadcast 'shouted', @data
 
     c = t.client(zapp.app)
     c.connect()
@@ -42,12 +42,11 @@ port = 15700
     c3 = t.client(zapp.app)
     c3.connect()
 
-    c.on 'shout', (data) ->
+    c2.on 'shouted', (data) ->
       t.reached 'reached1'
       t.equal 'data1', data.foo, 'bar'
 
-    # FIXME c2 should not be receiving messages!
-    c2.on 'shout', (data) ->
+    c3.on 'shouted', (data) ->
       t.reached 'reached2'
       t.equal 'data2', data.foo, 'bar'
 
