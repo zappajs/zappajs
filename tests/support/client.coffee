@@ -32,6 +32,7 @@ class Client
 
     opts ?= {}
     opts.followRedirect ?= no
+    opts.jar = false
     opts.method ?= method
     opts.url = "http://#{@host}:#{@port}#{path}"
     opts.encoding ?= 'utf8'
