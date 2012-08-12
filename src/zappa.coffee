@@ -338,7 +338,11 @@ zappa.app = (func,options={}) ->
 
         render = (name,opts = {},fn) ->
 
-          report = fn ? next
+          report = fn ? (err,html) ->
+            if err
+              next err
+            else
+              res.send html
 
           # Make sure the second arg is an object.
           if typeof opts is 'function'
@@ -349,7 +353,7 @@ zappa.app = (func,options={}) ->
             opts.params = data
 
           if not opts.postrender?
-            postrender = fn
+            postrender = report
           else
             postrender = (err, str) ->
               if err then return report err
