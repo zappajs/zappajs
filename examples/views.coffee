@@ -1,4 +1,6 @@
 require('./zappajs') ->
+  @use 'partials'
+
   @get
     '/': ->
       @render 'index', foo: 'bar'

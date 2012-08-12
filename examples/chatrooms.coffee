@@ -18,7 +18,7 @@ require('./zappajs') ->
     data =
       nickname: @client.nickname
       msg: @data.msg
-    @broadcast_to_all @client.room, 'said', data
+    @broadcast_to @client.room, 'said', data
  
   @client '/index.js': ->
     @connect()

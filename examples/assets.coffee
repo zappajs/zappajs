@@ -17,7 +17,7 @@ require('./zappajs') 3000, ->
 
 # Second version, using @view and no pollution of the global scope.
 
-require('zappajs') 3001, ->
+require('./zappajs') 3001, ->
 
   render_context =
     layout: no

@@ -7,3 +7,4 @@ benchmarks/out/*.out
 tests/*.js
 _site
 vendor
+examples/public/bin
