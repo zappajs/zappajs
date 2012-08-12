@@ -81,7 +81,6 @@ port = 15700
         @emit 'joined', room:@data.room
       @on said: ->
         @broadcast_to @client.room, 'said', @data
-      # TODO test broadcast_to_all
 
     c = t.client(zapp.app)
     c.connect()

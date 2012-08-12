@@ -547,11 +547,7 @@ Shortcut to `socket.leave`.
 
 ### `@broadcast_to` (room,...)
 
-Broadcast to a room. Do not copy our client.
-
-### `@broadcast_to_all` (room,...)
-
-Broadcast to a room, including our client.
+Broadcast to a room.
 
 ## VIEW SCOPE
 
