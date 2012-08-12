@@ -411,14 +411,6 @@ zappa.app = (func,options={}) ->
           else
             for k, v of args[0]
               socket.broadcast.to(room).emit.apply socket.broadcast, [k, v]
-        broadcast_to_all: (room, args...) ->
-          if typeof args[0] isnt 'object'
-            socket.broadcast.to(room).emit.apply socket.broadcast, args
-            socket.emit.apply socket, args
-          else
-            for k, v of args[0]
-              socket.broadcast.to(room).emit.apply socket.broadcast, [k, v]
-              socket.emit.apply socket, [k, v]
 
       apply_helpers ctx
       ctx
