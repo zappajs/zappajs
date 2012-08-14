@@ -301,6 +301,22 @@ Serves the string as `/foo.js`, with content-type `application/javascript`.
 
 Serves the string as `/foo.css`, with content-type `text/css`.
 
+### @css
+
+    border_radius = (radius)->
+      WebkitBorderRadius: radius
+      MozBorderRadius: radius
+      borderRadius: radius
+
+    @css '/foo.css':
+      body:
+        font: '12px Helvetica, Arial, sans-serif'
+
+      'a.button':
+        border_radius '5px'
+
+Serves the object, compiled with [coffee-css](https://github.com/khoomeister/coffee-css), with content-type `text/css`.
+
 ### @stylus
 
     @stylus '/foo.css': '''

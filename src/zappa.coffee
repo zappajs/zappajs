@@ -17,6 +17,7 @@ uglify = require 'uglify-js'
 # Soft dependencies:
 jsdom = null
 express_partials = null
+coffee_css = null
 
 # CoffeeScript-generated JavaScript may contain anyone of these; when we "rewrite"
 # a function (see below) though, it loses access to its parent scope, and consequently to
@@ -161,7 +162,11 @@ zappa.app = (func,options={}) ->
 
   context.css = (obj) ->
     for k, v of obj
-      css = String(v)
+      if typeof v is 'object'
+        coffee_css ?= require 'coffee-css'
+        css = coffee_css.compile v
+      else
+        css = String(v)
       route verb: 'get', path: k, handler: css, contentType: 'css'
 
   options.require_css ?= []

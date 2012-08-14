@@ -62,6 +62,37 @@ port = 15200
       t.equal 1, res.body, 'font-family: sans-serif;'
       t.equal 2, res.headers['content-type'], 'text/css'
 
+  coffee_css: (t) ->
+    t.expect 1, 2
+    t.wait 3000
+
+    zapp = zappa port++, ->
+      border_radius = (radius)->
+        WebkitBorderRadius: radius
+        MozBorderRadius: radius
+        borderRadius: radius
+
+      @css '/index.css':
+        body:
+          font: '12px Helvetica, Arial, sans-serif'
+
+        'a.button':
+          border_radius '5px'
+
+    c = t.client(zapp.server)
+    c.get '/index.css', (err, res) ->
+      t.equal 1, res.body, '''
+        body {
+            font: 12px Helvetica, Arial, sans-serif;
+        }
+        a.button {
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+        }
+      '''
+      t.equal 2, res.headers['content-type'], 'text/css'
+
   stylus: (t) ->
     t.expect 'header', 'body'
     t.wait 3000
