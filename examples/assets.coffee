@@ -41,3 +41,6 @@ require('./zappajs') 3001, ->
   @get '/': ->
     # Note: this does not work with `hardcode` (Coffee[CK]up limitation).
     @render 'index', render_context
+
+# See https://github.com/TrevorBurnham/connect-assets
+# and the examples in the more_assets/ directory.
