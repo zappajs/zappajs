@@ -1,3 +1,13 @@
+**v0.4.6** (2012-08-15)
+
+  * Added `@req` and `@res` due to popular demand. (#20)
+  * Changed `@app.server` into `@server`.
+  * Added support for `coffee-css` in `@css`.
+
+  * Added `connect-assets` examples (#18) @scien
+  * Corrected documentation: `serve jquery` and `serve sammy` are obsolete. (#27)
+  * Website: require('zappajs'), not 'zappa' @audreyt #31
+
 **v0.4.5** (2012-08-13)
 
   * Updated dependencies to current versions.

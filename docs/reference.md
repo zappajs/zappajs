@@ -459,9 +459,13 @@ or use the [consolidate](https://github.com/visionmedia/consolidate.js) package:
 
 Directly from express.
 
+Shortcut: `@res` is a synonym for `@response`.
+
 ### @request
 
 Directly from express.
+
+Shortcut: `@req` is a synonym for `@request`.
 
 ### @next
 
