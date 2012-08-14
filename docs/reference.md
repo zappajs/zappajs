@@ -296,7 +296,7 @@ Serves the string as `/foo.js`, with content-type `application/javascript`.
 ### @css
 
     @css '/foo.css': '''
-      font-family: sans-serif;
+      body { font-family: sans-serif; }
     '''
 
 Serves the string as `/foo.css`, with content-type `text/css`.

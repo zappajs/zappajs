@@ -54,12 +54,12 @@ port = 15200
 
     zapp = zappa port++, ->
       @css '/index.css': '''
-        font-family: sans-serif;
+        body { font-family: sans-serif; }
       '''
 
     c = t.client(zapp.server)
     c.get '/index.css', (err, res) ->
-      t.equal 1, res.body, 'font-family: sans-serif;'
+      t.equal 1, res.body, 'body { font-family: sans-serif; }'
       t.equal 2, res.headers['content-type'], 'text/css'
 
   coffee_css: (t) ->
