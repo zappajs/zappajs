@@ -319,15 +319,18 @@ zappa.app = (func,options={}) ->
     else
       app[r.verb] r.path, r.middleware..., (req, res, next) ->
         ctx =
-          app: app
+          app:      app
           settings: app.settings
-          request: req
-          query: req.query
-          params: req.params
-          body: req.body
-          session: req.session
+          request:  req
+          req:      req
+          query:    req.query
+          params:   req.params
+          body:     req.body
+          session:  req.session
           response: res
-          next: next
+          res:      res
+          next:     next
+          done:     next
           send: -> res.send.apply res, arguments
           json: -> res.json.apply res, arguments
           redirect: -> res.redirect.apply res, arguments
