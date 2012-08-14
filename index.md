@@ -10,7 +10,7 @@ If you can describe it in 495 characters, why on earth should it take 879?
 Zappa is a [CoffeeScript](http://coffeescript.org)-optimized interface to [Express](http://expressjs.com) and [Socket.IO](http://socket.io) that makes this:
 
 {% highlight coffeescript %}
-require('zappa') ->
+require('zappajs') ->
   Gizmo = require './model/gizmo'
   
   @use 'bodyParser', 'methodOverride', @app.router, 'static'
@@ -74,7 +74,7 @@ console.log "Express server listening on port %d in %s mode",
 And throws in some additional features while at it:
 
 {% highlight coffeescript %}
-require('zappa') ->
+require('zappajs') ->
   @enable 'default layout', 'serve jquery',
     'serve sammy', 'minify'
 
