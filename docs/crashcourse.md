@@ -251,7 +251,7 @@ With `@coffee`, you can define client-side code inline, and serve it in JS form 
 
 On a step further, you have `@client`, which gives you access to a matching client-side zappa API:
 
-    @enable 'serve jquery', 'serve sammy'
+    @enable 'zappa'
 
     @get '/': ->
       @render index: {layout: no}

@@ -79,8 +79,7 @@ And throws in some additional features while at it:
 
 ```coffee
 require('zappajs') ->
-  @enable 'default layout', 'serve jquery',
-    'serve sammy', 'minify'
+  @enable 'default layout', 'minify'
 
   @get '/': ->
     @render 'index'

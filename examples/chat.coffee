@@ -1,5 +1,4 @@
 require('./zappajs') ->
-  @enable 'serve jquery'
   
   @get '/': ->
     @render index: {layout: no}
