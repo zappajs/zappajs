@@ -62,6 +62,6 @@
     "audreyt@audreyt.org"
   ],
   "publishConfig": {
-    "tag": "express3"
+    "tag": "v0.3.10"
   }
 }
