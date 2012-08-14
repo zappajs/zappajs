@@ -13,7 +13,7 @@ port = 15000
       @get /\/regex$/, 'regex'
       @get /\/regex_function$/, -> 'regex function'
     
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.get '/string', (err, res) -> t.equal 1, res.body, 'string'
     c.get '/return', (err, res) -> t.equal 2, res.body, 'return'
     c.get '/send', (err, res) -> t.equal 3, res.body, 'send'
@@ -29,7 +29,7 @@ port = 15000
       @put '/': -> 'put'
       @del '/': -> 'del'
     
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.post '/', (err, res) -> t.equal 1, res.body, 'post'
     c.put '/', (err, res) -> t.equal 2, res.body, 'put'
     c.del '/', (err, res) -> t.equal 3, res.body, 'del'
@@ -41,7 +41,7 @@ port = 15000
     zapp = zappa port++, ->
       @get '/': -> @redirect '/foo'
     
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.get '/', (err, res) ->
       t.equal 1, res.statusCode, 302
       t.ok 2, res.headers.location.match /\/foo$/
@@ -55,7 +55,7 @@ port = 15000
       @get '/:foo': -> @params.foo + @query.ping
       @post '/:foo': -> @params.foo + @query.ping + @body.zig
     
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
 
     c.get '/bar?ping=pong', (err, res) ->
       t.equal 1, res.body, 'barpong'
@@ -86,7 +86,7 @@ port = 15000
       @get '/return/:id', load_user, -> 'return'
       @get '/send/:id', load_user, -> @send 'send'
 
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.get '/string/bob', (err, res) -> t.equal 1, res.body, 'string'
     c.get '/return/bob', (err, res) -> t.equal 2, res.body, 'return'
     c.get '/send/bob', (err, res) -> t.equal 3, res.body, 'send'

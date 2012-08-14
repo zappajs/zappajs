@@ -78,7 +78,7 @@ Get a reference without running it automatically:
     chat = require('zappajs').app ->
       @get '/': 'hi'
 
-    chat.app.server.listen 3000
+    chat.server.listen 3000
 
 And so on. To see all the options, check the [API reference](http://zappajs.github.com/zappajs/docs/reference).
 

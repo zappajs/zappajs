@@ -10,7 +10,7 @@ port = 15700
       @on connection: ->
         t.reached 1
 
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.connect()
 
   'server emits': (t) ->
@@ -21,7 +21,7 @@ port = 15700
       @on connection: ->
         @emit 'welcome'
 
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.connect()
 
     c.on 'welcome', ->
@@ -35,11 +35,11 @@ port = 15700
       @on shout: ->
         @broadcast 'shouted', @data
 
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.connect()
-    c2 = t.client(zapp.app)
+    c2 = t.client(zapp.server)
     c2.connect()
-    c3 = t.client(zapp.app)
+    c3 = t.client(zapp.server)
     c3.connect()
 
     c2.on 'shouted', (data) ->
@@ -61,7 +61,7 @@ port = 15700
         t.reached 'got-foo'
         @ack foo:'bar'
 
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.connect()
 
     c.emit 'foo', bar:'foo', (data) ->
@@ -82,9 +82,9 @@ port = 15700
       @on said: ->
         @broadcast_to @client.room, 'said', @data
 
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.connect()
-    c2 = t.client(zapp.app)
+    c2 = t.client(zapp.server)
     c2.connect()
 
     c.on 'joined', (data) ->

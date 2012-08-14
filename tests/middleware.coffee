@@ -10,7 +10,7 @@ port = 15500
       @app.use @express.static(__dirname + '/public')
       @app.use @express.responseTime()
     
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.get '/foo.txt', (err, res) ->
       t.equal 'static', res.body, 'bar'
     
@@ -24,7 +24,7 @@ port = 15500
     zapp = zappa port++, ->
       @use @express.static(__dirname + '/public'), @express.responseTime()
     
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.get '/foo.txt', (err, res) ->
       t.equal 'static', res.body, 'bar'
     
@@ -38,7 +38,7 @@ port = 15500
     zapp = zappa port++, ->
       @use static: __dirname + '/public', 'responseTime'
     
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.get '/foo.txt', (err, res) ->
       t.equal 'static', res.body, 'bar'
     
@@ -52,7 +52,7 @@ port = 15500
     zapp = zappa port++, ->
       @use 'static', 'responseTime'
     
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.get '/foo.txt', (err, res) ->
       t.equal 'static', res.body, 'bar'
     
@@ -67,6 +67,6 @@ port = 15500
       @use @app.router, 'static'
       @get '/foo.txt': 'intercepted!'
     
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.get '/foo.txt', (err, res) ->
       t.equal 'static', res.body, 'intercepted!'

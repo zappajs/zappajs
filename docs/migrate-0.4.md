@@ -22,9 +22,9 @@ Zappa in places. Here are the differences we know about.
       @use 'partials'
 
   This will require that you have the `zappa-partials` module installed in
-  your application. (This module is an extended version of 
+  your application. (This module is an extended version of
   `express-partials`.)
 
 * Express 3.0 is no longer a subclass of the Node.js HTTP server. The server
-  object is available as `@app.server`; `@app.listen` is now 
-  `@app.server.listen`.
+  object is available as `@server`; `@app.listen` is now
+  `@server.listen`.

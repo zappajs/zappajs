@@ -11,7 +11,7 @@ port = 16000
     zapp = zappa port++, ->
       @get '/': 'hi'
 
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.get '/', (err, res) ->
       t.equal 1, res.body, 'hi'
 
@@ -25,7 +25,7 @@ port = 16000
       @io.sockets.on 'connection', (socket) ->
         socket.emit 'boring'
 
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.connect()
     c.get '/', (err, res) ->
       t.equal 1, res.body, 'boring!'
@@ -42,7 +42,7 @@ port = 16000
       @use 'bodyParser', 'methodOverride', @app.router, 'static'
       @set 'view engine': 'jade', views: "#{__dirname}/custom/dir"
 
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.get '/foo', (err,res) ->
       t.equal 1, res.body, 'bar'
     c.get '/ping', (err,res) ->
@@ -57,7 +57,7 @@ port = 16000
     zapp = zappa port++, (foo) ->
       foo.get '/': 'hi'
 
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.get '/', (err,res) ->
       t.equal 1, res.body, 'hi'
 
@@ -67,9 +67,9 @@ port = 16000
 
     zapp = zappa.app ->
       @get '/': 'hi'
-    zapp.app.server.listen port++
+    zapp.server.listen port++
 
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.get '/', (err,res) ->
       t.equal 1, res.body, 'hi'
 
@@ -86,7 +86,7 @@ port = 16000
         </html>
       '''
 
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.get '/foo', (err,res) ->
       t.equal 1, res.body, '''
         <!DOCTYPE html>
@@ -104,7 +104,7 @@ port = 16000
       @get '/:name': ->
         "Hi, #{@params.name}"
 
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.get '/foo', (err,res) ->
       t.equal 1, res.body, 'Hi, foo'
     c.get '/bar', (err,res) ->
@@ -120,7 +120,7 @@ port = 16000
       @get '/:name': (foo) ->
         "Hi, #{foo.params.name}"
 
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.get '/foo', (err,res) ->
       t.equal 1, res.body, 'Hi, foo'
     c.get '/bar', (err,res) ->
@@ -145,7 +145,7 @@ port = 16000
         # Is that a real poncho, or is that a sears poncho?
         @send poncho.type
 
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.get '/ponchos/foo', (err,res) ->
       t.equal 1, res.body, 'real'
     c.get '/ponchos/salt', (err,res) ->

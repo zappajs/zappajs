@@ -15,7 +15,7 @@ port = 15100
         @user = role: 'commoner'
         @role 'lord'
         
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     
     c.get '/', (err, res) ->
       t.equal 1, res.statusCode, 302
@@ -33,7 +33,7 @@ port = 15100
         t.equal 1, @sum(1, 2), 3
         t.equal 2, @subtract(1, 2), -1
         
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.get '/'
 
   objects: (t) ->
@@ -48,5 +48,5 @@ port = 15100
         t.equal 1, @foo[2], 3
         t.equal 2, @bar, "foo bar"
 
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.get '/'

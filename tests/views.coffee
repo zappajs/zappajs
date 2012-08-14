@@ -14,7 +14,7 @@ port = 15600
 
       @view index: -> h2 "CoffeeKup inline template: #{@foo}"
     
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.get '/bar', (err, res) ->
       t.equal 1, res.body, '<h2>CoffeeKup inline template: bar</h2>'
     c.get '/foobar', (err, res) ->
@@ -37,7 +37,7 @@ port = 15600
         # @title = 'CoffeeKup default layout'
         h2 "CoffeeKup inline template: #{@foo}"
 
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.get '/', (err, res) ->
       t.equal 1, res.body, '<!DOCTYPE html><html><head><title>CoffeeKup default layout</title></head><body><h2>CoffeeKup inline template: bar</h2></body></html>'
 
@@ -59,7 +59,7 @@ port = 15600
             title 'CoffeeKup inline layout'
           body @body    
 
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.get '/', (err, res) ->
       t.equal 1, res.body, '<!DOCTYPE html><html><head><title>CoffeeKup inline layout</title></head><body><h2>CoffeeKup inline template: bar</h2></body></html>'
 
@@ -81,7 +81,7 @@ port = 15600
             title 'CoffeeCup inline layout'
           body @body
 
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.get '/', (err, res) ->
       t.equal 1, res.body, '<!DOCTYPE html><html><head><title>CoffeeCup inline layout</title></head><body><h2>CoffeeCup inline template: bar</h2></body></html>'
 
@@ -93,7 +93,7 @@ port = 15600
       @get '/': ->
         @render 'index', foo: 'bar', layout: no
     
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.get '/', (err, res) ->
       t.equal 1, res.body, '<h2>CoffeeKup file template: bar</h2>'
 
@@ -106,7 +106,7 @@ port = 15600
       @get '/': ->
         @render 'index', foo: 'bar'
     
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.get '/', (err, res) ->
       t.equal 1, res.body, '<!DOCTYPE html><html><head><title>CoffeeKup file layout</title></head><body><h2>CoffeeKup file template: bar</h2></body></html>'
 
@@ -118,7 +118,7 @@ port = 15600
       @get '/': ->
         @response.render 'index', foo: 'bar', layout: no
     
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.get '/', (err, res) ->
       t.equal 1, res.body, '<h2>CoffeeKup file template: bar</h2>'
 
@@ -131,7 +131,7 @@ port = 15600
       @get '/': ->
         @response.render 'index', foo: 'bar'
     
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.get '/', (err, res) ->
       t.equal 1, res.body, '<!DOCTYPE html><html><head><title>CoffeeKup file layout</title></head><body><h2>CoffeeKup file template: bar</h2></body></html>'
 
@@ -148,7 +148,7 @@ port = 15600
 
       @view index: "<h2>Eco inline template: <%= @foo %></h2>"
     
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.get '/', (err, res) ->
       t.equal 1, res.body, '<h2>Eco inline template: bar</h2>'
 
@@ -176,7 +176,7 @@ port = 15600
         </html>
       '''
     
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.get '/', (err, res) ->
       t.equal 1, res.body, '<!DOCTYPE html>\n<html>\n  <head>\n    <title>Eco inline layout</title>\n  </head>\n  <body><h2>Eco inline template: bar</h2></body>\n</html>'
 
@@ -192,7 +192,7 @@ port = 15600
       @get '/': ->
         @render 'index', foo: 'bar', layout: no
     
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.get '/', (err, res) ->
       t.equal 1, res.body, '<h2>Eco file template: bar</h2>'
 
@@ -208,7 +208,7 @@ port = 15600
       @get '/': ->
         @render 'index', foo: 'bar'
     
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.get '/', (err, res) ->
       t.equal 1, res.body, '<!DOCTYPE html>\n<html>\n  <head>\n    <title>Eco file layout</title>\n  </head>\n  <body><h2>Eco file template: bar</h2></body>\n</html>'
 
@@ -237,7 +237,7 @@ port = 15600
         </html>
       '''
     
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.get '/', (err, res) ->
       t.equal 1, res.body, '<!DOCTYPE html>\n<html>\n  <head>\n    <title>Eco inline layout</title>\n  </head>\n  <body><h2>Eco inline template: bar</h2></body>\n</html>'
 
@@ -253,7 +253,7 @@ port = 15600
 
       @view index: "h2= 'Jade inline template: ' + foo"
     
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.get '/', (err, res) ->
       t.equal 1, res.body, '<h2>Jade inline template: bar</h2>'
 
@@ -278,7 +278,7 @@ port = 15600
           body!= body
       '''
     
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.get '/', (err, res) ->
       t.equal 1, res.body, '<!DOCTYPE html><html><head><title>Jade inline layout</title></head><body><h2>Jade inline template: bar</h2></body></html>'
 
@@ -292,7 +292,7 @@ port = 15600
       @get '/': ->
         @render 'index', foo: 'bar', layout: no
     
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.get '/', (err, res) ->
       t.equal 1, res.body, '<h2>Jade file template: bar</h2>'
 
@@ -307,7 +307,7 @@ port = 15600
       @get '/': ->
         @render 'index', foo: 'bar'
     
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.get '/', (err, res) ->
       t.equal 1, res.body, '<!DOCTYPE html><html><head><title>Jade file layout</title></head><body><h2>Jade file template: bar</h2></body></html>'
 
@@ -333,6 +333,6 @@ port = 15600
           body!= body
       '''
     
-    c = t.client(zapp.app)
+    c = t.client(zapp.server)
     c.get '/', (err, res) ->
       t.equal 1, res.body, '<!DOCTYPE html><html><head><title>Jade inline layout</title></head><body><h2>Jade inline template: bar</h2></body></html>'

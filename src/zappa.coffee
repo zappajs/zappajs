@@ -108,10 +108,10 @@ zappa.app = (func,options={}) ->
 
   app = context.app = express()
   if options.https?
-    app.server = require('https').createServer options.https, app
+    context.server = require('https').createServer options.https, app
   else
-    app.server = require('http').createServer app
-  io = if options.disable_io then null else context.io = socketio.listen(app.server)
+    context.server = require('http').createServer app
+  io = if options.disable_io then null else context.io = socketio.listen(context.server)
 
   # Reference to the zappa client, the value will be set later.
   client = null
@@ -504,12 +504,12 @@ zappa.run = ->
   app = zapp.app
 
   if host
-    app.server.listen port, host
+    zapp.server.listen port, host
   else
-    app.server.listen port
+    zapp.server.listen port
 
   log 'Express server listening on port %d in %s mode',
-    app.server.address()?.port, app.settings.env
+    zapp.server.address()?.port, app.settings.env
 
   log "Zappa #{zappa.version} \"#{codename}\" orchestrating the show"
 

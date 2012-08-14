@@ -14,11 +14,11 @@ class Client
       @host = @parsed.hostname
       @port = @parsed.port or 80
     else
-      @app = arg
+      @server = arg
       check = =>
         try
-          @host = @app.server.address().address
-          @port = @app.server.address().port
+          @host = @server.address().address
+          @port = @server.address().port
         catch err
           process.nextTick check
       check()
