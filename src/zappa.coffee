@@ -338,11 +338,13 @@ zappa.app = (func,options={}) ->
           app: app
           settings: app.settings
           request: req
+          req: req
           query: req.query
           params: req.params
           body: req.body
           session: req.session
           response: res
+          res: res
           next: next
           send: -> res.send.apply res, arguments
           json: -> res.json.apply res, arguments
