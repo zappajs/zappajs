@@ -42,7 +42,7 @@ skeleton = ->
 
     context.connect = ->
       context.socket = io.connect.apply io, arguments
-      
+
     context.emit = ->
       if typeof arguments[0] isnt 'object'
         context.socket.emit.apply context.socket, arguments
@@ -70,6 +70,10 @@ skeleton = ->
 
     # Implements the websockets client with socket.io.
     if context.socket?
+      context.socket.on 'connect', ->
+        $.getJSON "/zappa/socket/#{socket.id}", (data) ->
+          context.key = data.key
+
       for name, h of ws_handlers
         do (name, h) ->
           context.socket.on name, (data) ->

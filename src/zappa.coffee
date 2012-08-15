@@ -286,6 +286,16 @@ zappa.app = (func,options={}) ->
           ctx[name] = helper
     ctx
 
+  request_socket = (req) ->
+    socket_id = req.session?.__socket_id
+    socket_id and io?.sockets.socket socket_id, true
+
+  # The callback will receive (err,session).
+  socket_session = (socket,cb) ->
+    socket.get '__session', (err,data) ->
+      if data?.id?
+        context.session_store?.get data.id, cb
+
   # Register a route with express.
   route = (r) ->
     r.middleware ?= []
@@ -323,6 +333,7 @@ zappa.app = (func,options={}) ->
         res.send r.handler
     else
       app[r.verb] r.path, r.middleware..., (req, res, next) ->
+        socket = request_socket req
         ctx =
           app: app
           settings: app.settings
@@ -342,6 +353,8 @@ zappa.app = (func,options={}) ->
             else
               for k, v of arguments[0]
                 render.apply @, [k, v]
+          emit: -> socket.emit arguments...
+          on: -> socket.on arguments...
 
         render = (name,opts = {},fn) ->
 
@@ -428,6 +441,7 @@ zappa.app = (func,options={}) ->
           else
             for k, v of args[0]
               room.emit.apply room, [k, v]
+        session: -> socket_session socket, arguments...
 
       apply_helpers ctx
       ctx
@@ -475,6 +489,29 @@ zappa.app = (func,options={}) ->
           link(rel: 'stylesheet', href: @stylesheet + '.css') if @stylesheet
           style @style if @style
         body @body
+
+  # TODO -- add channel_name to request
+  if io?
+    context.get '/zappa/socket/:socket_id', ->
+      if @session?
+        if @session.__socket_key?
+          # Client (or hijacker) trying to re-key.
+          @send key: null
+        else
+          key = uuid() # used for socket 'authorization' (TODO)
+          @session.__socket_id = @params.socket_id
+          @session.__socket_key = key
+          # Socket.IO client
+          client = io.sockets.store.client(socket_id)
+          client.set "__session",
+            id: @req.sessionID
+            key: key
+          # Hack -- the Express session module does not give us access to the store.
+          context.session_store ?= @req.sessionStore
+          # Let the client know which key to use.
+          @send key: key
+      else
+        @send key: null
 
   context
 
