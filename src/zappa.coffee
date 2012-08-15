@@ -14,6 +14,8 @@ jquery = fs.readFileSync(__dirname + '/../vendor/jquery-1.8.0.min.js').toString(
 sammy = fs.readFileSync(__dirname + '/../vendor/sammy-0.7.1.min.js').toString()
 uglify = require 'uglify-js'
 
+socketio_key = '__session'
+
 # Soft dependencies:
 jsdom = null
 express_partials = null
@@ -240,6 +242,8 @@ zappa.app = (func,options={}) ->
         for k,v of maps
           partials.register k, v
         partials
+      session_store: (store) ->
+        context.session_store = store
 
     use = (name, arg = null) ->
       if zappa_middleware[name]
@@ -286,15 +290,21 @@ zappa.app = (func,options={}) ->
           ctx[name] = helper
     ctx
 
+  # Local socket
   request_socket = (req) ->
-    socket_id = req.session?.__socket_id
+    socket_id = req.session?.__socket?['__local']?.id
     socket_id and io?.sockets.socket socket_id, true
 
   # The callback will receive (err,session).
   socket_session = (socket,cb) ->
-    socket.get '__session', (err,data) ->
-      if data?.id?
-        context.session_store?.get data.id, cb
+    socket.get socketio_key, (err,data) ->
+      if err
+        return cb err
+      data = JSON.parse data
+      if data.id?
+        context.session_store.get data.id, cb
+      else
+        cb err
 
   # Register a route with express.
   route = (r) ->
@@ -333,7 +343,6 @@ zappa.app = (func,options={}) ->
         res.send r.handler
     else
       app[r.verb] r.path, r.middleware..., (req, res, next) ->
-        socket = request_socket req
         ctx =
           app: app
           settings: app.settings
@@ -355,8 +364,14 @@ zappa.app = (func,options={}) ->
             else
               for k, v of arguments[0]
                 render.apply @, [k, v]
-          emit: -> socket.emit arguments...
-          on: -> socket.on arguments...
+          emit: ->
+            socket = request_socket req
+            if socket?
+              if typeof arguments[0] isnt 'object'
+                socket.emit.apply socket, arguments
+              else
+                for k, v of arguments[0]
+                  socket.emit.apply socket, [k, v]
 
         render = (name,opts = {},fn) ->
 
@@ -492,28 +507,36 @@ zappa.app = (func,options={}) ->
           style @style if @style
         body @body
 
-  # TODO -- add channel_name to request
   if io?
-    context.get '/zappa/socket/:socket_id', ->
+    context.get '/zappa/socket/:channel_name/:socket_id', ->
       if @session?
-        if @session.__socket_key?
+        channel_name = @params.channel_name
+        socket_id = @params.socket_id
+
+        @session.__socket ?= {}
+
+        if @session.__socket[channel_name]?
           # Client (or hijacker) trying to re-key.
-          @send key: null
+          @send error:'Channel already assigned', channel_name: channel_name
         else
-          key = uuid() # used for socket 'authorization' (TODO)
-          @session.__socket_id = @params.socket_id
-          @session.__socket_key = key
-          # Socket.IO client
-          client = io.sockets.store.client(socket_id)
-          client.set "__session",
+          key = uuid() # used for socket 'authorization'
+
+          # Update the Express session store
+          @session.__socket[channel_name] =
+            id: socket_id
+            key: key
+
+          # Update the Socket.IO store
+          io_client = io.sockets.store.client(socket_id)
+          io_data = JSON.stringify
             id: @req.sessionID
             key: key
-          # Hack -- the Express session module does not give us access to the store.
-          context.session_store ?= @req.sessionStore
+          io_client.set socketio_key, io_data
+
           # Let the client know which key to use.
-          @send key: key
+          @send channel_name: channel_name, key: key
       else
-        @send key: null
+        @send error:'No session'
 
   context
 

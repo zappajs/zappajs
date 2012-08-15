@@ -7,7 +7,7 @@ skeleton = ->
 
   zappa.run = (func) ->
     context = {}
-    
+
     # Storage for the functions provided by the user.
     ws_handlers = {}
     helpers = {}
@@ -50,6 +50,9 @@ skeleton = ->
         for k, v of arguments[0]
           context.socket.emit.apply context.socket, [k, v]
 
+    context.share = (channel,socket,cb) ->
+      $.getJSON "/zappa/socket/#{channel}/#{socket.socket.sessionid}", cb
+
     route = (r) ->
       ctx = {app}
 
@@ -71,7 +74,7 @@ skeleton = ->
     # Implements the websockets client with socket.io.
     if context.socket?
       context.socket.on 'connect', ->
-        $.getJSON "/zappa/socket/#{socket.id}", (data) ->
+        context.share '__local', socket, (data) ->
           context.key = data.key
 
       for name, h of ws_handlers
@@ -83,6 +86,7 @@ skeleton = ->
               id: context.socket.id
               data: data
               emit: context.emit
+              share: context.share
 
             apply_helpers ctx
 
