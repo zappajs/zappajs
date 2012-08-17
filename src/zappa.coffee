@@ -126,7 +126,7 @@ zappa.app = (func,options={}) ->
   app.set 'view engine', 'coffee'
   app.engine 'coffee', coffeecup_adapter
 
-  # Sets default view dir to @root (`path.dirname(module.parent.filename)`).
+  # Sets default view dir to @root
   app.set 'views', path.join(context.root, '/views')
 
   for verb in ['get', 'post', 'put', 'del']
@@ -276,7 +276,7 @@ zappa.app = (func,options={}) ->
       v.apply(context, [context])
 
   context.include = (p) ->
-    sub = if typeof p is 'string' then require path.join(context.root, p) else p
+    sub = if typeof p is 'string' then require path.join(context.real_root, p) else p
     sub.include.apply(context, [context])
 
   apply_helpers = (ctx) ->
