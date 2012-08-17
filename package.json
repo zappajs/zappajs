@@ -62,7 +62,8 @@
     "Fossil Jue <imzshh@gmail.com>",
     "Stephen Sugden",
     "edubkendo",
-    "audreyt@audreyt.org"
+    "audreyt@audreyt.org",
+    "Andreas Schmelas <andreas@invertednothing.com>"
   ],
   "publishConfig": {
     "tag": "v0.3.10"
