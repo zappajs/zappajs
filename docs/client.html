@@ -5,8 +5,7 @@
   <span class="nv">settings = </span><span class="kc">null</span>
 
   <span class="nv">zappa.run = </span><span class="nf">(func) -&gt;</span>
-    <span class="nv">context = </span><span class="p">{}</span>
-    </pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Storage for the functions provided by the user.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nv">ws_handlers = </span><span class="p">{}</span>
+    <span class="nv">context = </span><span class="p">{}</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Storage for the functions provided by the user.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nv">ws_handlers = </span><span class="p">{}</span>
     <span class="nv">helpers = </span><span class="p">{}</span>
 
     <span class="nv">apply_helpers = </span><span class="nf">(ctx) -&gt;</span>
@@ -39,13 +38,16 @@
 
     <span class="nv">context.connect = </span><span class="o">-&gt;</span>
       <span class="nv">context.socket = </span><span class="nx">io</span><span class="p">.</span><span class="nx">connect</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">io</span><span class="p">,</span> <span class="nx">arguments</span>
-      
+
     <span class="nv">context.emit = </span><span class="o">-&gt;</span>
       <span class="k">if</span> <span class="k">typeof</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">isnt</span> <span class="s">&#39;object&#39;</span>
         <span class="nx">context</span><span class="p">.</span><span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">context</span><span class="p">.</span><span class="nx">socket</span><span class="p">,</span> <span class="nx">arguments</span>
       <span class="k">else</span>
         <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
           <span class="nx">context</span><span class="p">.</span><span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">context</span><span class="p">.</span><span class="nx">socket</span><span class="p">,</span> <span class="p">[</span><span class="nx">k</span><span class="p">,</span> <span class="nx">v</span><span class="p">]</span>
+
+    <span class="nv">context.share = </span><span class="nf">(channel,socket,cb) -&gt;</span>
+      <span class="nx">$</span><span class="p">.</span><span class="nx">getJSON</span> <span class="s">&quot;/zappa/socket/</span><span class="si">#{</span><span class="nx">channel</span><span class="si">}</span><span class="s">/</span><span class="si">#{</span><span class="nx">socket</span><span class="p">.</span><span class="nx">socket</span><span class="p">.</span><span class="nx">sessionid</span><span class="si">}</span><span class="s">&quot;</span><span class="p">,</span> <span class="nx">cb</span>
 
     <span class="nv">route = </span><span class="nf">(r) -&gt;</span>
       <span class="nv">ctx = </span><span class="p">{</span><span class="nx">app</span><span class="p">}</span>
@@ -61,6 +63,10 @@
           <span class="k">when</span> <span class="s">&#39;this&#39;</span> <span class="k">then</span> <span class="nx">r</span><span class="p">.</span><span class="nx">handler</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nx">sammy_context</span><span class="p">.</span><span class="nx">params</span><span class="p">,</span> <span class="p">[</span><span class="nx">ctx</span><span class="p">])</span>
           <span class="k">when</span> <span class="s">&#39;param&#39;</span> <span class="k">then</span> <span class="nx">r</span><span class="p">.</span><span class="nx">handler</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="p">[</span><span class="nx">sammy_context</span><span class="p">.</span><span class="nx">params</span><span class="p">])</span>
           <span class="k">else</span> <span class="nx">r</span><span class="p">.</span><span class="nx">handler</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="p">[</span><span class="nx">ctx</span><span class="p">])</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>GO!!!</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">func</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nx">context</span><span class="p">,</span> <span class="p">[</span><span class="nx">context</span><span class="p">])</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Implements the websockets client with socket.io.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="nx">context</span><span class="p">.</span><span class="nx">socket</span><span class="o">?</span>
+      <span class="nx">context</span><span class="p">.</span><span class="nx">socket</span><span class="p">.</span><span class="kc">on</span> <span class="s">&#39;connect&#39;</span><span class="p">,</span> <span class="o">-&gt;</span>
+        <span class="nx">context</span><span class="p">.</span><span class="nx">share</span> <span class="s">&#39;__local&#39;</span><span class="p">,</span> <span class="nx">socket</span><span class="p">,</span> <span class="nf">(data) -&gt;</span>
+          <span class="nv">context.key = </span><span class="nx">data</span><span class="p">.</span><span class="nx">key</span>
+
       <span class="k">for</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">h</span> <span class="k">of</span> <span class="nx">ws_handlers</span>
         <span class="nx">do</span> <span class="nf">(name, h) -&gt;</span>
           <span class="nx">context</span><span class="p">.</span><span class="nx">socket</span><span class="p">.</span><span class="kc">on</span> <span class="nx">name</span><span class="p">,</span> <span class="nf">(data) -&gt;</span>
@@ -70,6 +76,7 @@
               <span class="nv">id: </span><span class="nx">context</span><span class="p">.</span><span class="nx">socket</span><span class="p">.</span><span class="nx">id</span>
               <span class="nv">data: </span><span class="nx">data</span>
               <span class="nv">emit: </span><span class="nx">context</span><span class="p">.</span><span class="nx">emit</span>
+              <span class="nv">share: </span><span class="nx">context</span><span class="p">.</span><span class="nx">share</span>
 
             <span class="nx">apply_helpers</span> <span class="nx">ctx</span>
 

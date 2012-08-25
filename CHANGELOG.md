@@ -1,3 +1,10 @@
+**0.4.7** (2012-08-25)
+
+  * Added `@req` and `@res` to the handler. (#20, end)
+  * Use `real_root` to locate modules to be included (#34)
+  * Working scenario for separate Express and Socket.IO servers. (#32)
+  * Renamed example/assets.coffee into examples/connect-assets.coffee
+
 **v0.4.6** (2012-08-15)
 
   * Added `@req` and `@res` due to popular demand. (#20)
