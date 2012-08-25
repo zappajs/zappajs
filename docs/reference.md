@@ -256,7 +256,6 @@ To use it, you must also include `/zappa/zappa.js` in your page, before `/foo.js
 ### @shared
 
     @shared '/index.js': ->
-      sum = (a, b) -> a + b
 
       @helper role: (name) ->
         unless @user.role is name
@@ -264,17 +263,16 @@ To use it, you must also include `/zappa/zappa.js` in your page, before `/foo.js
           else if window? then alert "This is not the page you're looking for."
           else if @socket? then client.disconnect()
 
+      @get '#/admin': ->
+        @role 'admin'
+        # admin stuff
+
     @get '/admin': ->
       @role 'admin'
       # admin stuff
 
     @on 'delete everything': ->
       @role 'admin'
-
-    @client '/index.js': ->
-      @get '#/admin': ->
-        @role 'admin'
-        # admin stuff
 
 Same as `@client`, but also makes the elements defined in the function available at the server-side.
 
