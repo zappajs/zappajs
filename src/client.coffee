@@ -74,7 +74,7 @@ skeleton = ->
     # Implements the websockets client with socket.io.
     if context.socket?
       context.socket.on 'connect', ->
-        context.share '__local', socket, (data) ->
+        context.share '__local', context.socket, (data) ->
           context.key = data.key
 
       for name, h of ws_handlers
