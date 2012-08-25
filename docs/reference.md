@@ -573,6 +573,15 @@ Shortcut to `socket.leave`.
 
 Broadcast to a room.
 
+### `@session  (error,session) ->`
+
+Gets the associated Express session.
+
+The session object is only available if the Express session was previously linked to the socket using client-side `@share`.
+This is done automatically for the default, local Express session and local Socket.IO server.
+
+See `examples/share_*.coffee` for a complete example.
+
 ## VIEW SCOPE
 
 The normal view scope is a [CoffeeCup scope](https://github.com/gradus/coffeecup/blob/master/docs/reference.md#the-template-scope).
@@ -668,6 +677,16 @@ The message data (received from the server).
 ### @emit
 
 Same as the client-side root scope's `@emit`.
+
+### @share
+
+`@share(channel_name,socket,callback)` will associate the socket to the `channel_name`.
+This is used to make the Express session data available to the Socket.IO server.
+
+The channel name `__local` is reserved for the local Socket.IO server (in order for Socket.IO server-side
+to get access to the Express session object in a single-instance scenario).
+
+For a multi-server example, see `examples/share_*.coffee`.
 
 ## APP SETTINGS
 
