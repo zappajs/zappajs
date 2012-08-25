@@ -99,8 +99,8 @@ socketio = require 'socket.io'
 zappa.app = (func,options={}) ->
   context = {id: uuid(), zappa, express}
 
-  context.real_root = path.dirname(module.parent.filename)
-  context.root =  path.join context.real_root, ".zappa-#{context.id}"
+  real_root = path.dirname(module.parent.filename)
+  root =  path.join real_root, ".zappa-#{context.id}"
 
   # Storage for user-provided stuff.
   # Views are kept at the module level.
@@ -127,7 +127,7 @@ zappa.app = (func,options={}) ->
   app.engine 'coffee', coffeecup_adapter
 
   # Sets default view dir to @root
-  app.set 'views', path.join(context.root, '/views')
+  app.set 'views', path.join(root, '/views')
 
   for verb in ['get', 'post', 'put', 'del']
     do (verb) ->
@@ -220,7 +220,7 @@ zappa.app = (func,options={}) ->
   context.use = ->
     zappa_middleware =
       # Connect `static` middlewate uses fs.stat().
-      static: (p = path.join(context.real_root, '/public')) ->
+      static: (p = path.join(real_root, '/public')) ->
         express.static(p)
       zappa: ->
         zappa_used = yes
@@ -276,7 +276,7 @@ zappa.app = (func,options={}) ->
       v.apply(context, [context])
 
   context.include = (p) ->
-    sub = if typeof p is 'string' then require path.join(context.real_root, p) else p
+    sub = if typeof p is 'string' then require path.join(real_root, p) else p
     sub.include.apply(context, [context])
 
   apply_helpers = (ctx) ->
