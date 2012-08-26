@@ -148,6 +148,8 @@ If you would rather use Express 3.0:
 
 - Deploying to heroku? Check [this blog post](http://blog.superbigtree.com/blog/2011/08/19/hosting-zappa-0-2-x-on-heroku/)
 
+[![Build Status](https://secure.travis-ci.org/zappajs/zappajs.png)](http://travis-ci.org/zappajs/zappajs)
+
 ## Thanks loads
 
 To all people behind the excellent libs that made this little project possible, more specifically: 
