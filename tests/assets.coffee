@@ -209,6 +209,18 @@ port = 15200
       t.equal 'content-type', res.headers['content-type'], 'application/javascript'
       t.ok 'snippet', res.body.indexOf('window.zappa = {};') > -1
 
+  Zappa: (t) ->
+    t.expect 'content-type', 'snippet'
+    t.wait 3000
+
+    zapp = zappa port++, ->
+      @use 'zappa'
+
+    c = t.client(zapp.server)
+    c.get '/zappa/Zappa.js', (err, res) ->
+      t.equal 'content-type', res.headers['content-type'], 'application/javascript'
+      t.ok 'snippet', res.body.indexOf('window.zappa = {};') > -1
+
   'zappa (automatic)': (t) ->
     t.expect 'content-type', 'snippet'
     t.wait 3000

@@ -16,8 +16,10 @@ task 'docs', ->
 task 'vendor', ->
   run 'mkdir -p vendor && cd vendor && curl -OL http://code.jquery.com/jquery-1.8.0.min.js', ->
     run 'cd vendor && curl -OL https://github.com/quirkey/sammy/raw/master/lib/min/sammy-0.7.1.min.js', ->
-      run 'head -n 1 vendor/jquery*', ->
-        run 'head -n 3 vendor/sammy*'
+      run 'cd vendor && curl -OL https://raw.github.com/LearnBoost/socket.io-client/master/dist/socket.io.min.js', ->
+        run 'head -n 1 vendor/jquery*', ->
+          run 'head -n 3 vendor/sammy*', ->
+            run 'head -n 1 vendor/socket.io*'
 
 task 'setup', 'build + vendor', ->
   invoke 'build'

@@ -34,7 +34,8 @@
     "lib/zappa.js",
     "lib/client.js",
     "vendor/jquery-1.8.0.min.js",
-    "vendor/sammy-0.7.1.min.js"
+    "vendor/sammy-0.7.1.min.js",
+    "vendor/socket.io.min.js"
   ],
   "contributors": [
     "Maurice Machado <maurice@bitbending.com>",

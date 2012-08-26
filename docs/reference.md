@@ -408,7 +408,9 @@ Same as `@express.static(root + '/public')`, where `root` is the directory of th
 
 #### 'zappa'
 
-Serves `/zappa/zappa.js`, `/zappa/jquery.js` and `/zappa/sammy.js`. Automatically added by `@client` and `@shared` if not added before.
+Serves `/zappa/Zappa.js`, `/zappa/zappa.js`, `/zappa/jquery.js` and `/zappa/sammy.js`. Automatically added by `@client` and `@shared` if not added before.
+
+To minimize page download delay on the client, use `/zappa/Zappa.js`, which combines Zappa, jQuery, Sammy.js, and Socket.IO client-side scripts into a single download.
 
 ### @configure
 

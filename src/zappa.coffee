@@ -10,8 +10,11 @@ log = console.log
 fs = require 'fs'
 path = require 'path'
 uuid = require 'node-uuid'
-jquery = fs.readFileSync(__dirname + '/../vendor/jquery-1.8.0.min.js').toString()
-sammy = fs.readFileSync(__dirname + '/../vendor/sammy-0.7.1.min.js').toString()
+vendor = (name) ->
+  fs.readFileSync(path.join(__dirname,'..','vendor',name)).toString()
+jquery = vendor 'jquery-1.8.0.min.js'
+sammy = vendor 'sammy-0.7.1.min.js'
+socketjs = vendor 'socket.io.min.js'
 uglify = require 'uglify-js'
 
 socketio_key = '__session'
@@ -118,6 +121,7 @@ zappa.app = (func,options={}) ->
 
   # Reference to the zappa client, the value will be set later.
   client = null
+  client_bundled = null
 
   # Tracks if the zappa middleware is already mounted (`@use 'zappa'`).
   zappa_used = no
@@ -231,6 +235,7 @@ zappa.app = (func,options={}) ->
           if req.method.toUpperCase() isnt 'GET' then next()
           else
             switch req.url
+              when '/zappa/Zappa.js' then send client_bundled
               when '/zappa/zappa.js' then send client
               when '/zappa/jquery.js' then send jquery
               when '/zappa/sammy.js' then send sammy
@@ -489,6 +494,11 @@ zappa.app = (func,options={}) ->
   client = require('./client').build(zappa.version, app.settings)
   client = ";#{coffeescript_helpers}(#{client})();"
   client = minify(client) if app.settings['minify']
+  client_bundled =
+    if io?
+      jquery + socketjs + sammy + client
+    else
+      jquery + sammy + client
 
   if app.settings['default layout']
     context.view layout: ->
