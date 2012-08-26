@@ -26,7 +26,8 @@
     "zappajs-partials": "0.0.6",
     "connect-assets": "2.3.1",
     "redis": "*",
-    "connect-redis": "*"
+    "connect-redis": "*",
+    "coffee-script": "latest"
   },
   "keywords": ["framework", "websockets", "coffeescript", "express", "socket.io", "sammy", "sinatra", "dsl"],
   "main": "./lib/zappa",
