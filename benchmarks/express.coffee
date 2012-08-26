@@ -1,4 +1,4 @@
-app = require('express').createServer()
+app = require('express')()
 fs = require 'fs'
 
 compile = require('coffeecup').adapters.express.compile

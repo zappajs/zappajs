@@ -23,7 +23,8 @@ Zappa in places. Here are the differences we know about.
 
   This will require that you have the `zappa-partials` module installed in
   your application. (This module is an extended version of
-  `express-partials`.)
+  `express-partials` with support for multiple instances, pending integration
+  in mainline.)
 
 * Express 3.0 is no longer a subclass of the Node.js HTTP server. The server
   object is available as `@server`; `@app.listen` is now
