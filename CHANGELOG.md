@@ -1,4 +1,10 @@
-**0.4.7** (2012-08-25)
+**v0.4.8** (2012-08-26)
+
+  * `@use 'zappa'`: Added `/zappa/Zappa.js` combined download option.
+  * Correct local socket reference in client `@share`.
+  * Documentation updates.
+
+**v0.4.7** (2012-08-25)
 
   * Added `@req` and `@res` to the handler. (#20, end)
   * Use `real_root` to locate modules to be included (#34)
