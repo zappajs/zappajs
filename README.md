@@ -146,7 +146,7 @@ If you would rather use Express 3.0:
 
 - Check the project's history at the [change log](https://github.com/zappajs/zappajs/blob/master/CHANGELOG.md)
 
-- Deploying to heroku? Check [this blog post](http://blog.superbigtree.com/blog/2011/08/19/hosting-zappa-0-2-x-on-heroku/)
+- Deploying to heroku? Check [this blog post](http://superbigtree.tumblr.com/post/20748825617/hosting-zappa-on-heroku)
 
 [![Build Status](https://secure.travis-ci.org/zappajs/zappajs.png)](http://travis-ci.org/zappajs/zappajs)
 
