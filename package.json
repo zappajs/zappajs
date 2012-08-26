@@ -37,6 +37,11 @@
     "vendor/sammy-0.7.1.min.js",
     "vendor/socket.io.min.js"
   ],
+  "scripts": {
+    "pretest": "npm install; cake setup",
+    "test": "cake test",
+    "prepublish": "cake setup"
+  },
   "contributors": [
     "Maurice Machado <maurice@bitbending.com>",
     "Nicholas Kinsey <nicholas.kinsey@feistystudios.com>",
