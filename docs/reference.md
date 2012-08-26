@@ -1,7 +1,6 @@
---
+---
 layout: default
 title: API Reference (v0.4.8)
-permalink: /reference/index.html
 ---
 
 # {{page.title}}

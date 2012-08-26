@@ -1,3 +1,8 @@
+---
+layout: default
+title: Migration to ZappaJS 0.4
+---
+
 Zappa 0.4 uses Express 3.0 while Zappa 0.3 uses Express 2.5.
 The new version of Express is not backward-compatible and breaks
 Zappa in places. Here are the differences we know about.

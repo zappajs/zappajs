@@ -1,7 +1,6 @@
 ---
 layout: default
 title: Crash Course
-permalink: /crashcourse/index.html
 ---
 
 # {{page.title}}
