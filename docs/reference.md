@@ -394,6 +394,8 @@ The object returned by `require('socket.io').listen`.
 
 The object returned by `express()`.
 
+[Express Application API](http://expressjs.com/api.html#application)
+
 ### @use
 
 Shortcut to `@app.use`. It can be used in a number of additional ways:
@@ -491,11 +493,15 @@ Directly from express.
 
 Shortcut: `@res` is a synonym for `@response`.
 
+[Express Response API](http://expressjs.com/api.html#response)
+
 ### @request
 
 Directly from express.
 
 Shortcut: `@req` is a synonym for `@request`.
+
+[Express Request API](http://expressjs.com/api.html#request)
 
 ### @next
 
