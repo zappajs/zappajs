@@ -19,8 +19,6 @@ require('./zappajs') 3000, ->
     store: express_store
     secret: 'rock zappa rock'
 
-  @use session_store: express_store
-
   socketio_store = do ->
     SocketIORedisStore = require 'socket.io/lib/stores/redis'
     redis = require 'redis'

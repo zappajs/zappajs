@@ -247,8 +247,9 @@ zappa.app = (func,options={}) ->
         for k,v of maps
           partials.register k, v
         partials
-      session_store: (store) ->
-        context.session_store = store
+      session: (options) ->
+        context.session_store = options.store
+        express.session options
 
     use = (name, arg = null) ->
       if zappa_middleware[name]

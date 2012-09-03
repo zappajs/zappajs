@@ -436,10 +436,6 @@ Since Express 3.x requires asynchronous template engines, but partials require s
 
 As with `@engine`, this is not required if the file extension matches the template engine name, and the `.coffee` extension is already mapped to CoffeeCup.
 
-#### `session_store`
-
-The same session store object you passed to Express in `@use session:` ; required if you want to be able to use `@session` from within a sockets handler scope.
-
 ### @configure
 
 Shortcut to `@app.configure`. Accepts an object as param. Ex.:
@@ -634,7 +630,7 @@ Broadcast to a room.
 
 Gets the associated Express session.
 
-The session object is only available if the Express session was previously linked to the socket using client-side `@share` *and* you `@use session_store:` to give the socket handler access to the Express session store.
+The session object is only available if the Express session was previously linked to the socket using client-side `@share`.
 This is done automatically for the default, local Express session and local Socket.IO server.
 
 See `examples/share_*.coffee` for a complete example using separate servers for Socket.IO and Express.
