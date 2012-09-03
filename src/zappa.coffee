@@ -272,6 +272,7 @@ zappa.app = (func,options={}) ->
     else app.configure k, v for k, v of p
 
   context.settings = app.settings
+  context.locals = app.locals
 
   context.shared = (obj) ->
     context.use 'zappa' unless zappa_used
@@ -326,6 +327,7 @@ zappa.app = (func,options={}) ->
         ctx =
           app: app
           settings: app.settings
+          locals: res.locals
           request: req
           req: req
           query: req.query
@@ -356,6 +358,7 @@ zappa.app = (func,options={}) ->
         ctx =
           app: app
           settings: app.settings
+          locals: res.locals
           request: req
           req: req
           query: req.query
@@ -441,6 +444,7 @@ zappa.app = (func,options={}) ->
         app: app
         io: io
         settings: app.settings
+        locals: app.locals
         socket: socket
         id: socket.id
         client: c

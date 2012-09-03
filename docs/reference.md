@@ -483,6 +483,10 @@ or use the [consolidate](https://github.com/visionmedia/consolidate.js) package:
 
     @engine 'eco', require('consolidate').eco
 
+### @locals
+
+Shortcut to `@app.locals`.
+
 ## REQUEST HANDLERS SCOPE
 
 The function you pass to `@get`, `@post`, etc., will be called with `this`/`@` set to an object with the following attributes:
@@ -567,6 +571,10 @@ Adds the following features:
 ### @redirect
 
 Shortcut to `@response.redirect`.
+
+### @locals
+
+Shortcut to `@response.locals`.
 
 ## SOCKETS HANDLERS SCOPE
 
