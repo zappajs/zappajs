@@ -133,7 +133,7 @@ zappa.app = (func,options={}) ->
   # Sets default view dir to @root
   app.set 'views', path.join(root, '/views')
 
-  for verb in ['get', 'post', 'put', 'del']
+  for verb in ['get', 'post', 'put', 'del', 'all']
     do (verb) ->
       context[verb] = (args...) ->
         arity = args.length
