@@ -1,120 +1,59 @@
-    8888888888P        d8888 8888888b.  8888888b.     d8888          @@@    @@@ 
-          d88P        d88888 888   Y88b 888   Y88b   d88888        @@@@@@@@@@@@@@
-         d88P        d88P888 888    888 888    888  d88P888       @@@@@@@@@@@@@@@@
-        d88P        d88P 888 888   d88P 888   d88P d88P 888      @@@@@@@@  @@@@@@@@
-       d88P        d88P  888 8888888P"  8888888P" d88P  888      @@@            @@@
-      d88P        d88P   888 888        888      d88P   888      @@   @@@@@@@@   @@
-     d88P        d8888888888 888        888     d8888888888           @@@@@@@@    
-    d8888888888 d88P     888 888        888    d88P     888 JS         @@@@@@     
+Zappa is a [CoffeeScript](http://coffeescript.org)-optimized interface to [Express](http://expressjs.com) and [Socket.IO](http://socket.io).
 
-# Node development for the lazy
-
-If you can describe it in 495 characters, why on earth should it take 879?
-
-Zappa is a [CoffeeScript](http://coffeescript.org)-optimized interface to [Express](http://expressjs.com) and [Socket.IO](http://socket.io) that makes this:
+## Synopsis
 
 ```coffee
 require('zappajs') ->
-  Gizmo = require './model/gizmo'
-  
-  @use 'bodyParser', 'methodOverride', @app.router, 'static'
 
-  @configure
-    development: => @use errorHandler: {dumpExceptions: on}
-    production: => @use 'errorHandler'
-
-  @get '/': -> @render 'index'
-  
-  @get '/gizmos/:id': ->
-    Gizmo.findById @params.id, (err, gizmo) =>
-      @render index: {err, gizmo}
-
-  @on connection: ->
-    @emit welcome: {time: new Date()}
-
-  @on shout: ->
-    @broadcast shout: {@id, text: @data.text}
-```
-
-Equivalent to this:
-
-```coffee
-express = require 'express'
-app = express.createServer()
-io = require('socket.io').listen(app)
-
-Gizmo = require './model/gizmo'
-
-app.use express.bodyParser()
-app.use express.methodOverride()
-app.use app.router
-app.use express.static __dirname + '/public'
-
-app.configure 'development', ->
-  app.use express.errorHandler dumpExceptions: on
-
-app.configure 'production', ->
-  app.use express.errorHandler()
-
-app.get '/', (req, res) -> res.render 'index'
-
-app.get '/gizmos/:id', (req, res) ->
-  Gizmo.findById req.params.id, (err, gizmo) ->
-    res.render 'index', {err, gizmo}
-
-io.sockets.on 'connection', (socket) ->
-  socket.emit 'welcome', time: new Date()
-
-  socket.on 'shout', (data) ->
-    socket.broadcast.emit 'shout',
-      id: socket.id, text: data.text
-
-app.listen 3000
-
-console.log "Express server listening on port %d in %s mode",
-  app.address().port, app.settings.env
-```
-
-And throws in some additional features while at it:
-
-```coffee
-require('zappajs') ->
-  @enable 'default layout', 'minify'
+  # Server-side
 
   @get '/': ->
     @render 'index',
-      title: 'Picochat!'
-      scripts = [
-        '/socket.io/socket.io'
-        '/zappa/jquery'
-        '/zappa/sammy'
-        '/zappa/zappa'
-        '/shared'
-        '/index'
-      ]
+      title: 'Zappa!'
+      scripts: '/zappa/Zappa.js /index.js /client.js'
+      stylesheet: '/index.css'
 
-  @on connection: ->
-    @emit welcome: {result: sum 1, 2}
+  @view index:
+    doctype 5
+    html ->
+      head ->
+        title @title if @title
+        for s in @scripts.split ' '
+          script src: s
+        link rel:'stylesheet', href:@stylesheet
+      body ->
+        h1 'Welcome to Zappa!'
+        div id:'content'
 
-  @shared '/shared.js': ->
-    root = window ? global
-    root.sum = (x, y) -> x + y
+  @css '/index.css':
+    body:
+      font: '12px Helvetica'
+    h1:
+      color: 'pink'
 
-  @client '/index.js': ->
+  @get '/:name/data.json': ->
+    record =
+      id: 123
+      name: @params.name
+      email: "#{@params.name}@example.com"
+    @send record
+
+  @on 'ready': ->
+    console.log "Client #{@id} is ready and says #{@data}."
+
+  # Client-side
+
+  @coffee '/index.js': ->
+    alert 'hi'
+
+  @client '/client.js': ->
     @connect()
 
-    @get '#/route': ->
-      $('body').append 'client routes!'
+    $ =>
+      @emit 'ready', 'hello'
 
-    @on welcome: ->
-      $('body').append "welcomed: #{sum @data.result, 2}"
-
-  @css '/default.css':
-    div:
-      border: none
-
-  @view index: ->
-    h1 @title
+    @get '#/': ->
+      @swap 'Ready to roll!'
 ```
 
 ## Install
@@ -149,25 +88,3 @@ If you would rather use Express 3.0:
 - Deploying to heroku? Check [this blog post](http://superbigtree.tumblr.com/post/20748825617/hosting-zappa-on-heroku)
 
 [![Build Status](https://secure.travis-ci.org/zappajs/zappajs.png)](http://travis-ci.org/zappajs/zappajs)
-
-## Thanks loads
-
-To all people behind the excellent libs that made this little project possible, more specifically: 
-
-- Jeremy Ashkenas for CoffeeScript, the "little" language is nothing short of revolutionary to me.
-
-- TJ Holowaychuk for the robust and flexible cornerstone that's Express.
-
-- Guillermo Rauch for solving (as far as I'm concerned) the comet problem once and for all.
-
-- Ryan Dahl for Node.js, without which nothing of this would be possible.
-
-Also:
-
-- Blake Mizerany for Sinatra, the framework that made me redefine simple.
-
-- why the lucky stiff, for making me redefine hacking.
-
-- And last but not least Frank Zappa, for the spirit of nonconformity and experimentation that inspires me to push forward. Not to mention providing the soundtrack.
-
-"Why do you necessarily have to be wrong just because a few million people think you are?" - FZ
