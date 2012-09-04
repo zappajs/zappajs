@@ -280,11 +280,11 @@ zappa.app = (func,options={}) ->
       js = ";zappa.run(#{v});"
       js = minify(js) if app.settings['minify']
       route verb: 'get', path: k, handler: js, contentType: 'js'
-      v.apply(context, [context])
+      v.apply context
 
   context.include = (p) ->
     sub = if typeof p is 'string' then require path.join(real_root, p) else p
-    sub.include.apply(context, [context])
+    sub.include.apply context
 
   apply_helpers = (ctx) ->
     for name, helper of helpers
@@ -466,11 +466,11 @@ zappa.app = (func,options={}) ->
       ctx
 
     ctx = build_ctx()
-    ws_handlers.connection.apply(ctx, [ctx]) if ws_handlers.connection?
+    ws_handlers.connection.apply(ctx) if ws_handlers.connection?
 
     socket.on 'disconnect', ->
       ctx = build_ctx()
-      ws_handlers.disconnect.apply(ctx, [ctx]) if ws_handlers.disconnect?
+      ws_handlers.disconnect.apply(ctx) if ws_handlers.disconnect?
 
     for name, h of ws_handlers
       do (name, h) ->
@@ -482,7 +482,7 @@ zappa.app = (func,options={}) ->
             h.apply ctx
 
   # Go!
-  func.apply(context, [context])
+  func.apply context
 
   # The stringified zappa client.
   client = require('./client').build(zappa.version, app.settings)
