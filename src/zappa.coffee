@@ -312,6 +312,25 @@ zappa.app = (func,options={}) ->
       else
         cb err
 
+  context.param = (obj) ->
+    build = (callback) ->
+      (req,res,next,p) ->
+        ctx =
+          request: req
+          req: req
+          response: res
+          res: res
+          next: next
+          param: p
+        apply_helpers ctx
+        callback.apply ctx
+
+    if typeof obj is 'function'
+      @app.param build obj
+    else
+      for k, v of obj
+        @app.param k, build v
+
   # Register a route with express.
   route = (r) ->
     r.middleware ?= []
