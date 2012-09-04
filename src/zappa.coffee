@@ -340,8 +340,8 @@ zappa.app = (func,options={}) ->
         apply_helpers ctx
 
         if app.settings['databag']
-          data = {}
-          copy_data_to data, [req.query, req.params, req.body]
+          ctx.data = {}
+          copy_data_to ctx.data, [req.query, req.params, req.body]
 
         f.apply ctx
 
@@ -418,8 +418,8 @@ zappa.app = (func,options={}) ->
         apply_helpers ctx
 
         if app.settings['databag']
-          data = {}
-          copy_data_to data, [req.query, req.params, req.body]
+          ctx.data = {}
+          copy_data_to ctx.data, [req.query, req.params, req.body]
 
         result = r.handler.apply ctx
 

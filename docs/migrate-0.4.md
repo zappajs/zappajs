@@ -62,3 +62,20 @@ Other changes are Zappa-specific and simplify the API:
 
       @get '/': ->
         @params  # or this.params
+
+* The `databag` option has been modified.
+  * It is now a boolean, use `@enable 'databag'` to activate it.
+  * The databag is available as `params` (`@params` in coffeecup) to views.
+    This is its only documented use.
+  * All callbacks are called the same way whether databag is enabled or not.
+    Callbacks no longer receive the context (`@`) or the databag as an argument.
+  * If enabled, the databag is available as `@data` in request handlers and
+    request middleware, but it is more efficient to use `@req.param(name)` than
+    `@data.name`, since building the databag might be an expensive operation.
+    Also `@req.param()` is available whether the `databag` setting is enabled or not.
+  * If you were using the object created by the `databag` setting:
+    * Server-side, for `@get`, `@post`, ... and for middleware use `@req.param()`.
+      For `@on` use `@data`.
+    * Client-side, for `@get` use `@params`, and for `@on` use `@data`.
+  * The `param` option value for the `databag` setting is now the *enabled* state of the `databag` setting.
+  * The `this` option value for the `databag` setting has been removed.
