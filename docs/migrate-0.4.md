@@ -43,3 +43,22 @@ Other changes are Zappa-specific and simplify the API:
 
   That extraneous argument has been removed since it is a duplicate of `this`.
   Helper functions now receive the arguments provided by the caller unmodified.
+
+* No argument (the databag or context) are passed to callbacks.
+
+  This might apply to you if you used the `databag` option (see below) or you used the context
+  argument instead of `this`.
+
+  This applies to (server-side) `@get`, `@post`, `@put`, `@del`, `@all`, all middleware functions,
+  and `@on`.
+  This applies to (client-side) `@get` (use `@params`) and `@on` (use `@data`).
+
+  For example, if your code said:
+
+      @get '/': (context) ->
+        context.params
+
+  replace it with
+
+      @get '/': ->
+        @params  # or this.params

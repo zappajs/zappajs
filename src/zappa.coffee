@@ -343,10 +343,7 @@ zappa.app = (func,options={}) ->
           data = {}
           copy_data_to data, [req.query, req.params, req.body]
 
-        switch app.settings['databag']
-          when 'this' then f.apply(data, [ctx])
-          when 'param' then f.apply(ctx, [data])
-          else result = f.apply(ctx, [ctx])
+        f.apply ctx
 
     if typeof r.handler is 'string'
       app[r.verb] r.path, r.middleware..., (req, res) ->
@@ -424,11 +421,7 @@ zappa.app = (func,options={}) ->
           data = {}
           copy_data_to data, [req.query, req.params, req.body]
 
-        # Go!
-        switch app.settings['databag']
-          when 'this' then result = r.handler.apply(data, [ctx])
-          when 'param' then result = r.handler.apply(ctx, [data])
-          else result = r.handler.apply(ctx, [ctx])
+        result = r.handler.apply ctx
 
         res.contentType(r.contentType) if r.contentType?
         if typeof result is 'string' then res.send result
@@ -490,10 +483,7 @@ zappa.app = (func,options={}) ->
             ctx = build_ctx()
             ctx.data = data
             ctx.ack = ack
-            switch app.settings['databag']
-              when 'this' then h.apply(data, [ctx])
-              when 'param' then h.apply(ctx, [data])
-              else h.apply(ctx, [ctx])
+            h.apply ctx
 
   # Go!
   func.apply(context, [context])

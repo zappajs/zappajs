@@ -62,10 +62,7 @@ skeleton = ->
         ctx.sammy_context = sammy_context
         ctx.render = -> sammy_context.render.apply sammy_context, arguments
         ctx.redirect = -> sammy_context.redirect.apply sammy_context, arguments
-        switch settings['databag']
-          when 'this' then r.handler.apply(sammy_context.params, [ctx])
-          when 'param' then r.handler.apply(ctx, [sammy_context.params])
-          else r.handler.apply(ctx, [ctx])
+        r.handler.apply ctx
 
     # GO!!!
     func.apply(context, [context])
@@ -89,10 +86,7 @@ skeleton = ->
 
             apply_helpers ctx
 
-            switch settings['databag']
-              when 'this' then h.apply(data, [ctx])
-              when 'param' then h.apply(ctx, [data])
-              else h.apply(ctx, [ctx])
+            h.apply ctx
 
     $(-> app.run '#/') if app?
 
