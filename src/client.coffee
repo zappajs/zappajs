@@ -16,9 +16,8 @@ skeleton = ->
       for name, helper of helpers
         do (name, helper) ->
           if typeof helper is 'function'
-            ctx[name] = (args...) ->
-              args.push ctx
-              helper.apply ctx, args
+            ctx[name] = ->
+              helper.apply ctx, arguments
           else
             ctx[name] = helper
       ctx

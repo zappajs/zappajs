@@ -34,3 +34,12 @@ Zappa in places. Here are the differences we know about.
 * Express 3.0 is no longer a subclass of the Node.js HTTP server. The server
   object is available as `@server`; `@app.listen` is now
   `@server.listen`.
+
+
+Other changes are Zappa-specific and simplify the API:
+
+* If you built variadic helpers in Zappa 0.3 you might have been aware of an undocumented,
+  extraneous parameter (the context) provided to the helpers.
+
+  That extraneous argument has been removed since it is a duplicate of `this`.
+  Helper functions now receive the arguments provided by the caller unmodified.
