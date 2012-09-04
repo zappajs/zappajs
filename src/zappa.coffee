@@ -325,11 +325,8 @@ zappa.app = (func,options={}) ->
         apply_helpers ctx
         callback.apply ctx
 
-    if typeof obj is 'function'
-      @app.param build obj
-    else
-      for k, v of obj
-        @app.param k, build v
+    for k, v of obj
+      @app.param k, build v
 
   # Register a route with express.
   route = (r) ->
