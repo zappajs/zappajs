@@ -784,26 +784,8 @@ If enabled, zappa adds the following template with the name `layout`:
         link(rel: 'stylesheet', href: @stylesheet + '.css') if @stylesheet
         style @style if @style
       body @body
-      
+
 ### 'databag'
 
-Values: `this` or `param`.
-
-When undefined (default):
-
-    @get '/:foo': ->
-      foo = @query.foo
-      foo += '!'
-      @render index: {foo}
-
-When `this` (use the alternative reference for the API):
-
-    @get '/:foo': (c) ->
-      @foo += '!'
-      c.render 'index'
-
-When `param` (keep @ for the API and use the alternative reference for data):
-
-    @get '/:foo': (c) ->
-      c.foo += '!'
-      @render 'index'
+If enabled, views will receive an object containing the merge of `@query`, `@params`, and `@body`.
+This object will be called `params` (or `@params` in coffeecup views).
