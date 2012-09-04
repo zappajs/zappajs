@@ -210,7 +210,7 @@ To use this feature, `npm install jsdom` first.
       $('div.' + @user.plan).addClass 'highlighted'
 
     @get '/postrender': ->
-      @user = plan: 'staff'
+      @locals.user = plan: 'staff'
       @render index: {postrender: 'plans'}
 
 ### `@include file`
@@ -562,6 +562,8 @@ Adds the following features:
             body: @body
 
     To disable layout processing: `@render 'index', layout: no`.
+
+    See the documentation for `partials` for more information.
 
 ### @redirect
 

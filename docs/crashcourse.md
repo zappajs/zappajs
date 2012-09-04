@@ -31,7 +31,7 @@ If your thing is the bleeding edge, replace `npm install zappajs` with:
     $ cd /path/to/project
     $ npm install /path/to/zappajs
 
-## OK, so WTF did just happen?
+## OK, what did just happen?
 
 CoffeeScript is relatively new on the scene, so it might be worth it to compare that first example with the equivalent JavaScript:
 
@@ -43,7 +43,7 @@ CoffeeScript is relatively new on the scene, so it might be worth it to compare 
 
 The zappa function does the initial express and socket.io setup, then calls your function with the relevant stuff exposed at `this` (and its CoffeeScript alias `@`).
 
-You have direct access to the low-level APIs at `@app` and `@io`:
+You have direct access to the low-level APIs via `@app` and `@io`:
 
     require('zappajs') ->
       @app.get '/', (req, res) ->
@@ -51,7 +51,7 @@ You have direct access to the low-level APIs at `@app` and `@io`:
       @io.sockets.on 'connection', (socket) ->
         socket.emit 'boring'
 
-On top of that, you also have some handy shortcuts such as the `@get` you already know, `@on` (to define socket.io  handlers), `@use`, `@set`, `@configure`, etc. Those are not only shorter but also accept smarter parameters:
+On top of that, you also have some handy shortcuts such as the `@get` you already know, `@on` (to define *socket.io* handlers), `@use`, `@set`, `@configure`, etc. Those are not only shorter but also accept smarter parameters:
 
     require('zappajs') ->
       @get '/foo': 'bar', '/ping': 'pong', '/zig': 'zag'
@@ -118,11 +118,15 @@ One difference is that it also works with the "key: value syntax":
 
 Another is that you can define inline views that `@render` "sees" as if they were in the filesystem:
 
+    @use 'partials'
+
     @get '/': ->
-      @render index: {foo: 'bar'}
+      @render index:
+        foo: 'bar'
+        title: 'Inline template'
+        layout: 'layout'
 
     @view index: ->
-      @title = 'Inline template'
       h1 @title
       p @foo
 
@@ -132,15 +136,16 @@ Another is that you can define inline views that `@render` "sees" as if they wer
         head -> title @title
         body @body
 
+(You'll need to `npm install zappajs-partials` for the layout to work. Express 3.0 no longer provides layout on its own.)
+
 Note that zappa comes with a default templating engine, [CoffeeCup](https://github.com/gradus/coffeecup), and you don't have to setup anything to use it. You can also easily use other engines by specifying the file extension or the `'view engine'` setting; it's just express. Well, express + inline views support:
 
     @set 'view engine': 'eco'
 
-    @get '/': -> @render index: {foo: 'bar'}
-    @get '/jade': -> @render 'index.jade': {foo: 'bar'}
+    @get '/': -> @render index: {foo: 'bar', title: 'Eco template'}
+    @get '/jade': -> @render 'index.jade': {foo: 'bar', title: 'Jade template'}
 
     @view index: '''
-      <% @title = 'Eco template' %>
       <h1><%= @title %></h1>
       <p><%= @foo %></p>
     '''
@@ -154,7 +159,6 @@ Note that zappa comes with a default templating engine, [CoffeeCup](https://gith
     '''
 
     @view 'index.jade': '''
-      - title = "Jade template";
       h1= title
       p= foo
     '''
@@ -170,13 +174,13 @@ Note that zappa comes with a default templating engine, [CoffeeCup](https://gith
 If you don't feel like writing brain-dead HTML boilerplate, you can use a configurable template zappa provides:
 
     require('zappajs') ->
+      @use 'partials'
       @enable 'default layout'
 
       @get '/': ->
-        @render index: {foo: 'bar'}
+        @render index: {foo: 'bar', title:'Inline template'}
 
       @view index: ->
-        @title = 'Inline template'
         h1 @title
         p @foo
 
@@ -223,7 +227,7 @@ On the client-side, you can use the vanilla socket.io API if you like, but that 
 With `@coffee`, you can define client-side code inline, and serve it in JS form with the correct content-type set. No compilation involved, since we already have its string representation from the runtime:
 
     @get '/': ->
-      @render 'index'
+      @render 'index', layout:'layout'
 
     @coffee '/index.js': ->
       alert 'hullo'
@@ -262,10 +266,7 @@ On a step further, you have `@client`, which gives you access to a matching clie
       html ->
         head ->
           title 'Client-side zappa'
-          script src: '/socket.io/socket.io.js'
-          script src: '/zappa/jquery.js'
-          script src: '/zappa/sammy.js'
-          script src: '/zappa/zappa.js'
+          script src: '/zappa/Zappa.js'
           script src: '/index.js'
         body ''
 
