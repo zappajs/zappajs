@@ -58,11 +58,6 @@ On top of that, you also have some handy shortcuts such as the `@get` you alread
       @use 'bodyParser', 'methodOverride', @app.router, 'static'
       @set 'view engine': 'jade', views: "#{__dirname}/custom/dir"
 
-If you can't/don't want to use `this`, you can receive the context as a parameter and name it whatever you want:
-
-    require('zappajs') (foo) ->
-      foo.get '/': 'hi'
-
 After running your function, zappa automatically starts the whole thing and spits out a message with some useful info.
 
 ## What about \[ENTER OPTION HERE\]?
@@ -100,11 +95,6 @@ Right. This is what a basic route with a handler function looks like:
 
 As you can see, the value of `this` is modified in the handler function too, giving you quick access to everything you need to handle the request. The low level API lives at `@request`, `@response` and `@next`, but you also have handy shortcuts such as `@render`, `@redirect`, `@query`, `@params`, etc.
 
-Of course, you can receive the context as a param here too:
-
-    @get '/:name': (foo) ->
-      "Hi, #{foo.params.name}"
-
 If you return a string, it will automatically be sent as the response. But most of the time you'll be doing something asynchronous, and in this case you have to call `@send`:
 
     @get '/ponchos/:id': ->
@@ -112,7 +102,7 @@ If you return a string, it will automatically be sent as the response. But most 
         # Is that a real poncho, or is that a sears poncho?
         @send poncho.type
 
-Note that we're using a fat arrow (`=>`) here, to preserve the value of `this`. We could be just as well using the alternative reference (`foo.send`) and a normal arrow.
+Note that we're using a fat arrow (`=>`) here, to preserve the value of `this`.
 
 ## Radical views
 

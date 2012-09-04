@@ -50,17 +50,6 @@ port = 16000
     c.get '/zig', (err,res) ->
       t.equal 3, res.body, 'zag'
 
-  crashcourse_4: (t) ->
-    t.expect 1
-    t.wait 3000
-
-    zapp = zappa port++, (foo) ->
-      foo.get '/': 'hi'
-
-    c = t.client(zapp.server)
-    c.get '/', (err,res) ->
-      t.equal 1, res.body, 'hi'
-
   crashcourse_5: (t) ->
     t.expect 1
     t.wait 3000
@@ -103,22 +92,6 @@ port = 16000
     zapp = zappa port++, ->
       @get '/:name': ->
         "Hi, #{@params.name}"
-
-    c = t.client(zapp.server)
-    c.get '/foo', (err,res) ->
-      t.equal 1, res.body, 'Hi, foo'
-    c.get '/bar', (err,res) ->
-      t.equal 2, res.body, 'Hi, bar'
-    c.get '/%c3%a0%c3%a9%c3%b6%c3%b1', (err,res) ->
-      t.equal 3, res.body, 'Hi, àéöñ'
-
-  crashcourse_8: (t) ->
-    t.expect 1,2,3
-    t.wait 3000
-
-    zapp = zappa port++, ->
-      @get '/:name': (foo) ->
-        "Hi, #{foo.params.name}"
 
     c = t.client(zapp.server)
     c.get '/foo', (err,res) ->

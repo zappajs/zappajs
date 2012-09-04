@@ -213,11 +213,6 @@ To use this feature, `npm install jsdom` first.
       @user = plan: 'staff'
       @render index: {postrender: 'plans'}
 
-It receives an alternative reference to the context as an optional last parameter:
-
-    @postrender plans: ($, foo) ->
-      $('.staff').remove() if foo.user.plan isnt 'staff'
-
 ### `@include file`
 
 Will `require` the file at the path specified, and run a function exported as `include` against the same scope as the current function. Ex.:
