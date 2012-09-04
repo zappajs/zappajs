@@ -482,6 +482,19 @@ or use the [consolidate](https://github.com/visionmedia/consolidate.js) package:
 
 Shortcut to `@app.locals`.
 
+### `@param name:callback,...`
+
+Shortcut to `@app.param`. Accepts multiple params in one go.
+
+The callback is scoped similarly to a request handler, with `@request`, `@req`, `@response`, `@res`, `@next`.
+Additionally `@param` is assigned the value of the parameter.
+
+    @param 'user_id', ->
+      if not @param.indexOf /^[0-9A-F]{24,24}$/i
+        @next "Invalid User ID"
+      else
+        @next()
+
 ## REQUEST HANDLERS SCOPE
 
 The function you pass to `@get`, `@post`, etc., will be called with `this`/`@` set to an object with the following attributes:
