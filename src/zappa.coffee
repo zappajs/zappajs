@@ -286,10 +286,6 @@ zappa.app = (func,options={}) ->
     sub = if typeof p is 'string' then require path.join(real_root, p) else p
     sub.include.apply(context, [context])
 
-  context.require = (p,args...) ->
-    sub = if p[0] is '.' then require path.join(real_root, p) else require p
-    sub.plugin.apply context, [{context,route},args...]
-
   apply_helpers = (ctx) ->
     for name, helper of helpers
       do (name, helper) ->
