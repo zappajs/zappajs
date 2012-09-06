@@ -1,3 +1,17 @@
+**v0.4.9** (2012-09-06)
+
+  * API Change:
+    The databag option has been simplified and only applies to views.
+    Callback functions can only be called one way.
+
+  * API Change:
+    Callback functions no longer receive the context as argument;
+    fixes #41 (and mauricemach/zappa#99)
+
+  * Added `@all` (#40), `@params`, and `@locals` in root scope.
+  * Overwrote `session` middleware, got rid of `session_store` middleware.
+  * Update heroku blog link (#33)
+
 **v0.4.8** (2012-08-26)
 
   * `@use 'zappa'`: Added `/zappa/Zappa.js` combined download option.
