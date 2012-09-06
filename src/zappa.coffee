@@ -419,7 +419,7 @@ zappa.app = (func,options={}) ->
               jsdom.env html: str, src: [jquery], done: (err, window) ->
                 if err then return report err
                 ctx.window = window
-                rendered = postrenders[opts.postrender].apply(ctx, [window.$, ctx])
+                rendered = postrenders[opts.postrender].apply ctx, [window.$]
 
                 doctype = (window.document.doctype or '') + "\n"
                 html = doctype + window.document.documentElement.outerHTML
