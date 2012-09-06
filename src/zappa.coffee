@@ -1,5 +1,6 @@
-# **Zappa** is a [CoffeeScript](http://coffeescript.org) DSL-ish interface for building web apps on the
-# [node.js](http://nodejs.org) runtime, integrating [express](http://expressjs.com), [socket.io](http://socket.io)
+# **Zappa** is a [CoffeeScript](http://coffeescript.org) DSL-ish interface
+# for building web apps on the [node.js](http://nodejs.org) runtime,
+# integrating [express](http://expressjs.com), [socket.io](http://socket.io)
 # and other best-of-breed libraries.
 
 zappa = version: '0.4.8'
@@ -24,19 +25,26 @@ jsdom = null
 express_partials = null
 coffee_css = null
 
-# CoffeeScript-generated JavaScript may contain anyone of these; when we "rewrite"
-# a function (see below) though, it loses access to its parent scope, and consequently to
-# any helpers it might need. So we need to reintroduce these helpers manually inside any
-# "rewritten" function.
+# CoffeeScript-generated JavaScript may contain anyone of these; when we
+# "rewrite" a function (see below) though, it loses access to its parent scope,
+# and consequently to any helpers it might need. So we need to reintroduce
+# these helpers manually inside any "rewritten" function.
 coffeescript_helpers = """
   var __slice = Array.prototype.slice;
   var __hasProp = Object.prototype.hasOwnProperty;
-  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var __bind = function(fn, me){
+    return function(){ return fn.apply(me, arguments); };
+  };
   var __extends = function(child, parent) {
-    for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }
+    for (var key in parent) {
+      if (__hasProp.call(parent, key)) child[key] = parent[key];
+    }
     function ctor() { this.constructor = child; }
-    ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype;
-    return child; };
+    ctor.prototype = parent.prototype;
+    child.prototype = new ctor;
+    child.__super__ = parent.prototype;
+    return child;
+  };
   var __indexOf = Array.prototype.indexOf || function(item) {
     for (var i = 0, l = this.length; i < l; i++) {
       if (this[i] === item) return i;
@@ -98,7 +106,8 @@ path.exists = fs.exists = (p,callback) ->
 express = require 'express'
 socketio = require 'socket.io'
 
-# Takes in a function and builds express/socket.io apps based on the rules contained in it.
+# Takes in a function and builds express/socket.io apps based on the rules
+# contained in it.
 zappa.app = (func,options={}) ->
   context = {id: uuid(), zappa, express}
 
@@ -117,7 +126,10 @@ zappa.app = (func,options={}) ->
     context.server = require('https').createServer options.https, app
   else
     context.server = require('http').createServer app
-  io = if options.disable_io then null else context.io = socketio.listen(context.server)
+  if options.disable_io
+    io = null
+  else
+    io = context.io = socketio.listen(context.server)
 
   # Reference to the zappa client, the value will be set later.
   client = null
@@ -202,7 +214,8 @@ zappa.app = (func,options={}) ->
     for k, v of obj
       ext = path.extname k
       p = path.join app.get('views'), k
-      zappa_fs[p] = v # I'm not even sure this is needed -- Express doesn't ask for it
+      # I'm not even sure this is needed -- Express doesn't ask for it
+      zappa_fs[p] = v
       if not ext
         ext = '.' + app.get 'view engine'
         zappa_fs[p+ext] = v
@@ -561,10 +574,10 @@ zappa.app = (func,options={}) ->
   context
 
 # zappa.run [host,] [port,] [{options},] root_function
-# Takes a function and runs it as a zappa app. Optionally accepts a port number, and/or
-# a hostname (any order). The hostname must be a string, and the port number must be
-# castable as a number.
-# Returns an object where `app` is the express server and `io` is the socket.io handle.
+# Takes a function and runs it as a zappa app. Optionally accepts a port
+# number, and/or a hostname (any order). The hostname must be a string, and
+# the port number must be castable as a number.
+
 zappa.run = ->
   host = null
   port = 3000
@@ -611,7 +624,7 @@ zappa.run = ->
 # Zappa, by default, automatically sends all request params to templates,
 # but inside the `params` local.
 #
-# This adapter adds a "root local" for each of these params, *only* 
+# This adapter adds a "root local" for each of these params, *only*
 # if a local with the same name doesn't exist already, *and* the name is not
 # in the optional blacklist.
 #
