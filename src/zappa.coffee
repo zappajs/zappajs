@@ -364,22 +364,8 @@ zappa.app = (func,options={}) ->
       @app.param args[0], build args[1]
     else
       throw new Error("@param accepts either an object or a param and function")
-    
 
-  context[verb] = (args...) ->
-        arity = args.length
-        if arity > 1
-          route
-            verb: verb
-            path: args[0]
-            middleware: args[1...arity-1]
-            handler: args[arity-1]
-        else
-          for k, v of arguments[0]
-            route verb: verb, path: k, handler: v
-
-
-
+  
   # Register a route with express.
   route = (r) ->
     r.middleware ?= []
