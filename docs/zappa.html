@@ -281,8 +281,15 @@ Views are kept at the module level.</p>             </td>             <td class=
     <span class="nv">build = </span><span class="nf">(callback) -&gt;</span>
       <span class="nf">(req,res,next,p) -&gt;</span>
         <span class="nv">ctx =</span>
+          <span class="nv">app: </span><span class="nx">app</span>
+          <span class="nv">settings: </span><span class="nx">app</span><span class="p">.</span><span class="nx">settings</span>
+          <span class="nv">locals: </span><span class="nx">res</span><span class="p">.</span><span class="nx">locals</span>
           <span class="nv">request: </span><span class="nx">req</span>
           <span class="nv">req: </span><span class="nx">req</span>
+          <span class="nv">query: </span><span class="nx">req</span><span class="p">.</span><span class="nx">query</span>
+          <span class="nv">params: </span><span class="nx">req</span><span class="p">.</span><span class="nx">params</span>
+          <span class="nv">body: </span><span class="nx">req</span><span class="p">.</span><span class="nx">body</span>
+          <span class="nv">session: </span><span class="nx">req</span><span class="p">.</span><span class="nx">session</span>
           <span class="nv">response: </span><span class="nx">res</span>
           <span class="nv">res: </span><span class="nx">res</span>
           <span class="nv">next: </span><span class="nx">next</span>
