@@ -5,6 +5,7 @@ task 'build', ->
   run 'coffee -o lib -c src/*.coffee'
     
 task 'test', ->
+  # Set `ulimit -n 1024` if you run out of descriptors.
   run 'coffee tests/index.coffee'
     
 task 'bench', ->

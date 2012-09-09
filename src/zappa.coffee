@@ -329,8 +329,15 @@ zappa.app = (func,options={}) ->
     build = (callback) ->
       (req,res,next,p) ->
         ctx =
+          app: app
+          settings: app.settings
+          locals: res.locals
           request: req
           req: req
+          query: req.query
+          params: req.params
+          body: req.body
+          session: req.session
           response: res
           res: res
           next: next
