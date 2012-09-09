@@ -5838,23 +5838,20 @@ nav a:hover{text-decoration:underline}
     </style>
   </head>
   <body>
-    <div id="wrapper">
-      <nav>
+    <div id="header">
+      <div id="logo"><a href="/zappajs/">zappajs</a></div>
+      <nav class="clearfix">
         <a href="/zappajs/docs/crashcourse">Crash Course</a> |
         <a href="/zappajs/docs/reference">Reference</a> |
         <a href="https://github.com/zappajs/zappajs/tree/master/examples">Examples</a> |
         <a href="/zappajs/docs/zappa.html">Source</a>
+        <a href="https://github.com/zappajs/zappajs">Github</a>
       </nav>
-
-      <header>
-        <h1><a href="http://zappajs.github.com/zappajs/">zappajs</a></h1>
-
-        <a href="https://github.com/zappajs/zappajs"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
-      </header>
-    
-      <article id="content">
+    </div>
+    <div id="content">
+      <div id="api">
         {{ content }}
-      </article>
+      </div>
     </div>
   </body>
 </html>
