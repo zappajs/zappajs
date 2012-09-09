@@ -11,7 +11,7 @@ web application framework for node built on [express](http://expressjs.com) and 
 
 - Get the gist with the [guide](docs/crashcourse)
 
-- Check the [API reference](docs/reference)
+- Check the [API reference](docs/reference) and [change log](https://github.com/zappajs/zappajs/blob/master/CHANGELOG.md)
 
 - If you are migrating from Zappa(js) 0.3 / Express 2.5, read the [migration notes](docs/migrate-0.4)
 
