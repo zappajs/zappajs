@@ -3,7 +3,7 @@
 # integrating [express](http://expressjs.com), [socket.io](http://socket.io)
 # and other best-of-breed libraries.
 
-zappa = version: '0.4.9'
+zappa = version: '0.4.10'
 
 codename = 'Freak Out!'
 
