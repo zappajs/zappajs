@@ -3,13 +3,17 @@ layout: default
 title: CoffeeScript-optimized interface for building web apps on Node.js with Express and Socket.IO.
 ---
 
-Zappa is a [CoffeeScript](http://coffeescript.org)-optimized interface to [Express](http://expressjs.com) and [Socket.IO](http://socket.io).
+# zappajs
+
+web application framework for node built on [express](http://expressjs.com) and [socket.io](http://socket.io).
 
 ## Learn
 
-- Get the gist with the [crash course](docs/crashcourse)
+- Get the gist with the [guide](docs/crashcourse)
 
-- Check the [API reference](docs/reference)
+- Check the [API reference](docs/reference) and [change log](https://github.com/zappajs/zappajs/blob/master/CHANGELOG.md)
+
+- If you are migrating from Zappa(js) 0.3 / Express 2.5, read the [migration notes](docs/migrate-0.4)
 
 - See the [examples](https://github.com/zappajs/zappajs/tree/master/examples) included with the source
 

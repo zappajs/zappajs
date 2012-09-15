@@ -1,3 +1,9 @@
+**v0.4.10** (2012-09-09)
+
+  * test/param.coffee @Radagaisus #43
+  * `@param`: provide all the variables, for consistency
+  * Documentation updates
+
 **v0.4.9** (2012-09-06)
 
   * API Change:

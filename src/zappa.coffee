@@ -3,7 +3,7 @@
 # integrating [express](http://expressjs.com), [socket.io](http://socket.io)
 # and other best-of-breed libraries.
 
-zappa = version: '0.4.9'
+zappa = version: '0.4.10'
 
 codename = 'Freak Out!'
 
@@ -347,8 +347,15 @@ zappa.app = (func,options={}) ->
     build = (callback) ->
       (req, res, next, p) ->
         ctx =
+          app: app
+          settings: app.settings
+          locals: res.locals
           request: req
           req: req
+          query: req.query
+          params: req.params
+          body: req.body
+          session: req.session
           response: res
           res: res
           next: next

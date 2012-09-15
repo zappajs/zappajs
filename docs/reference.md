@@ -1,6 +1,6 @@
 ---
 layout: default
-title: API Reference (v0.4.9)
+title: API Reference (v0.4.10)
 ---
 
 # {{page.title}}
@@ -486,7 +486,7 @@ Shortcut to `@app.locals`.
 
 Shortcut to `@app.param`. Accepts multiple params in one go.
 
-The callback is scoped similarly to a request handler, with `@request`, `@req`, `@response`, `@res`, `@next`.
+The callback is scoped identically to a middleware request handler.
 Additionally `@param` is assigned the value of the parameter.
 
     @param 'user_id', ->
@@ -497,7 +497,8 @@ Additionally `@param` is assigned the value of the parameter.
 
 ## REQUEST HANDLERS SCOPE
 
-The function you pass to `@get`, `@post`, etc., will be called with `this`/`@` set to an object with the following attributes:
+The function you pass to `@get`, `@post`, etc., will be called with `this`/`@` set to an object with the following attributes.
+These attributes are also available to functions passed to `@param`, and to middleware functions passed to `@get`, `@post`, etc.
 
 ### @response
 
@@ -518,6 +519,8 @@ Shortcut: `@req` is a synonym for `@request`.
 ### @next
 
 Directly from express.
+
+Use `@next "error message"` to propagate an error message down the Express pipeline.
 
 ### @query
 
@@ -542,15 +545,21 @@ The parameters found in the URI path, for example
 
 ### @session
 
-Shortcut to `@request.session`
+Shortcut to `@request.session`.
+
+### @locals
+
+Shortcut to `@response.locals`.
 
 ### @send
 
 Shortcut to `@response.send`
+Not available in middleware and param handlers.
 
 ### @render
 
-Shortcut to `@response.render`
+Shortcut to `@response.render`.
+Not available in middleware and param handlers.
 
 Adds the following features:
 
@@ -581,10 +590,7 @@ Adds the following features:
 ### @redirect
 
 Shortcut to `@response.redirect`.
-
-### @locals
-
-Shortcut to `@response.locals`.
+Not available in middleware and param handlers.
 
 ## SOCKETS HANDLERS SCOPE
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>  <html> <head>   <title>zappa.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="client.html">                 client.coffee               </a>                                           <a class="source" href="zappa.html">                 zappa.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               zappa.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p><strong>Zappa</strong> is a <a href="http://coffeescript.org">CoffeeScript</a> DSL-ish interface
 for building web apps on the <a href="http://nodejs.org">node.js</a> runtime,
 integrating <a href="http://expressjs.com">express</a>, <a href="http://socket.io">socket.io</a>
-and other best-of-breed libraries.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">zappa = version: </span><span class="s">&#39;0.4.9&#39;</span>
+and other best-of-breed libraries.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">zappa = version: </span><span class="s">&#39;0.4.10&#39;</span>
 
 <span class="nv">codename = </span><span class="s">&#39;Freak Out!&#39;</span>
 
@@ -281,8 +281,15 @@ Views are kept at the module level.</p>             </td>             <td class=
     <span class="nv">build = </span><span class="nf">(callback) -&gt;</span>
       <span class="nf">(req,res,next,p) -&gt;</span>
         <span class="nv">ctx =</span>
+          <span class="nv">app: </span><span class="nx">app</span>
+          <span class="nv">settings: </span><span class="nx">app</span><span class="p">.</span><span class="nx">settings</span>
+          <span class="nv">locals: </span><span class="nx">res</span><span class="p">.</span><span class="nx">locals</span>
           <span class="nv">request: </span><span class="nx">req</span>
           <span class="nv">req: </span><span class="nx">req</span>
+          <span class="nv">query: </span><span class="nx">req</span><span class="p">.</span><span class="nx">query</span>
+          <span class="nv">params: </span><span class="nx">req</span><span class="p">.</span><span class="nx">params</span>
+          <span class="nv">body: </span><span class="nx">req</span><span class="p">.</span><span class="nx">body</span>
+          <span class="nv">session: </span><span class="nx">req</span><span class="p">.</span><span class="nx">session</span>
           <span class="nv">response: </span><span class="nx">res</span>
           <span class="nv">res: </span><span class="nx">res</span>
           <span class="nv">next: </span><span class="nx">next</span>
