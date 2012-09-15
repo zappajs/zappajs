@@ -22,6 +22,7 @@ socketio_key = '__session'
 
 # Soft dependencies:
 jsdom = null
+gzippo = null
 express_partials = null
 coffee_css = null
 
@@ -239,6 +240,13 @@ zappa.app = (func,options={}) ->
       # Connect `static` middlewate uses fs.stat().
       static: (p = path.join(real_root, '/public')) ->
         express.static(p)
+      staticGzip: (options) ->
+        if typeof options is 'string'
+          options = path: options
+        options ?= {}
+        p = options.path ? path.join(real_root, '/public')
+        gzippo ?= require 'gzippo'
+        gzippo.staticGzip(p, options)
       zappa: ->
         zappa_used = yes
         (req, res, next) ->

@@ -415,6 +415,16 @@ Currently available zappa middleware are:
 
 Same as `@express.static(root + '/public')`, where `root` is the directory of the first file that required zappa.
 
+#### `'staticGzip'`
+
+Same as `static` but uses [gzippo](https://github.com/tomgco/gzippo) for compression.
+Make sure the `gzippo` module is available to your application.
+
+    @use 'staticGzip'
+    @use staticGzip: __dirname + '/public'
+    @use staticGzip: { path: __dirname + '/public' }   # same as above
+    @use staticGzip: { contentTypeMatch: /text|javascript|json|coffee/ }
+
 #### `'zappa'`
 
 Serves `/zappa/Zappa.js`, `/zappa/zappa.js`, `/zappa/jquery.js` and `/zappa/sammy.js`. Automatically added by `@client` and `@shared` if not added before.
