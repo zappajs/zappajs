@@ -91,3 +91,4 @@ port = 15000
     c.get '/return/bob', (err, res) -> t.equal 2, res.body, 'return'
     c.get '/send/bob', (err, res) -> t.equal 3, res.body, 'send'
     c.get '/send/bar', (err, res) -> t.equal 3, res.body, 'Failed to load user bar'
+

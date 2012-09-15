@@ -324,10 +324,28 @@ zappa.app = (func,options={}) ->
         context.session_store.get data.id, cb
       else
         cb err
+  
+  # @param 
+  # Shortcut to @app.param. Accepts multiple params in one go.
+  # The callback is scoped similarly to a request handler, with @request, @req,
+  # @response, @res, @next. Additionally @param is assigned the value of the parameter.
+  # 
+  # Usage:
+  #   @param 'user_id': ->
+  #     if not @param.match /^[0-9A-F]{24,24}$/i
+  #       @next "Invalid User ID"
+  #     else @next()
+  # or:
+  #   @param 'user_id', ->
+  #     if not @param.match /^[0-9A-F]{24,24}$/i
+  #       @next "Invalid User ID"
+  #     else @next()
+  #
+  # Throws an Error if received more than 2 arguments
+  context.param = (args...) ->
 
-  context.param = (obj) ->
     build = (callback) ->
-      (req,res,next,p) ->
+      (req, res, next, p) ->
         ctx =
           app: app
           settings: app.settings
@@ -345,9 +363,16 @@ zappa.app = (func,options={}) ->
         apply_helpers ctx
         callback.apply ctx
 
-    for k, v of obj
-      @app.param k, build v
+    arity = args.length
+    if arity is 1
+      for k, v of args[0]
+        @app.param k, build v
+    else if arity is 2
+      @app.param args[0], build args[1]
+    else
+      throw new Error("@param accepts either an object or a param and function")
 
+  
   # Register a route with express.
   route = (r) ->
     r.middleware ?= []
