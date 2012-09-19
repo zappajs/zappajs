@@ -27,7 +27,8 @@
     "connect-assets": "2.3.1",
     "redis": "*",
     "connect-redis": "*",
-    "coffee-script": "latest"
+    "coffee-script": "latest",
+    "gzippo": "0.1.7"
   },
   "keywords": ["framework", "websockets", "coffeescript", "express", "socket.io", "sammy", "sinatra", "dsl"],
   "main": "./lib/zappa",
