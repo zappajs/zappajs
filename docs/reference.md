@@ -802,14 +802,16 @@ If enabled, zappa adds the following template with the name `layout`:
         title @title if @title
         if @scripts
           for s in @scripts
-            script src: s + '.js'
-        script(src: @script + '.js') if @script
+            script src: extension s, '.js'
+        script(src: extension @script, '.js') if @script
         if @stylesheets
           for s in @stylesheets
-            link rel: 'stylesheet', href: s + '.css'
-        link(rel: 'stylesheet', href: @stylesheet + '.css') if @stylesheet
+            link rel: 'stylesheet', href: extension s, '.css'
+        link(rel: 'stylesheet', href: extension @stylesheet, '.css') if @stylesheet
         style @style if @style
       body @body
+
+where `extension` accepts `path` with or without the given extension.
 
 ### 'databag'
 
