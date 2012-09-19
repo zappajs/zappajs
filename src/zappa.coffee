@@ -620,15 +620,15 @@ zappa.run = ->
   zapp = zappa.app(root_function,options)
   app = zapp.app
 
+  express_ready = ->
+    log 'Express server listening on port %d in %s mode',
+      zapp.server.address()?.port, app.settings.env
+    log "Zappa #{zappa.version} \"#{codename}\" orchestrating the show"
+
   if host
-    zapp.server.listen port, host
+    zapp.server.listen port, host, express_ready
   else
-    zapp.server.listen port
-
-  log 'Express server listening on port %d in %s mode',
-    zapp.server.address()?.port, app.settings.env
-
-  log "Zappa #{zappa.version} \"#{codename}\" orchestrating the show"
+    zapp.server.listen port, express_ready
 
   zapp
 
