@@ -6,7 +6,7 @@
   "homepage": "http://zappajs.com/",
   "repository": {"type": "git", "url": "git://github.com/zappajs/zappajs.git"},
   "dependencies": {
-    "express": "3.0.x",
+    "express": ">=3.0.0rc4",
     "socket.io": "0.9.x",
     "coffeecup": "0.3.x >=0.3.16",
     "coffee-css": ">=0.0.5",

@@ -571,6 +571,11 @@ Not available in middleware and param handlers.
 Shortcut to `@response.json`
 Not available in middleware and param handlers.
 
+### @jsonp
+
+Shortcut to `@response.jsonp`
+Not available in middleware and param handlers.
+
 ### @render
 
 Shortcut to `@response.render`.
