@@ -566,6 +566,11 @@ Shortcut to `@response.locals`.
 Shortcut to `@response.send`
 Not available in middleware and param handlers.
 
+### @json
+
+Shortcut to `@response.json`
+Not available in middleware and param handlers.
+
 ### @render
 
 Shortcut to `@response.render`.
