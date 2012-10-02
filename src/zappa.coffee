@@ -64,6 +64,7 @@ copy_data_to = (recipient, sources) ->
   for obj in sources
     for k, v of obj
       recipient[k] = v unless recipient[k]
+  return
 
 # Zappa FS
 zappa_fs = {}
@@ -159,6 +160,7 @@ zappa.app = (func,options={}) ->
         else
           for k, v of arguments[0]
             route verb: verb, path: k, handler: v
+        return
 
   context.client = (obj) ->
     context.use 'zappa' unless zappa_used
@@ -166,18 +168,21 @@ zappa.app = (func,options={}) ->
       js = ";zappa.run(#{v});"
       js = minify(js) if app.settings['minify']
       route verb: 'get', path: k, handler: js, contentType: 'js'
+    return
 
   context.coffee = (obj) ->
     for k, v of obj
       js = ";#{coffeescript_helpers}(#{v})();"
       js = minify(js) if app.settings['minify']
       route verb: 'get', path: k, handler: js, contentType: 'js'
+    return
 
   context.js = (obj) ->
     for k, v of obj
       js = String(v)
       js = minify(js) if app.settings['minify']
       route verb: 'get', path: k, handler: js, contentType: 'js'
+    return
 
   context.css = (obj) ->
     for k, v of obj
@@ -187,6 +192,7 @@ zappa.app = (func,options={}) ->
       else
         css = String(v)
       route verb: 'get', path: k, handler: css, contentType: 'css'
+    return
 
   options.require_css ?= []
   if typeof options.require_css is 'string'
@@ -197,19 +203,23 @@ zappa.app = (func,options={}) ->
         css = require(name).render v, filename: k, (err, css) ->
           throw err if err
           route verb: 'get', path: k, handler: css, contentType: 'css'
+      return
 
   context.helper = (obj) ->
     for k, v of obj
       helpers[k] = v
+    return
 
   context.postrender = (obj) ->
     jsdom = require 'jsdom'
     for k, v of obj
       postrenders[k] = v
+    return
 
   context.on = (obj) ->
     for k, v of obj
       ws_handlers[k] = v
+    return
 
   context.view = (obj) ->
     for k, v of obj
@@ -220,20 +230,25 @@ zappa.app = (func,options={}) ->
       if not ext
         ext = '.' + app.get 'view engine'
         zappa_fs[p+ext] = v
+    return
 
   context.engine = (obj) ->
     for k, v of obj
       app.engine k, v
+    return
 
   context.set = (obj) ->
     for k, v of obj
       app.set k, v
+    return
 
   context.enable = ->
     app.enable i for i in arguments
+    return
 
   context.disable = ->
     app.disable i for i in arguments
+    return
 
   context.use = ->
     zappa_middleware =
@@ -247,6 +262,7 @@ zappa.app = (func,options={}) ->
         p = options.path ? path.join(real_root, '/public')
         gzippo ?= require 'gzippo'
         gzippo.staticGzip(p, options)
+        return
       zappa: ->
         zappa_used = yes
         (req, res, next) ->
@@ -261,6 +277,7 @@ zappa.app = (func,options={}) ->
               when '/zappa/jquery.js' then send jquery
               when '/zappa/sammy.js' then send sammy
               else next()
+          return
       partials: (maps = {}) ->
         express_partials ?= require 'zappajs-partials'
         partials = express_partials()
@@ -287,10 +304,12 @@ zappa.app = (func,options={}) ->
             app.use a
           else
             use k, v for k, v of a
+    return
 
   context.configure = (p) ->
     if typeof p is 'function' then app.configure p
     else app.configure k, v for k, v of p
+    return
 
   context.settings = app.settings
   context.locals = app.locals
@@ -302,6 +321,7 @@ zappa.app = (func,options={}) ->
       js = minify(js) if app.settings['minify']
       route verb: 'get', path: k, handler: js, contentType: 'js'
       v.apply context
+    return
 
   context.include = (p) ->
     sub = if typeof p is 'string' then require path.join(real_root, p) else p
@@ -315,6 +335,7 @@ zappa.app = (func,options={}) ->
             helper.apply ctx, arguments
         else
           ctx[name] = helper
+        return
     ctx
 
   # Local socket
@@ -356,6 +377,8 @@ zappa.app = (func,options={}) ->
     for k, v of obj
       @app.param k, build v
 
+    return
+
   # Register a route with express.
   route = (r) ->
     r.middleware ?= []
@@ -389,6 +412,7 @@ zappa.app = (func,options={}) ->
       app[r.verb] r.path, r.middleware..., (req, res) ->
         res.contentType r.contentType if r.contentType?
         res.send r.handler
+        return
     else
       app[r.verb] r.path, r.middleware..., (req, res, next) ->
         ctx =
@@ -414,6 +438,7 @@ zappa.app = (func,options={}) ->
             else
               for k, v of arguments[0]
                 render.apply @, [k, v]
+            return
           emit: ->
             socket = request_socket req
             if socket?
@@ -422,6 +447,7 @@ zappa.app = (func,options={}) ->
               else
                 for k, v of arguments[0]
                   socket.emit.apply socket, [k, v]
+            return
 
         render = (name,opts = {},fn) ->
 
@@ -453,6 +479,7 @@ zappa.app = (func,options={}) ->
                 doctype = (window.document.doctype or '') + "\n"
                 html = doctype + window.document.documentElement.outerHTML
                 report null, html
+              return
 
           res.render.call res, name, opts, postrender
 
@@ -491,6 +518,7 @@ zappa.app = (func,options={}) ->
           else
             for k, v of arguments[0]
               socket.emit.apply socket, [k, v]
+          return
         broadcast: ->
           broadcast = socket.broadcast
           if typeof arguments[0] isnt 'object'
@@ -498,6 +526,7 @@ zappa.app = (func,options={}) ->
           else
             for k, v of arguments[0]
               broadcast.emit.apply broadcast, [k, v]
+          return
         broadcast_to: (room, args...) ->
           room = io.sockets.in room
           if typeof args[0] isnt 'object'
@@ -505,6 +534,7 @@ zappa.app = (func,options={}) ->
           else
             for k, v of args[0]
               room.emit.apply room, [k, v]
+          return
         session: -> socket_session socket, arguments...
 
       apply_helpers ctx
@@ -525,6 +555,8 @@ zappa.app = (func,options={}) ->
             ctx.data = data
             ctx.ack = ack
             h.apply ctx
+        return
+    return
 
   # Go!
   func.apply context
@@ -591,6 +623,7 @@ zappa.app = (func,options={}) ->
           @send channel_name: channel_name, key: key
       else
         @send error:'No session'
+      return
 
   context
 
