@@ -1,3 +1,11 @@
+**v0.4.11** (2012-10-02)
+
+  * Added `@jsonp` #47
+  * Added missing documentation for `@json` #47 Thanks @radagaisus !
+  * default layout accepts scripts and stylesheets with or without extensions -- Backported d09b8b66a5b7c89c8058408e9ea989196e99f343 @iangreenleaf #8 mauricemach/zappa#118
+  * Wait for Express to start before querying the port number. (#44)
+  * Added `@use 'staticGzip'` #45 @imzshh
+
 **v0.4.10** (2012-09-09)
 
   * test/param.coffee @Radagaisus #43

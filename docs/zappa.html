@@ -1,7 +1,7 @@
 <!DOCTYPE html>  <html> <head>   <title>zappa.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="client.html">                 client.coffee               </a>                                           <a class="source" href="zappa.html">                 zappa.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               zappa.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p><strong>Zappa</strong> is a <a href="http://coffeescript.org">CoffeeScript</a> DSL-ish interface
 for building web apps on the <a href="http://nodejs.org">node.js</a> runtime,
 integrating <a href="http://expressjs.com">express</a>, <a href="http://socket.io">socket.io</a>
-and other best-of-breed libraries.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">zappa = version: </span><span class="s">&#39;0.4.10&#39;</span>
+and other best-of-breed libraries.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">zappa = version: </span><span class="s">&#39;0.4.11&#39;</span>
 
 <span class="nv">codename = </span><span class="s">&#39;Freak Out!&#39;</span>
 
@@ -17,6 +17,7 @@ and other best-of-breed libraries.</p>             </td>             <td class="
 <span class="nv">uglify = </span><span class="nx">require</span> <span class="s">&#39;uglify-js&#39;</span>
 
 <span class="nv">socketio_key = </span><span class="s">&#39;__session&#39;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Soft dependencies:</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">jsdom = </span><span class="kc">null</span>
+<span class="nv">gzippo = </span><span class="kc">null</span>
 <span class="nv">express_partials = </span><span class="kc">null</span>
 <span class="nv">coffee_css = </span><span class="kc">null</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>CoffeeScript-generated JavaScript may contain anyone of these; when we
 "rewrite" a function (see below) though, it loses access to its parent scope,
@@ -51,7 +52,8 @@ these helpers manually inside any "rewritten" function.</p>             </td>   
 Does NOT overwrite attributes already present in <code>recipient</code>.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">copy_data_to = </span><span class="nf">(recipient, sources) -&gt;</span>
   <span class="k">for</span> <span class="nx">obj</span> <span class="k">in</span> <span class="nx">sources</span>
     <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">obj</span>
-      <span class="nx">recipient</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="nx">v</span> <span class="nx">unless</span> <span class="nx">recipient</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Zappa FS</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">zappa_fs = </span><span class="p">{}</span>
+      <span class="nx">recipient</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="nx">v</span> <span class="nx">unless</span> <span class="nx">recipient</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span>
+  <span class="k">return</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Zappa FS</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">zappa_fs = </span><span class="p">{}</span>
 
 <span class="nv">native_name = </span><span class="nf">(p) -&gt;</span>
   <span class="nx">p</span><span class="p">.</span><span class="nx">replace</span> <span class="sr">/\/\.zappa-[^\/]+/</span><span class="p">,</span> <span class="s">&#39;&#39;</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>Patch Node.js's <code>fs</code>.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">native_readFileSync = </span><span class="nx">fs</span><span class="p">.</span><span class="nx">readFileSync</span>
@@ -120,6 +122,7 @@ Views are kept at the module level.</p>             </td>             <td class=
         <span class="k">else</span>
           <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="nx">route</span> <span class="nv">verb: </span><span class="nx">verb</span><span class="p">,</span> <span class="nv">path: </span><span class="nx">k</span><span class="p">,</span> <span class="nv">handler: </span><span class="nx">v</span>
+        <span class="k">return</span>
 
   <span class="nv">context.client = </span><span class="nf">(obj) -&gt;</span>
     <span class="nx">context</span><span class="p">.</span><span class="nx">use</span> <span class="s">&#39;zappa&#39;</span> <span class="nx">unless</span> <span class="nx">zappa_used</span>
@@ -127,18 +130,21 @@ Views are kept at the module level.</p>             </td>             <td class=
       <span class="nv">js = </span><span class="s">&quot;;zappa.run(</span><span class="si">#{</span><span class="nx">v</span><span class="si">}</span><span class="s">);&quot;</span>
       <span class="nv">js = </span><span class="nx">minify</span><span class="p">(</span><span class="nx">js</span><span class="p">)</span> <span class="k">if</span> <span class="nx">app</span><span class="p">.</span><span class="nx">settings</span><span class="p">[</span><span class="s">&#39;minify&#39;</span><span class="p">]</span>
       <span class="nx">route</span> <span class="nv">verb: </span><span class="s">&#39;get&#39;</span><span class="p">,</span> <span class="nv">path: </span><span class="nx">k</span><span class="p">,</span> <span class="nv">handler: </span><span class="nx">js</span><span class="p">,</span> <span class="nv">contentType: </span><span class="s">&#39;js&#39;</span>
+    <span class="k">return</span>
 
   <span class="nv">context.coffee = </span><span class="nf">(obj) -&gt;</span>
     <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">obj</span>
       <span class="nv">js = </span><span class="s">&quot;;</span><span class="si">#{</span><span class="nx">coffeescript_helpers</span><span class="si">}</span><span class="s">(</span><span class="si">#{</span><span class="nx">v</span><span class="si">}</span><span class="s">)();&quot;</span>
       <span class="nv">js = </span><span class="nx">minify</span><span class="p">(</span><span class="nx">js</span><span class="p">)</span> <span class="k">if</span> <span class="nx">app</span><span class="p">.</span><span class="nx">settings</span><span class="p">[</span><span class="s">&#39;minify&#39;</span><span class="p">]</span>
       <span class="nx">route</span> <span class="nv">verb: </span><span class="s">&#39;get&#39;</span><span class="p">,</span> <span class="nv">path: </span><span class="nx">k</span><span class="p">,</span> <span class="nv">handler: </span><span class="nx">js</span><span class="p">,</span> <span class="nv">contentType: </span><span class="s">&#39;js&#39;</span>
+    <span class="k">return</span>
 
   <span class="nv">context.js = </span><span class="nf">(obj) -&gt;</span>
     <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">obj</span>
       <span class="nv">js = </span><span class="nb">String</span><span class="p">(</span><span class="nx">v</span><span class="p">)</span>
       <span class="nv">js = </span><span class="nx">minify</span><span class="p">(</span><span class="nx">js</span><span class="p">)</span> <span class="k">if</span> <span class="nx">app</span><span class="p">.</span><span class="nx">settings</span><span class="p">[</span><span class="s">&#39;minify&#39;</span><span class="p">]</span>
       <span class="nx">route</span> <span class="nv">verb: </span><span class="s">&#39;get&#39;</span><span class="p">,</span> <span class="nv">path: </span><span class="nx">k</span><span class="p">,</span> <span class="nv">handler: </span><span class="nx">js</span><span class="p">,</span> <span class="nv">contentType: </span><span class="s">&#39;js&#39;</span>
+    <span class="k">return</span>
 
   <span class="nv">context.css = </span><span class="nf">(obj) -&gt;</span>
     <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">obj</span>
@@ -148,6 +154,7 @@ Views are kept at the module level.</p>             </td>             <td class=
       <span class="k">else</span>
         <span class="nv">css = </span><span class="nb">String</span><span class="p">(</span><span class="nx">v</span><span class="p">)</span>
       <span class="nx">route</span> <span class="nv">verb: </span><span class="s">&#39;get&#39;</span><span class="p">,</span> <span class="nv">path: </span><span class="nx">k</span><span class="p">,</span> <span class="nv">handler: </span><span class="nx">css</span><span class="p">,</span> <span class="nv">contentType: </span><span class="s">&#39;css&#39;</span>
+    <span class="k">return</span>
 
   <span class="nx">options</span><span class="p">.</span><span class="nx">require_css</span> <span class="o">?=</span> <span class="p">[]</span>
   <span class="k">if</span> <span class="k">typeof</span> <span class="nx">options</span><span class="p">.</span><span class="nx">require_css</span> <span class="o">is</span> <span class="s">&#39;string&#39;</span>
@@ -158,19 +165,23 @@ Views are kept at the module level.</p>             </td>             <td class=
         <span class="nv">css = </span><span class="nx">require</span><span class="p">(</span><span class="nx">name</span><span class="p">).</span><span class="nx">render</span> <span class="nx">v</span><span class="p">,</span> <span class="nv">filename: </span><span class="nx">k</span><span class="p">,</span> <span class="nf">(err, css) -&gt;</span>
           <span class="k">throw</span> <span class="nx">err</span> <span class="k">if</span> <span class="nx">err</span>
           <span class="nx">route</span> <span class="nv">verb: </span><span class="s">&#39;get&#39;</span><span class="p">,</span> <span class="nv">path: </span><span class="nx">k</span><span class="p">,</span> <span class="nv">handler: </span><span class="nx">css</span><span class="p">,</span> <span class="nv">contentType: </span><span class="s">&#39;css&#39;</span>
+      <span class="k">return</span>
 
   <span class="nv">context.helper = </span><span class="nf">(obj) -&gt;</span>
     <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">obj</span>
       <span class="nx">helpers</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="nx">v</span>
+    <span class="k">return</span>
 
   <span class="nv">context.postrender = </span><span class="nf">(obj) -&gt;</span>
     <span class="nv">jsdom = </span><span class="nx">require</span> <span class="s">&#39;jsdom&#39;</span>
     <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">obj</span>
       <span class="nx">postrenders</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="nx">v</span>
+    <span class="k">return</span>
 
   <span class="nv">context.on = </span><span class="nf">(obj) -&gt;</span>
     <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">obj</span>
       <span class="nx">ws_handlers</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="nx">v</span>
+    <span class="k">return</span>
 
   <span class="nv">context.view = </span><span class="nf">(obj) -&gt;</span>
     <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">obj</span>
@@ -179,24 +190,37 @@ Views are kept at the module level.</p>             </td>             <td class=
       <span class="k">if</span> <span class="o">not</span> <span class="nx">ext</span>
         <span class="nv">ext = </span><span class="s">&#39;.&#39;</span> <span class="o">+</span> <span class="nx">app</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;view engine&#39;</span>
         <span class="nx">zappa_fs</span><span class="p">[</span><span class="nx">p</span><span class="o">+</span><span class="nx">ext</span><span class="p">]</span> <span class="o">=</span> <span class="nx">v</span>
+    <span class="k">return</span>
 
   <span class="nv">context.engine = </span><span class="nf">(obj) -&gt;</span>
     <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">obj</span>
       <span class="nx">app</span><span class="p">.</span><span class="nx">engine</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span>
+    <span class="k">return</span>
 
   <span class="nv">context.set = </span><span class="nf">(obj) -&gt;</span>
     <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">obj</span>
       <span class="nx">app</span><span class="p">.</span><span class="nx">set</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span>
+    <span class="k">return</span>
 
   <span class="nv">context.enable = </span><span class="o">-&gt;</span>
     <span class="nx">app</span><span class="p">.</span><span class="nx">enable</span> <span class="nx">i</span> <span class="k">for</span> <span class="nx">i</span> <span class="k">in</span> <span class="nx">arguments</span>
+    <span class="k">return</span>
 
   <span class="nv">context.disable = </span><span class="o">-&gt;</span>
     <span class="nx">app</span><span class="p">.</span><span class="nx">disable</span> <span class="nx">i</span> <span class="k">for</span> <span class="nx">i</span> <span class="k">in</span> <span class="nx">arguments</span>
+    <span class="k">return</span>
 
   <span class="nv">context.use = </span><span class="o">-&gt;</span>
     <span class="nv">zappa_middleware =</span></pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>Connect <code>static</code> middlewate uses fs.stat().</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nv">static: </span><span class="p">(</span><span class="nv">p = </span><span class="nx">path</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">real_root</span><span class="p">,</span> <span class="s">&#39;/public&#39;</span><span class="p">))</span> <span class="o">-&gt;</span>
         <span class="nx">express</span><span class="p">.</span><span class="nx">static</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
+      <span class="nv">staticGzip: </span><span class="nf">(options) -&gt;</span>
+        <span class="k">if</span> <span class="k">typeof</span> <span class="nx">options</span> <span class="o">is</span> <span class="s">&#39;string&#39;</span>
+          <span class="nv">options = path: </span><span class="nx">options</span>
+        <span class="nx">options</span> <span class="o">?=</span> <span class="p">{}</span>
+        <span class="nv">p = </span><span class="nx">options</span><span class="p">.</span><span class="nx">path</span> <span class="o">?</span> <span class="nx">path</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">real_root</span><span class="p">,</span> <span class="s">&#39;/public&#39;</span><span class="p">)</span>
+        <span class="nx">gzippo</span> <span class="o">?=</span> <span class="nx">require</span> <span class="s">&#39;gzippo&#39;</span>
+        <span class="nx">gzippo</span><span class="p">.</span><span class="nx">staticGzip</span><span class="p">(</span><span class="nx">p</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span>
+        <span class="k">return</span>
       <span class="nv">zappa: </span><span class="o">-&gt;</span>
         <span class="nv">zappa_used = </span><span class="kc">yes</span>
         <span class="nf">(req, res, next) -&gt;</span>
@@ -211,6 +235,7 @@ Views are kept at the module level.</p>             </td>             <td class=
               <span class="k">when</span> <span class="s">&#39;/zappa/jquery.js&#39;</span> <span class="k">then</span> <span class="nx">send</span> <span class="nx">jquery</span>
               <span class="k">when</span> <span class="s">&#39;/zappa/sammy.js&#39;</span> <span class="k">then</span> <span class="nx">send</span> <span class="nx">sammy</span>
               <span class="k">else</span> <span class="nx">next</span><span class="p">()</span>
+          <span class="k">return</span>
       <span class="nv">partials: </span><span class="nf">(maps = {}) -&gt;</span>
         <span class="nx">express_partials</span> <span class="o">?=</span> <span class="nx">require</span> <span class="s">&#39;zappajs-partials&#39;</span>
         <span class="nv">partials = </span><span class="nx">express_partials</span><span class="p">()</span>
@@ -237,10 +262,12 @@ Views are kept at the module level.</p>             </td>             <td class=
             <span class="nx">app</span><span class="p">.</span><span class="nx">use</span> <span class="nx">a</span>
           <span class="k">else</span>
             <span class="nx">use</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">a</span>
+    <span class="k">return</span>
 
   <span class="nv">context.configure = </span><span class="nf">(p) -&gt;</span>
     <span class="k">if</span> <span class="k">typeof</span> <span class="nx">p</span> <span class="o">is</span> <span class="s">&#39;function&#39;</span> <span class="k">then</span> <span class="nx">app</span><span class="p">.</span><span class="nx">configure</span> <span class="nx">p</span>
     <span class="k">else</span> <span class="nx">app</span><span class="p">.</span><span class="nx">configure</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">p</span>
+    <span class="k">return</span>
 
   <span class="nv">context.settings = </span><span class="nx">app</span><span class="p">.</span><span class="nx">settings</span>
   <span class="nv">context.locals = </span><span class="nx">app</span><span class="p">.</span><span class="nx">locals</span>
@@ -252,6 +279,7 @@ Views are kept at the module level.</p>             </td>             <td class=
       <span class="nv">js = </span><span class="nx">minify</span><span class="p">(</span><span class="nx">js</span><span class="p">)</span> <span class="k">if</span> <span class="nx">app</span><span class="p">.</span><span class="nx">settings</span><span class="p">[</span><span class="s">&#39;minify&#39;</span><span class="p">]</span>
       <span class="nx">route</span> <span class="nv">verb: </span><span class="s">&#39;get&#39;</span><span class="p">,</span> <span class="nv">path: </span><span class="nx">k</span><span class="p">,</span> <span class="nv">handler: </span><span class="nx">js</span><span class="p">,</span> <span class="nv">contentType: </span><span class="s">&#39;js&#39;</span>
       <span class="nx">v</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">context</span>
+    <span class="k">return</span>
 
   <span class="nv">context.include = </span><span class="nf">(p) -&gt;</span>
     <span class="nv">sub = </span><span class="k">if</span> <span class="k">typeof</span> <span class="nx">p</span> <span class="o">is</span> <span class="s">&#39;string&#39;</span> <span class="k">then</span> <span class="nx">require</span> <span class="nx">path</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">real_root</span><span class="p">,</span> <span class="nx">p</span><span class="p">)</span> <span class="k">else</span> <span class="nx">p</span>
@@ -265,6 +293,7 @@ Views are kept at the module level.</p>             </td>             <td class=
             <span class="nx">helper</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">ctx</span><span class="p">,</span> <span class="nx">arguments</span>
         <span class="k">else</span>
           <span class="nx">ctx</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="nx">helper</span>
+        <span class="k">return</span>
     <span class="nx">ctx</span></pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>Local socket</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">request_socket = </span><span class="nf">(req) -&gt;</span>
     <span class="nv">socket_id = </span><span class="nx">req</span><span class="p">.</span><span class="nx">session</span><span class="o">?</span><span class="p">.</span><span class="nx">__socket</span><span class="o">?</span><span class="p">[</span><span class="s">&#39;__local&#39;</span><span class="p">]</span><span class="o">?</span><span class="p">.</span><span class="nx">id</span>
     <span class="nx">socket_id</span> <span class="o">and</span> <span class="nx">io</span><span class="o">?</span><span class="p">.</span><span class="nx">sockets</span><span class="p">.</span><span class="nx">socket</span> <span class="nx">socket_id</span><span class="p">,</span> <span class="kc">true</span></pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>The callback will receive (err,session).</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">socket_session = </span><span class="nf">(socket,cb) -&gt;</span>
@@ -298,7 +327,9 @@ Views are kept at the module level.</p>             </td>             <td class=
         <span class="nx">callback</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">ctx</span>
 
     <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">obj</span>
-      <span class="nx">@app</span><span class="p">.</span><span class="nx">param</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">build</span> <span class="nx">v</span></pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>Register a route with express.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">route = </span><span class="nf">(r) -&gt;</span>
+      <span class="nx">@app</span><span class="p">.</span><span class="nx">param</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">build</span> <span class="nx">v</span>
+
+    <span class="k">return</span></pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>Register a route with express.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">route = </span><span class="nf">(r) -&gt;</span>
     <span class="nx">r</span><span class="p">.</span><span class="nx">middleware</span> <span class="o">?=</span> <span class="p">[]</span></pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>Rewrite middleware</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nv">r.middleware = </span><span class="nx">r</span><span class="p">.</span><span class="nx">middleware</span><span class="p">.</span><span class="nx">map</span> <span class="nf">(f) -&gt;</span>
       <span class="nf">(req,res,next) -&gt;</span>
         <span class="nv">ctx =</span>
@@ -327,6 +358,7 @@ Views are kept at the module level.</p>             </td>             <td class=
       <span class="nx">app</span><span class="p">[</span><span class="nx">r</span><span class="p">.</span><span class="nx">verb</span><span class="p">]</span> <span class="nx">r</span><span class="p">.</span><span class="nx">path</span><span class="p">,</span> <span class="nx">r</span><span class="p">.</span><span class="nx">middleware</span><span class="p">...,</span> <span class="nf">(req, res) -&gt;</span>
         <span class="nx">res</span><span class="p">.</span><span class="nx">contentType</span> <span class="nx">r</span><span class="p">.</span><span class="nx">contentType</span> <span class="k">if</span> <span class="nx">r</span><span class="p">.</span><span class="nx">contentType</span><span class="o">?</span>
         <span class="nx">res</span><span class="p">.</span><span class="nx">send</span> <span class="nx">r</span><span class="p">.</span><span class="nx">handler</span>
+        <span class="k">return</span>
     <span class="k">else</span>
       <span class="nx">app</span><span class="p">[</span><span class="nx">r</span><span class="p">.</span><span class="nx">verb</span><span class="p">]</span> <span class="nx">r</span><span class="p">.</span><span class="nx">path</span><span class="p">,</span> <span class="nx">r</span><span class="p">.</span><span class="nx">middleware</span><span class="p">...,</span> <span class="nf">(req, res, next) -&gt;</span>
         <span class="nv">ctx =</span>
@@ -344,6 +376,7 @@ Views are kept at the module level.</p>             </td>             <td class=
           <span class="nv">next: </span><span class="nx">next</span>
           <span class="nv">send: </span><span class="o">-&gt;</span> <span class="nx">res</span><span class="p">.</span><span class="nx">send</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">arguments</span>
           <span class="nv">json: </span><span class="o">-&gt;</span> <span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">arguments</span>
+          <span class="nv">jsonp: </span><span class="o">-&gt;</span> <span class="nx">res</span><span class="p">.</span><span class="nx">jsonp</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">arguments</span>
           <span class="nv">redirect: </span><span class="o">-&gt;</span> <span class="nx">res</span><span class="p">.</span><span class="nx">redirect</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">arguments</span>
           <span class="nv">render: </span><span class="o">-&gt;</span>
             <span class="k">if</span> <span class="k">typeof</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">isnt</span> <span class="s">&#39;object&#39;</span>
@@ -351,6 +384,7 @@ Views are kept at the module level.</p>             </td>             <td class=
             <span class="k">else</span>
               <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="nx">render</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">@</span><span class="p">,</span> <span class="p">[</span><span class="nx">k</span><span class="p">,</span> <span class="nx">v</span><span class="p">]</span>
+            <span class="k">return</span>
           <span class="nv">emit: </span><span class="o">-&gt;</span>
             <span class="nv">socket = </span><span class="nx">request_socket</span> <span class="nx">req</span>
             <span class="k">if</span> <span class="nx">socket</span><span class="o">?</span>
@@ -359,6 +393,7 @@ Views are kept at the module level.</p>             </td>             <td class=
               <span class="k">else</span>
                 <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                   <span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">socket</span><span class="p">,</span> <span class="p">[</span><span class="nx">k</span><span class="p">,</span> <span class="nx">v</span><span class="p">]</span>
+            <span class="k">return</span>
 
         <span class="nv">render = </span><span class="nf">(name,opts = {},fn) -&gt;</span>
 
@@ -385,6 +420,7 @@ Views are kept at the module level.</p>             </td>             <td class=
                 <span class="nv">doctype = </span><span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nb">document</span><span class="p">.</span><span class="nx">doctype</span> <span class="o">or</span> <span class="s">&#39;&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;\n&quot;</span>
                 <span class="nv">html = </span><span class="nx">doctype</span> <span class="o">+</span> <span class="nb">window</span><span class="p">.</span><span class="nb">document</span><span class="p">.</span><span class="nx">documentElement</span><span class="p">.</span><span class="nx">outerHTML</span>
                 <span class="nx">report</span> <span class="kc">null</span><span class="p">,</span> <span class="nx">html</span>
+              <span class="k">return</span>
 
           <span class="nx">res</span><span class="p">.</span><span class="nx">render</span><span class="p">.</span><span class="nx">call</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">opts</span><span class="p">,</span> <span class="nx">postrender</span>
 
@@ -420,6 +456,7 @@ Views are kept at the module level.</p>             </td>             <td class=
           <span class="k">else</span>
             <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
               <span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">socket</span><span class="p">,</span> <span class="p">[</span><span class="nx">k</span><span class="p">,</span> <span class="nx">v</span><span class="p">]</span>
+          <span class="k">return</span>
         <span class="nv">broadcast: </span><span class="o">-&gt;</span>
           <span class="nv">broadcast = </span><span class="nx">socket</span><span class="p">.</span><span class="nx">broadcast</span>
           <span class="k">if</span> <span class="k">typeof</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">isnt</span> <span class="s">&#39;object&#39;</span>
@@ -427,6 +464,7 @@ Views are kept at the module level.</p>             </td>             <td class=
           <span class="k">else</span>
             <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
               <span class="nx">broadcast</span><span class="p">.</span><span class="nx">emit</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">broadcast</span><span class="p">,</span> <span class="p">[</span><span class="nx">k</span><span class="p">,</span> <span class="nx">v</span><span class="p">]</span>
+          <span class="k">return</span>
         <span class="nv">broadcast_to: </span><span class="nf">(room, args...) -&gt;</span>
           <span class="nv">room = </span><span class="nx">io</span><span class="p">.</span><span class="nx">sockets</span><span class="p">.</span><span class="k">in</span> <span class="nx">room</span>
           <span class="k">if</span> <span class="k">typeof</span> <span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">isnt</span> <span class="s">&#39;object&#39;</span>
@@ -434,6 +472,7 @@ Views are kept at the module level.</p>             </td>             <td class=
           <span class="k">else</span>
             <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
               <span class="nx">room</span><span class="p">.</span><span class="nx">emit</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">room</span><span class="p">,</span> <span class="p">[</span><span class="nx">k</span><span class="p">,</span> <span class="nx">v</span><span class="p">]</span>
+          <span class="k">return</span>
         <span class="nv">session: </span><span class="o">-&gt;</span> <span class="nx">socket_session</span> <span class="nx">socket</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">...</span>
 
       <span class="nx">apply_helpers</span> <span class="nx">ctx</span>
@@ -453,7 +492,9 @@ Views are kept at the module level.</p>             </td>             <td class=
             <span class="nv">ctx = </span><span class="nx">build_ctx</span><span class="p">()</span>
             <span class="nv">ctx.data = </span><span class="nx">data</span>
             <span class="nv">ctx.ack = </span><span class="nx">ack</span>
-            <span class="nx">h</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">ctx</span></pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <p>Go!</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">func</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">context</span></pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <p>The stringified zappa client.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">client = </span><span class="nx">require</span><span class="p">(</span><span class="s">&#39;./client&#39;</span><span class="p">).</span><span class="nx">build</span><span class="p">(</span><span class="nx">zappa</span><span class="p">.</span><span class="nx">version</span><span class="p">,</span> <span class="nx">app</span><span class="p">.</span><span class="nx">settings</span><span class="p">)</span>
+            <span class="nx">h</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">ctx</span>
+        <span class="k">return</span>
+    <span class="k">return</span></pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <p>Go!</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">func</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">context</span></pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <p>The stringified zappa client.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">client = </span><span class="nx">require</span><span class="p">(</span><span class="s">&#39;./client&#39;</span><span class="p">).</span><span class="nx">build</span><span class="p">(</span><span class="nx">zappa</span><span class="p">.</span><span class="nx">version</span><span class="p">,</span> <span class="nx">app</span><span class="p">.</span><span class="nx">settings</span><span class="p">)</span>
   <span class="nv">client = </span><span class="s">&quot;;</span><span class="si">#{</span><span class="nx">coffeescript_helpers</span><span class="si">}</span><span class="s">(</span><span class="si">#{</span><span class="nx">client</span><span class="si">}</span><span class="s">)();&quot;</span>
   <span class="nv">client = </span><span class="nx">minify</span><span class="p">(</span><span class="nx">client</span><span class="p">)</span> <span class="k">if</span> <span class="nx">app</span><span class="p">.</span><span class="nx">settings</span><span class="p">[</span><span class="s">&#39;minify&#39;</span><span class="p">]</span>
   <span class="nv">client_bundled =</span>
@@ -464,18 +505,23 @@ Views are kept at the module level.</p>             </td>             <td class=
 
   <span class="k">if</span> <span class="nx">app</span><span class="p">.</span><span class="nx">settings</span><span class="p">[</span><span class="s">&#39;default layout&#39;</span><span class="p">]</span>
     <span class="nx">context</span><span class="p">.</span><span class="nx">view</span> <span class="nv">layout: </span><span class="o">-&gt;</span>
+      <span class="nv">extension = </span><span class="nf">(path,ext) -&gt;</span>
+        <span class="k">if</span> <span class="nx">path</span><span class="p">.</span><span class="nx">substr</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="nx">ext</span><span class="p">.</span><span class="nx">length</span><span class="p">)).</span><span class="nx">toLowerCase</span><span class="p">()</span> <span class="o">is</span> <span class="nx">ext</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">()</span>
+          <span class="nx">path</span>
+        <span class="k">else</span>
+          <span class="nx">path</span> <span class="o">+</span> <span class="nx">ext</span>
       <span class="nx">doctype</span> <span class="mi">5</span>
       <span class="nx">html</span> <span class="o">-&gt;</span>
         <span class="nx">head</span> <span class="o">-&gt;</span>
           <span class="nx">title</span> <span class="nx">@title</span> <span class="k">if</span> <span class="nx">@title</span>
           <span class="k">if</span> <span class="nx">@scripts</span>
             <span class="k">for</span> <span class="nx">s</span> <span class="k">in</span> <span class="nx">@scripts</span>
-              <span class="nx">script</span> <span class="nv">src: </span><span class="nx">s</span> <span class="o">+</span> <span class="s">&#39;.js&#39;</span>
-          <span class="nx">script</span><span class="p">(</span><span class="nv">src: </span><span class="nx">@script</span> <span class="o">+</span> <span class="s">&#39;.js&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="nx">@script</span>
+              <span class="nx">script</span> <span class="nv">src: </span><span class="nx">extension</span> <span class="nx">s</span><span class="p">,</span> <span class="s">&#39;.js&#39;</span>
+          <span class="nx">script</span><span class="p">(</span><span class="nv">src: </span><span class="nx">extension</span> <span class="nx">@script</span><span class="p">,</span> <span class="s">&#39;.js&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="nx">@script</span>
           <span class="k">if</span> <span class="nx">@stylesheets</span>
             <span class="k">for</span> <span class="nx">s</span> <span class="k">in</span> <span class="nx">@stylesheets</span>
-              <span class="nx">link</span> <span class="nv">rel: </span><span class="s">&#39;stylesheet&#39;</span><span class="p">,</span> <span class="nv">href: </span><span class="nx">s</span> <span class="o">+</span> <span class="s">&#39;.css&#39;</span>
-          <span class="nx">link</span><span class="p">(</span><span class="nv">rel: </span><span class="s">&#39;stylesheet&#39;</span><span class="p">,</span> <span class="nv">href: </span><span class="nx">@stylesheet</span> <span class="o">+</span> <span class="s">&#39;.css&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="nx">@stylesheet</span>
+              <span class="nx">link</span> <span class="nv">rel: </span><span class="s">&#39;stylesheet&#39;</span><span class="p">,</span> <span class="nv">href: </span><span class="nx">extension</span> <span class="nx">s</span><span class="p">,</span> <span class="s">&#39;.css&#39;</span>
+          <span class="nx">link</span><span class="p">(</span><span class="nv">rel: </span><span class="s">&#39;stylesheet&#39;</span><span class="p">,</span> <span class="nv">href: </span><span class="nx">extension</span> <span class="nx">@stylesheet</span><span class="p">,</span> <span class="s">&#39;.css&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="nx">@stylesheet</span>
           <span class="nx">style</span> <span class="nx">@style</span> <span class="k">if</span> <span class="nx">@style</span>
         <span class="nx">body</span> <span class="nx">@body</span>
 
@@ -498,6 +544,7 @@ Views are kept at the module level.</p>             </td>             <td class=
           <span class="nx">io_client</span><span class="p">.</span><span class="nx">set</span> <span class="nx">socketio_key</span><span class="p">,</span> <span class="nx">io_data</span></pre></div>             </td>           </tr>                               <tr id="section-28">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-28">&#182;</a>               </div>               <p>Let the client know which key to use.</p>             </td>             <td class="code">               <div class="highlight"><pre>          <span class="nx">@send</span> <span class="nv">channel_name: </span><span class="nx">channel_name</span><span class="p">,</span> <span class="nv">key: </span><span class="nx">key</span>
       <span class="k">else</span>
         <span class="nx">@send</span> <span class="nx">error</span><span class="o">:</span><span class="s">&#39;No session&#39;</span>
+      <span class="k">return</span>
 
   <span class="nx">context</span></pre></div>             </td>           </tr>                               <tr id="section-29">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-29">&#182;</a>               </div>               <p>zappa.run [host,] [port,] [{options},] root_function
 Takes a function and runs it as a zappa app. Optionally accepts a port
@@ -529,15 +576,15 @@ the port number must be castable as a number.</p>             </td>             
   <span class="nv">zapp = </span><span class="nx">zappa</span><span class="p">.</span><span class="nx">app</span><span class="p">(</span><span class="nx">root_function</span><span class="p">,</span><span class="nx">options</span><span class="p">)</span>
   <span class="nv">app = </span><span class="nx">zapp</span><span class="p">.</span><span class="nx">app</span>
 
+  <span class="nv">express_ready = </span><span class="o">-&gt;</span>
+    <span class="nx">log</span> <span class="s">&#39;Express server listening on port %d in %s mode&#39;</span><span class="p">,</span>
+      <span class="nx">zapp</span><span class="p">.</span><span class="nx">server</span><span class="p">.</span><span class="nx">address</span><span class="p">()</span><span class="o">?</span><span class="p">.</span><span class="nx">port</span><span class="p">,</span> <span class="nx">app</span><span class="p">.</span><span class="nx">settings</span><span class="p">.</span><span class="nx">env</span>
+    <span class="nx">log</span> <span class="s">&quot;Zappa </span><span class="si">#{</span><span class="nx">zappa</span><span class="p">.</span><span class="nx">version</span><span class="si">}</span><span class="s"> \&quot;</span><span class="si">#{</span><span class="nx">codename</span><span class="si">}</span><span class="s">\&quot; orchestrating the show&quot;</span>
+
   <span class="k">if</span> <span class="nx">host</span>
-    <span class="nx">zapp</span><span class="p">.</span><span class="nx">server</span><span class="p">.</span><span class="nx">listen</span> <span class="nx">port</span><span class="p">,</span> <span class="nx">host</span>
+    <span class="nx">zapp</span><span class="p">.</span><span class="nx">server</span><span class="p">.</span><span class="nx">listen</span> <span class="nx">port</span><span class="p">,</span> <span class="nx">host</span><span class="p">,</span> <span class="nx">express_ready</span>
   <span class="k">else</span>
-    <span class="nx">zapp</span><span class="p">.</span><span class="nx">server</span><span class="p">.</span><span class="nx">listen</span> <span class="nx">port</span>
-
-  <span class="nx">log</span> <span class="s">&#39;Express server listening on port %d in %s mode&#39;</span><span class="p">,</span>
-    <span class="nx">zapp</span><span class="p">.</span><span class="nx">server</span><span class="p">.</span><span class="nx">address</span><span class="p">()</span><span class="o">?</span><span class="p">.</span><span class="nx">port</span><span class="p">,</span> <span class="nx">app</span><span class="p">.</span><span class="nx">settings</span><span class="p">.</span><span class="nx">env</span>
-
-  <span class="nx">log</span> <span class="s">&quot;Zappa </span><span class="si">#{</span><span class="nx">zappa</span><span class="p">.</span><span class="nx">version</span><span class="si">}</span><span class="s"> \&quot;</span><span class="si">#{</span><span class="nx">codename</span><span class="si">}</span><span class="s">\&quot; orchestrating the show&quot;</span>
+    <span class="nx">zapp</span><span class="p">.</span><span class="nx">server</span><span class="p">.</span><span class="nx">listen</span> <span class="nx">port</span><span class="p">,</span> <span class="nx">express_ready</span>
 
   <span class="nx">zapp</span></pre></div>             </td>           </tr>                               <tr id="section-30">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-30">&#182;</a>               </div>               <p>Creates a zappa view adapter for templating engine <code>engine</code>. This adapter
 can be used with <code>context.engine</code> or <code>context.use partials:</code>
