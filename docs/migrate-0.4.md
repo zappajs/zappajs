@@ -35,6 +35,7 @@ Zappa in places. Here are the differences we know about.
   object is available as `@server`; `@app.listen` is now
   `@server.listen`.
 
+* Express 3.0 split `json` and `jsonp`. If your code used `json` for `jsonp` this won't work anymore, make sure to migrate those calls to use `jsonp`.
 
 Other changes are Zappa-specific and simplify the API:
 
