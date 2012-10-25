@@ -2,6 +2,7 @@
 
   * Now the `latest` version.
   * Stricter dependencies versioning (#48)
+  * Added `/zappa/Zappa-simple.js`
 
 **v0.4.11** (2012-10-02)
 
