@@ -13,7 +13,7 @@ require('zappajs') ->
       scripts: '/zappa/Zappa.js /index.js /client.js'
       stylesheet: '/index.css'
 
-  @view index:
+  @view index: ->
     doctype 5
     html ->
       head ->
@@ -53,7 +53,7 @@ require('zappajs') ->
       @emit 'ready', 'hello'
 
     @get '#/': ->
-      @swap 'Ready to roll!'
+      @app.swap 'Ready to roll!'
 ```
 
 ## Install
