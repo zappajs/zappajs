@@ -684,7 +684,7 @@ Gets the associated Express session.
 The session object is only available if the Express session was previously linked to the socket using client-side `@share`.
 This is done automatically for the default, local Express session and local Socket.IO server.
 
-See `examples/share_*.coffee` for a complete example using separate servers for Socket.IO and Express.
+See `examples/share_*.coffee` for a complete example using separate servers for Socket.IO and Express. The Socket.IO and Express applications can run on the same host (Node.js clustering) or on different hosts.
 
 ## VIEW SCOPE
 
@@ -790,10 +790,9 @@ Same as the client-side root scope's `@emit`.
 `@share(channel_name,socket,callback)` will associate the socket to the `channel_name`.
 This is used to make the Express session data available to the Socket.IO server.
 
-The channel name `__local` is reserved for the local Socket.IO server (in order for Socket.IO server-side
-to get access to the Express session object in a single-instance scenario).
+The channel name `__local` is reserved for the local Socket.IO server (in order for Socket.IO server-side to get access to the Express session object in a single-instance scenario).
 
-For a multi-server example, see `examples/share_*.coffee`.
+For a multi-server / Node.js cluster example, see `examples/share_*.coffee`.
 
 ## APP SETTINGS
 
