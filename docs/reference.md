@@ -298,7 +298,7 @@ Serves `";#{coffeescript_helpers}(#{your_function})();"` as `/foo.js`, with cont
 
 Serves the string as `/foo.js`, with content-type `application/javascript`.
 
-### @css (string)
+### @css (string paramater)
 
     @css '/foo.css': '''
       body { font-family: sans-serif; }
@@ -306,9 +306,9 @@ Serves the string as `/foo.js`, with content-type `application/javascript`.
 
 Serves the string as `/foo.css`, with content-type `text/css`.
 
-### @css (function)
+### @css (object parameter)
 
-    border_radius = (radius)->
+    border_radius = (radius) ->
       WebkitBorderRadius: radius
       MozBorderRadius: radius
       borderRadius: radius
@@ -427,10 +427,10 @@ Make sure the `gzippo` module is available to your application.
 
 #### `'zappa'`
 
-Serves `/zappa/Zappa.js`, `/zappa/zappa.js`, `/zappa/jquery.js` and `/zappa/sammy.js`. Automatically added by `@client` and `@shared` if not added before.
+Serves `/zappa/Zappa-simple.js`, /zappa/Zappa.js`, `/zappa/zappa.js`, `/zappa/jquery.js` and `/zappa/sammy.js`. Automatically added by `@client` and `@shared` if not added before.
 
 To minimize page download delay on the client, use `/zappa/Zappa.js`, which combines Zappa, jQuery, Sammy.js, and Socket.IO client-side scripts into a single download.
-Or use `/zappa/Zappa-simple.js` which combines Zappa, jQuery, and Socket.IO.
+If your client-side code doesn't require Sammy, use `/zappa/Zappa-simple.js` which combines Zappa, jQuery, and Socket.IO.
 
 #### `'partials'`
 
