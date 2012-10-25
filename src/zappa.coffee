@@ -111,7 +111,7 @@ socketio = require 'socket.io'
 # Takes in a function and builds express/socket.io apps based on the rules
 # contained in it.
 zappa.app = (func,options={}) ->
-  context = {id: uuid(), zappa, express}
+  context = {id: uuid.v4(), zappa, express}
 
   real_root = path.dirname(module.parent.filename)
   root =  path.join real_root, ".zappa-#{context.id}"
@@ -605,7 +605,7 @@ zappa.app = (func,options={}) ->
           # Client (or hijacker) trying to re-key.
           @send error:'Channel already assigned', channel_name: channel_name
         else
-          key = uuid() # used for socket 'authorization'
+          key = uuid.v4() # used for socket 'authorization'
 
           # Update the Express session store
           @session.__socket[channel_name] =
