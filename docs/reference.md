@@ -430,6 +430,7 @@ Make sure the `gzippo` module is available to your application.
 Serves `/zappa/Zappa.js`, `/zappa/zappa.js`, `/zappa/jquery.js` and `/zappa/sammy.js`. Automatically added by `@client` and `@shared` if not added before.
 
 To minimize page download delay on the client, use `/zappa/Zappa.js`, which combines Zappa, jQuery, Sammy.js, and Socket.IO client-side scripts into a single download.
+Or use `/zappa/Zappa-simple.js` which combines Zappa, jQuery, and Socket.IO.
 
 #### `'partials'`
 

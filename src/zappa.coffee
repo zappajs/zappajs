@@ -136,6 +136,7 @@ zappa.app = (func,options={}) ->
   # Reference to the zappa client, the value will be set later.
   client = null
   client_bundled = null
+  client_bundle_simple = null
 
   # Tracks if the zappa middleware is already mounted (`@use 'zappa'`).
   zappa_used = no
@@ -273,6 +274,7 @@ zappa.app = (func,options={}) ->
           else
             switch req.url
               when '/zappa/Zappa.js' then send client_bundled
+              when '/zappa/Zappa-simple.js' then send client_bundle_simple
               when '/zappa/zappa.js' then send client
               when '/zappa/jquery.js' then send jquery
               when '/zappa/sammy.js' then send sammy
@@ -565,11 +567,17 @@ zappa.app = (func,options={}) ->
   client = require('./client').build(zappa.version, app.settings)
   client = ";#{coffeescript_helpers}(#{client})();"
   client = minify(client) if app.settings['minify']
+  client_bundle_simple =
+    if io?
+      jquery + socketjs + client
+    else
+      jquery + client
   client_bundled =
     if io?
       jquery + socketjs + sammy + client
     else
       jquery + sammy + client
+
 
   if app.settings['default layout']
     context.view layout: ->

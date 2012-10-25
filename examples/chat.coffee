@@ -31,9 +31,7 @@ require('./zappajs') ->
     html ->
       head ->
         title 'PicoChat!'
-        script src: '/socket.io/socket.io.js'
-        script src: '/zappa/jquery.js'
-        script src: '/zappa/zappa.js'
+        script src: '/zappa/Zappa-simple.js'
         script src: '/index.js'
       body ->
         div id: 'panel'
