@@ -1,3 +1,8 @@
+**v0.4.12** (2012-10-25)
+
+  * Now the `latest` version.
+  * Stricter dependencies versioning (#48)
+
 **v0.4.11** (2012-10-02)
 
   * Added `@jsonp` #47
