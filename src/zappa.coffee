@@ -13,8 +13,8 @@ path = require 'path'
 uuid = require 'node-uuid'
 vendor = (name) ->
   fs.readFileSync(path.join(__dirname,'..','vendor',name)).toString()
-jquery = vendor 'jquery-1.8.0.min.js'
-sammy = vendor 'sammy-0.7.1.min.js'
+jquery = vendor 'jquery-1.8.2.min.js'
+sammy = vendor 'sammy-0.7.2.min.js'
 socketjs = vendor 'socket.io.min.js'
 uglify = require 'uglify-js'
 

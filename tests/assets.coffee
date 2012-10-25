@@ -172,7 +172,7 @@ port = 15200
     c = t.client(zapp.server)
     c.get '/zappa/jquery.js', (err, res) ->
       t.equal 'content-type', res.headers['content-type'], 'application/javascript'
-      t.equal 'length', res.headers['content-length'], '92556'
+      t.equal 'length', res.headers['content-length'], '93436'
 
   sammy: (t) ->
     t.expect 'content-type', 'length'
@@ -184,7 +184,7 @@ port = 15200
     c = t.client(zapp.server)
     c.get '/zappa/sammy.js', (err, res) ->
       t.equal 'content-type', res.headers['content-type'], 'application/javascript'
-      t.equal 'length', res.headers['content-length'], '18583'
+      t.equal 'length', res.headers['content-length'], '18528'
 
   'socket.io': (t) ->
     t.expect 'content-type', 'length'
