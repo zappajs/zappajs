@@ -49,11 +49,6 @@ You can also pass the parameters in the `options` object. The following options 
 * `port`
 * `host`
 * `disable_io`: if true, the Socket.IO interface will be disabled.
-* `css`: an array of CSS template modules names, or a string containing a single CSS template module name. Defaults to `["stylus"]` for backward-compatibility.
-
-        require('zappajs') css:'less', ->
-          @less '/index.css': 'body { color: black }'
-
 * `https`: object containing [options for HTTPS](http://nodejs.org/api/tls.html#tls_tls_createserver_options_secureconnectionlistener). Generally `key` and `cert` are all you need:
 
         # Start a HTTPS server on port 3443
@@ -324,6 +319,8 @@ Serves the object, compiled with [coffee-css](https://github.com/khoomeister/cof
 
 ### @stylus
 
+    @with css:'stylus'
+
     @stylus '/foo.css': '''
       border-radius()
         -webkit-border-radius arguments
@@ -341,37 +338,29 @@ Compiles the string with [stylus](http://learnboost.github.com/stylus) and serve
 
 You must have stylus installed with `npm install stylus`.
 
-Note: To disable this method, use:
-
-    require('zappajs') css:[], ->
-
 ### @less
 
-This is not enabled by default.
+    @with css:'less'
 
-    require('zappajs').run css:'less', ->
+    @less '/foo.css': '''
+      .border-radius(@radius) {
+        -webkit-border-radius: @radius;
+        -moz-border-radius: @radius;
+        border-radius: @radius;
+      }
 
-      @less '/foo.css': '''
-        .border-radius(@radius) {
-          -webkit-border-radius: @radius;
-          -moz-border-radius: @radius;
-          border-radius: @radius;
-        }
+      body {
+        font: 12px Helvetica, Arial, sans-serif;
+      }
 
-        body {
-          font: 12px Helvetica, Arial, sans-serif;
-        }
-
-        a.button {
-          .border-radius(5px);
-        }
-      '''
+      a.button {
+        .border-radius(5px);
+      }
+    '''
 
 Compiles the string with [less](http://lesscss.org/) and servers the results as '/foo.css', with content-type `text/css`.
 
 You must have less installed with `npm install less`.
-
-Note: Any other CSS template module that provides a `.render` method might be used in a similar way.
 
 ### @zappa
 
@@ -507,6 +496,18 @@ Additionally `@param` is assigned the value of the parameter.
         @next "Invalid User ID"
       else
         @next()
+
+### @with
+
+This is a Zappa extension. The following options are supported.
+
+#### @with css
+
+`@with css:'cssmod'`
+
+Will load the module `cssmod`, add a new method `cssmod` to the Root Scope, which will behave similarly to the `@css` method, assuming the `cssmod` module has a `render` method.
+
+See the documentation for `@stylus` and `@less` for examples.
 
 ## REQUEST HANDLERS SCOPE
 

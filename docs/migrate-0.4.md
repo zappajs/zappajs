@@ -39,6 +39,10 @@ Zappa in places. Here are the differences we know about.
 
 Other changes are Zappa-specific and simplify the API:
 
+* If you used the `css` option to `zappa.run` its has been replaced by the root scope `@with css` methods.
+
+* `@stylus` is no longer available by default; you must do `@with css:'stylus'` to enable it.
+
 * If you built variadic helpers in Zappa 0.3 you might have been aware of an undocumented,
   extraneous parameter (the context) provided to the helpers.
 

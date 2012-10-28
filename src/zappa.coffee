@@ -195,16 +195,24 @@ zappa.app = (func,options={}) ->
       route verb: 'get', path: k, handler: css, contentType: 'css'
     return
 
-  options.require_css ?= []
-  if typeof options.require_css is 'string'
-    options.require_css = [options.require_css]
-  for name in options.require_css
-    context[name] = (obj) ->
-      for k, v of obj
-        css = require(name).render v, filename: k, (err, css) ->
-          throw err if err
-          route verb: 'get', path: k, handler: css, contentType: 'css'
-      return
+  context.with = (obj) ->
+    zappa_with =
+      css: (modules) ->
+        if typeof modules is 'string'
+          modules = [modules]
+        for name in modules
+          module = require(name)
+          context[name] = (obj) ->
+            for k, v of obj
+              module.render v, filename: k, (err, css) ->
+                throw err if err
+                route verb: 'get', path: k, handler: css, contentType: 'css'
+            return
+        return
+
+    for k,v of obj
+      if zappa_with[k]
+        zappa_with[k] v
 
   context.helper = (obj) ->
     for k, v of obj
@@ -646,7 +654,6 @@ zappa.run = ->
   root_function = null
   options =
     disable_io: false
-    require_css: ['stylus']
 
   for a in arguments
     switch typeof a
@@ -660,7 +667,6 @@ zappa.run = ->
           switch k
             when 'host' then host = v
             when 'port' then port = v
-            when 'css' then options.require_css = v
             when 'disable_io' then options.disable_io = v
             when 'https' then options.https = v
 

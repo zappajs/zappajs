@@ -98,6 +98,7 @@ port = 15200
     t.wait 3000
 
     zapp = zappa port++, ->
+      @with css:'stylus'
       @stylus '/index.css': '''
         border-radius()
           -webkit-border-radius arguments  
@@ -130,7 +131,8 @@ port = 15200
     t.expect 'header', 'body'
     t.wait 3000
 
-    zapp = zappa port++, css:'less', ->
+    zapp = zappa port++, ->
+      @with css:'less'
       @less '/index.css': '''
         .border-radius(@radius) {
           -webkit-border-radius: @radius;
