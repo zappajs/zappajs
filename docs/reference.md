@@ -397,6 +397,7 @@ And objects:
     @use 'bodyParser', static: __dirname + '/public', session: {secret: 'fnord'}, 'cookies'
 
 When passing strings and objects, zappa's own middleware will be used if available, or express (connect) middleware otherwise.
+(Tip: middleware added with `@use` will be ran for every request. If you only want some requests to use a specific middleware, use the `@get '/path', middleware1, middleware2, -> ...` syntax.)
 
 Currently available zappa middleware are:
 
