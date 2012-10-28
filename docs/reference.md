@@ -493,7 +493,9 @@ or use the [consolidate](https://github.com/visionmedia/consolidate.js) package:
 
 Shortcut to `@app.locals`.
 
-### `@param name:callback,...`
+### @param
+
+`@param name:callback,...`
 
 Shortcut to `@app.param`. Accepts multiple params in one go.
 
