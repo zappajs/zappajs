@@ -125,3 +125,52 @@ port = 16000
       t.equal 2, res.body, 'sears'
 
 # at line 122 of crashcourse.md
+
+  crashcourse_13: (t) ->
+    t.expect 1
+    t.wait 3000
+
+    zapp = zappa port++, ->
+      @use 'partials'
+      @app.engine 'eco', require('consolidate').eco
+      @set 'view engine': 'eco'
+
+      @get '/': -> @render index: {foo: 'bar', title: 'Eco template'}
+      @get '/jade': -> @render 'index.jade': {foo: 'bar', title: 'Jade template'}
+
+      @view index: '''
+        <h1><%= @title %></h1>
+        <p><%= @foo %></p>
+      '''
+
+      @view layout: '''
+        <!DOCTYPE html>
+        <html>
+          <head><title><%= @title %></title></head>
+          <body><%- @body %></body>
+        </html>
+      '''
+
+      @view 'index.jade': '''
+        h1= title
+        p= foo
+      '''
+
+      @view 'layout.jade': '''
+        !!! 5
+        html
+          head
+            title= title
+          body!= body
+      '''
+
+    c = t.client(zapp.server)
+    c.get '/', (err,res) ->
+      t.equal 1, res.body, '''
+        <!DOCTYPE html>
+        <html>
+          <head><title>Eco template</title></head>
+          <body><h1>Eco template</h1>
+        <p>bar</p></body>
+        </html>
+      '''

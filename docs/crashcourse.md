@@ -140,6 +140,8 @@ Another is that you can define inline views that `@render` "sees" as if they wer
 
 Note that zappa comes with a default templating engine, [CoffeeCup](https://github.com/gradus/coffeecup), and you don't have to setup anything to use it. You can also easily use other engines by specifying the file extension or the `'view engine'` setting; it's just express. Well, express + inline views support:
 
+    @use 'partials'
+    @app.engine 'eco', require('consolidate').eco
     @set 'view engine': 'eco'
 
     @get '/': -> @render index: {foo: 'bar', title: 'Eco template'}
