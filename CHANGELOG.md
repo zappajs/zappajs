@@ -1,3 +1,11 @@
+**v0.4.13** (2012-12-25)
+
+  * Removed `@stylus`; added `@with` to allow in-code Zappa changes.
+  * Restore the minimized version of socket.io.
+  * Explicitely explain how to pass middleware arrays (#55)
+  * Corrected `eco` example (#52)
+  * Other documentation updates and examples
+
 **v0.4.12** (2012-10-25)
 
   * Now the `latest` version.
