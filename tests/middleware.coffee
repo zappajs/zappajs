@@ -17,6 +17,21 @@ port = 15500
     c.get '/', (err, res) ->
       t.ok 'response time', res.headers['x-response-time'].match /\d+ms/
 
+  'array express API': (t) ->
+    t.expect 'array'
+    t.wait 3000
+
+    zapp = zappa port++, ->
+      foo = bar = baz = ->
+        @next()
+      common = [foo, bar, baz]
+
+      @get '/something', common..., -> 'ok'
+
+    c= t.client(zapp.server)
+    c.get '/something', (err, res) ->
+      t.equal 'array', res.body, 'ok'
+
   use: (t) ->
     t.expect 'static', 'response time'
     t.wait 3000

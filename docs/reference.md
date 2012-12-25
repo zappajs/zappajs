@@ -114,6 +114,12 @@ Ex.:
 
     @get '/', load_user, -> 'hi'
 
+You can pass middleware arrays using Coffee-Script's `...` splats:
+
+    common = [auth, load_user, apply_policy]
+
+    @get '/', common..., -> 'hi'
+
 ### @on
 
 `@on event: handler`
