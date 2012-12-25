@@ -15,7 +15,7 @@ task 'docs', ->
   run 'docco src/*.coffee'
   
 task 'vendor', ->
-  run 'mkdir -p vendor && cd vendor && curl -OL http://code.jquery.com/jquery-1.8.2.min.js', ->
+  run 'mkdir -p vendor && cd vendor && curl -OL http://code.jquery.com/jquery-1.8.3.min.js', ->
     run 'cd vendor && curl -OL https://github.com/quirkey/sammy/raw/master/lib/min/sammy-0.7.2.min.js', ->
       run 'cd vendor && curl -OL https://raw.github.com/LearnBoost/socket.io-client/master/dist/socket.io.min.js', ->
         run 'head -n 1 vendor/jquery*', ->
