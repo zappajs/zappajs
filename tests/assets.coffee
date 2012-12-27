@@ -174,7 +174,7 @@ port = 15200
     c = t.client(zapp.server)
     c.get '/zappa/jquery.js', (err, res) ->
       t.equal 'content-type', res.headers['content-type'], 'application/javascript'
-      t.equal 'length', res.headers['content-length'], '93436'
+      t.equal 'length', res.headers['content-length'], '93637'
 
   sammy: (t) ->
     t.expect 'content-type', 'length'
