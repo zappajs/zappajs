@@ -1,3 +1,7 @@
+**v0.4.14** (2012-12-27)
+
+  * Identical to 0.4.13 but with proper jQuery included.
+
 **v0.4.13** (2012-12-25)
 
   * Removed `@stylus`; added `@with` to allow in-code Zappa changes.
