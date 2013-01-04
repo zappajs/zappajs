@@ -120,6 +120,12 @@ You can pass middleware arrays using Coffee-Script's `...` splats:
 
     @get '/', common..., -> 'hi'
 
+Or as plain arrays, as Express allows:
+
+    common = [auth, load_user, apply_policy]
+
+    @get '/', common, -> 'hi'
+
 ### @on
 
 `@on event: handler`
