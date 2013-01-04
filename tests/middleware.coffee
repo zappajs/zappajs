@@ -27,10 +27,14 @@ port = 15500
       common = [foo, bar, baz]
 
       @get '/something', common..., -> 'ok'
+      @get '/something2', common, -> 'ok'
 
     c= t.client(zapp.server)
     c.get '/something', (err, res) ->
       t.equal 'array', res.body, 'ok'
+    c.get '/something2', (err, res) ->
+      t.equal 'array', res.body, 'ok'
+
 
   use: (t) ->
     t.expect 'static', 'response time'

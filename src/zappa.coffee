@@ -66,6 +66,16 @@ copy_data_to = (recipient, sources) ->
       recipient[k] = v unless recipient[k]
   return
 
+# Flatten array recursively (copied from Express's utils.js)
+flatten = (arr, ret) ->
+  ret ?= []
+  for o in arr
+    if Array.isArray o
+      flatten o, ret
+    else
+      ret.push o
+  ret
+
 # Zappa FS
 zappa_fs = {}
 
@@ -156,7 +166,7 @@ zappa.app = (func,options={}) ->
           route
             verb: verb
             path: args[0]
-            middleware: args[1...arity-1]
+            middleware: flatten args[1...arity-1]
             handler: args[arity-1]
         else
           for k, v of arguments[0]
