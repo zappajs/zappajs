@@ -9,7 +9,7 @@ skeleton = ->
     context = {}
 
     # Storage for the functions provided by the user.
-    ws_handlers = {}
+    ws_handlers = []
     helpers = {}
 
     apply_helpers = (ctx) ->
@@ -36,8 +36,8 @@ skeleton = ->
         helpers[k] = v
 
     context.on = (obj) ->
-      for k, v of obj
-        ws_handlers[k] = v
+      for message, action  of obj
+        ws_handlers.push {message,action}
 
     context.connect = ->
       context.socket = io.connect.apply io, arguments
@@ -73,9 +73,9 @@ skeleton = ->
         context.share '__local', context.socket, (data) ->
           context.key = data.key
 
-      for name, h of ws_handlers
-        do (name, h) ->
-          context.socket.on name, (data) ->
+      for {message,action} in ws_handlers
+        do (message, action) ->
+          context.socket.on message, (data) ->
             ctx =
               app: app
               socket: context.socket
@@ -86,7 +86,7 @@ skeleton = ->
 
             apply_helpers ctx
 
-            h.apply ctx
+            action.apply ctx
 
     $(-> app.run '#/') if app?
 
