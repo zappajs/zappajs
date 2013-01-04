@@ -429,12 +429,12 @@ zappa.app = (func,options={}) ->
         f.apply ctx
 
     if typeof r.handler is 'string'
-      app[r.verb] r.path, r.middleware..., (req, res) ->
+      app[r.verb] r.path, r.middleware, (req, res) ->
         res.contentType r.contentType if r.contentType?
         res.send r.handler
         return
     else
-      app[r.verb] r.path, r.middleware..., (req, res, next) ->
+      app[r.verb] r.path, r.middleware, (req, res, next) ->
         ctx =
           app: app
           settings: app.settings
