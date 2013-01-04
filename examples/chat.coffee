@@ -1,31 +1,31 @@
 require('./zappajs') ->
-  
+
   @get '/': ->
     @render index: {layout: no}
-  
+
   @on 'set nickname': ->
     @client.nickname = @data.nickname
-  
+
   @on said: ->
     @broadcast said: {nickname: @client.nickname, text: @data.text}
     @emit said: {nickname: @client.nickname, text: @data.text}
-  
+
   @client '/index.js': ->
     @connect()
 
-    @on said: ->
-      $('#panel').append "<p>#{@data.nickname} said: #{@data.text}</p>"
-    
     $ =>
       @emit 'set nickname': {nickname: prompt 'Pick a nickname!'}
-      
+
+      @on said: ->
+        $('#panel').append "<p>#{@data.nickname} said: #{@data.text}</p>"
+
       $('#box').focus()
-      
+
       $('button').click (e) =>
         @emit said: {text: $('#box').val()}
         $('#box').val('').focus()
         e.preventDefault()
-    
+
   @view index: ->
     doctype 5
     html ->
