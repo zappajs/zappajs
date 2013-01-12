@@ -426,7 +426,7 @@ zappa.app = (func,options={}) ->
           ctx.data = {}
           copy_data_to ctx.data, [req.query, req.params, req.body]
 
-        f.apply ctx
+        f.apply ctx, [req, res, next]
 
     if typeof r.handler is 'string'
       app[r.verb] r.path, r.middleware, (req, res) ->
