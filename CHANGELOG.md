@@ -1,3 +1,14 @@
+**v0.4.15** (2013-01-12)
+
+  * Re-introduced callback arguments. Our callbacks API is closer to Express and Socket.IO.
+  * Support for non-zappajs middleware (#62)
+  * Documentation on testing ZappaJS (#61)
+  * Made `@on` available more widely on the client (#51)
+  * Allow multiple handlers per message on the client (#51)
+  * Reviewed documentation for connect-assets integration (#53)
+  * Flatten middleware (#55)
+  * Updated dependencies (coffeecup, socket.io)
+
 **v0.4.14** (2012-12-27)
 
   * Identical to 0.4.13 but with proper jQuery included.
