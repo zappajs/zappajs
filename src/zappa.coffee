@@ -392,7 +392,7 @@ zappa.app = (func,options={}) ->
           next: next
           param: p
         apply_helpers ctx
-        callback.apply ctx
+        callback.call ctx, req, res, next, p
 
     for k, v of obj
       @app.param k, build v
@@ -426,7 +426,7 @@ zappa.app = (func,options={}) ->
           ctx.data = {}
           copy_data_to ctx.data, [req.query, req.params, req.body]
 
-        f.apply ctx, [req, res, next]
+        f.call ctx, req, res, next
 
     if typeof r.handler is 'string'
       app[r.verb] r.path, r.middleware, (req, res) ->
@@ -509,7 +509,7 @@ zappa.app = (func,options={}) ->
           ctx.data = {}
           copy_data_to ctx.data, [req.query, req.params, req.body]
 
-        result = r.handler.apply ctx
+        result = r.handler.call ctx, req, res, next
 
         res.contentType(r.contentType) if r.contentType?
         if typeof result is 'string' then res.send result
@@ -574,7 +574,7 @@ zappa.app = (func,options={}) ->
             ctx = build_ctx()
             ctx.data = data
             ctx.ack = ack
-            h.apply ctx
+            h.call ctx, data, ack
         return
     return
 
