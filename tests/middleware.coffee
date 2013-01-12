@@ -89,3 +89,25 @@ port = 15500
     c = t.client(zapp.server)
     c.get '/foo.txt', (err, res) ->
       t.equal 'static', res.body, 'intercepted!'
+
+
+  compatible: (t) ->
+    t.expect 1, 2, 3
+    t.wait 3000
+
+    zapp = zappa port++, ->
+      auth = -> (user,pass) ->
+        user is 'hello' and pass is 'world'
+      @get '/', -> 'welcome'
+      @get '/auth', @express.basicAuth(auth), -> 'authenticated'
+
+    c = t.client(zapp.server)
+    c.get '/', (err, res) ->
+      t.equal 1, res.body, 'welcome'
+
+    c.get '/auth', (err, res) ->
+      t.equal 2, res.body, 'Unauthorized'
+
+    a = new Buffer('hello:world').toString('base64')
+    c.get '/auth', headers: {Authorization:'Basic '+a}, (err, res) ->
+      t.equal 3, res.body, 'authenticated'
