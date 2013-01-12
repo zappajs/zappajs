@@ -5,8 +5,7 @@
   <span class="nv">settings = </span><span class="kc">null</span>
 
   <span class="nv">zappa.run = </span><span class="nf">(func) -&gt;</span>
-    <span class="nv">context = </span><span class="p">{}</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Storage for the functions provided by the user.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nv">ws_handlers = </span><span class="p">{}</span>
-    <span class="nv">helpers = </span><span class="p">{}</span>
+    <span class="nv">context = </span><span class="p">{}</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Storage for the functions provided by the user.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nv">helpers = </span><span class="p">{}</span>
 
     <span class="nv">apply_helpers = </span><span class="nf">(ctx) -&gt;</span>
       <span class="k">for</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">helper</span> <span class="k">of</span> <span class="nx">helpers</span>
@@ -32,8 +31,19 @@
         <span class="nx">helpers</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="nx">v</span>
 
     <span class="nv">context.on = </span><span class="nf">(obj) -&gt;</span>
-      <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">obj</span>
-        <span class="nx">ws_handlers</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="nx">v</span>
+      <span class="k">for</span> <span class="nx">message</span><span class="p">,</span> <span class="nx">action</span> <span class="k">of</span> <span class="nx">obj</span>
+        <span class="nx">context</span><span class="p">.</span><span class="nx">socket</span><span class="p">.</span><span class="kc">on</span> <span class="nx">message</span><span class="p">,</span> <span class="nf">(data) -&gt;</span>
+          <span class="nv">ctx =</span>
+            <span class="nv">app: </span><span class="nx">app</span>
+            <span class="nv">socket: </span><span class="nx">context</span><span class="p">.</span><span class="nx">socket</span>
+            <span class="nv">id: </span><span class="nx">context</span><span class="p">.</span><span class="nx">socket</span><span class="p">.</span><span class="nx">id</span>
+            <span class="nv">data: </span><span class="nx">data</span>
+            <span class="nv">emit: </span><span class="nx">context</span><span class="p">.</span><span class="nx">emit</span>
+            <span class="nv">share: </span><span class="nx">context</span><span class="p">.</span><span class="nx">share</span>
+
+          <span class="nx">apply_helpers</span> <span class="nx">ctx</span>
+
+          <span class="nx">action</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">ctx</span>
 
     <span class="nv">context.connect = </span><span class="o">-&gt;</span>
       <span class="nv">context.socket = </span><span class="nx">io</span><span class="p">.</span><span class="nx">connect</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">io</span><span class="p">,</span> <span class="nx">arguments</span>
@@ -62,21 +72,6 @@
       <span class="nx">context</span><span class="p">.</span><span class="nx">socket</span><span class="p">.</span><span class="kc">on</span> <span class="s">&#39;connect&#39;</span><span class="p">,</span> <span class="o">-&gt;</span>
         <span class="nx">context</span><span class="p">.</span><span class="nx">share</span> <span class="s">&#39;__local&#39;</span><span class="p">,</span> <span class="nx">context</span><span class="p">.</span><span class="nx">socket</span><span class="p">,</span> <span class="nf">(data) -&gt;</span>
           <span class="nv">context.key = </span><span class="nx">data</span><span class="p">.</span><span class="nx">key</span>
-
-      <span class="k">for</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">h</span> <span class="k">of</span> <span class="nx">ws_handlers</span>
-        <span class="nx">do</span> <span class="nf">(name, h) -&gt;</span>
-          <span class="nx">context</span><span class="p">.</span><span class="nx">socket</span><span class="p">.</span><span class="kc">on</span> <span class="nx">name</span><span class="p">,</span> <span class="nf">(data) -&gt;</span>
-            <span class="nv">ctx =</span>
-              <span class="nv">app: </span><span class="nx">app</span>
-              <span class="nv">socket: </span><span class="nx">context</span><span class="p">.</span><span class="nx">socket</span>
-              <span class="nv">id: </span><span class="nx">context</span><span class="p">.</span><span class="nx">socket</span><span class="p">.</span><span class="nx">id</span>
-              <span class="nv">data: </span><span class="nx">data</span>
-              <span class="nv">emit: </span><span class="nx">context</span><span class="p">.</span><span class="nx">emit</span>
-              <span class="nv">share: </span><span class="nx">context</span><span class="p">.</span><span class="nx">share</span>
-
-            <span class="nx">apply_helpers</span> <span class="nx">ctx</span>
-
-            <span class="nx">h</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">ctx</span>
 
     <span class="nx">$</span><span class="p">(</span><span class="o">-&gt;</span> <span class="nx">app</span><span class="p">.</span><span class="nx">run</span> <span class="s">&#39;#/&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="nx">app</span><span class="o">?</span>
 
