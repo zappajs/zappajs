@@ -272,8 +272,13 @@ zappa.app = (func,options={}) ->
   context.use = ->
     zappa_middleware =
       # Connect `static` middlewate uses fs.stat().
-      static: (p = path.join(real_root, '/public')) ->
-        express.static(p)
+      static: (options) ->
+        if typeof options is 'string'
+          options = path: options
+        options ?= {}
+        p = options.path ? path.join(real_root, '/public')
+        express.static(p, options)
+        return
       staticGzip: (options) ->
         if typeof options is 'string'
           options = path: options
