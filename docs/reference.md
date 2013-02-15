@@ -645,6 +645,8 @@ Example:
           @render 'client', client
         json: =>
           @json client
+        'image/png':
+          qr_encode client
 
 ## SOCKETS HANDLERS SCOPE
 
