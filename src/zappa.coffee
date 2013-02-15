@@ -510,6 +510,9 @@ zappa.app = (func,options={}) ->
           ctx.data = {}
           copy_data_to ctx.data, [req.query, req.params, req.body]
 
+        if app.settings['x-powered-by']
+          res.setHeader 'X-Powered-By', "Zappa #{zappa.version}"
+
         result = r.handler.call ctx, req, res, next
 
         res.contentType(r.contentType) if r.contentType?
