@@ -5,7 +5,7 @@ port = 15600
   inline: (t) ->
     t.expect 1, 2
     t.wait 3000
-    
+
     zapp = zappa port++, ->
       @get '/bar': ->
         @render 'index', foo: 'bar', layout: no
@@ -13,7 +13,7 @@ port = 15600
         @render 'index', foo: 'foobar', layout: no
 
       @view index: -> h2 "CoffeeKup inline template: #{@foo}"
-    
+
     c = t.client(zapp.server)
     c.get '/bar', (err, res) ->
       t.equal 1, res.body, '<h2>CoffeeKup inline template: bar</h2>'
@@ -44,20 +44,20 @@ port = 15600
   'inline + inline layout': (t) ->
     t.expect 1
     t.wait 3000
-    
+
     zapp = zappa port++, ->
       @use 'partials'
       @get '/': ->
         @render 'index', foo: 'bar'
 
       @view index: -> h2 "CoffeeKup inline template: #{@foo}"
-      
+
       @view layout: ->
         doctype 5
         html ->
           head ->
             title 'CoffeeKup inline layout'
-          body @body    
+          body @body
 
     c = t.client(zapp.server)
     c.get '/', (err, res) ->
@@ -88,11 +88,11 @@ port = 15600
   file: (t) ->
     t.expect 1
     t.wait 3000
-    
+
     zapp = zappa port++, ->
       @get '/': ->
         @render 'index', foo: 'bar', layout: no
-    
+
     c = t.client(zapp.server)
     c.get '/', (err, res) ->
       t.equal 1, res.body, '<h2>CoffeeKup file template: bar</h2>'
@@ -100,12 +100,12 @@ port = 15600
   'file + file layout': (t) ->
     t.expect 1
     t.wait 3000
-    
+
     zapp = zappa port++, ->
       @use 'partials'
       @get '/': ->
         @render 'index', foo: 'bar'
-    
+
     c = t.client(zapp.server)
     c.get '/', (err, res) ->
       t.equal 1, res.body, '<!DOCTYPE html><html><head><title>CoffeeKup file layout</title></head><body><h2>CoffeeKup file template: bar</h2></body></html>'
@@ -113,11 +113,11 @@ port = 15600
   'response.render, file': (t) ->
     t.expect 1
     t.wait 3000
-    
+
     zapp = zappa port++, ->
       @get '/': ->
         @response.render 'index', foo: 'bar', layout: no
-    
+
     c = t.client(zapp.server)
     c.get '/', (err, res) ->
       t.equal 1, res.body, '<h2>CoffeeKup file template: bar</h2>'
@@ -125,12 +125,12 @@ port = 15600
   'response.render, file + file layout': (t) ->
     t.expect 1
     t.wait 3000
-    
+
     zapp = zappa port++, ->
       @use 'partials'
       @get '/': ->
         @response.render 'index', foo: 'bar'
-    
+
     c = t.client(zapp.server)
     c.get '/', (err, res) ->
       t.equal 1, res.body, '<!DOCTYPE html><html><head><title>CoffeeKup file layout</title></head><body><h2>CoffeeKup file template: bar</h2></body></html>'
@@ -138,16 +138,16 @@ port = 15600
   'eco, inline': (t) ->
     t.expect 1
     t.wait 3000
-    
+
     zapp = zappa port++, ->
       @app.engine 'eco', require('consolidate').eco
       @set 'view engine': 'eco'
-      
+
       @get '/': ->
         @render 'index', foo: 'bar', layout: no
 
       @view index: "<h2>Eco inline template: <%= @foo %></h2>"
-    
+
     c = t.client(zapp.server)
     c.get '/', (err, res) ->
       t.equal 1, res.body, '<h2>Eco inline template: bar</h2>'
@@ -155,12 +155,12 @@ port = 15600
   'eco, inline + inline layout': (t) ->
     t.expect 1
     t.wait 3000
-    
+
     zapp = zappa port++, ->
       @app.engine 'eco', require('consolidate').eco
       @use 'partials'
       @set 'view engine': 'eco'
-      
+
       @get '/': ->
         @render 'index', foo: 'bar'
 
@@ -175,7 +175,7 @@ port = 15600
           <body><%- @body %></body>
         </html>
       '''
-    
+
     c = t.client(zapp.server)
     c.get '/', (err, res) ->
       t.equal 1, res.body, '<!DOCTYPE html>\n<html>\n  <head>\n    <title>Eco inline layout</title>\n  </head>\n  <body><h2>Eco inline template: bar</h2></body>\n</html>'
@@ -183,15 +183,15 @@ port = 15600
   'eco, file': (t) ->
     t.expect 1
     t.wait 3000
-    
+
     zapp = zappa port++, ->
       @app.engine 'eco', require('consolidate').eco
       @use 'partials'
       @set 'view engine': 'eco'
-      
+
       @get '/': ->
         @render 'index', foo: 'bar', layout: no
-    
+
     c = t.client(zapp.server)
     c.get '/', (err, res) ->
       t.equal 1, res.body, '<h2>Eco file template: bar</h2>'
@@ -199,15 +199,15 @@ port = 15600
   'eco, file + file layout': (t) ->
     t.expect 1
     t.wait 3000
-    
+
     zapp = zappa port++, ->
       @app.engine 'eco', require('consolidate').eco
       @use 'partials'
       @set 'view engine': 'eco'
-      
+
       @get '/': ->
         @render 'index', foo: 'bar'
-    
+
     c = t.client(zapp.server)
     c.get '/', (err, res) ->
       t.equal 1, res.body, '<!DOCTYPE html>\n<html>\n  <head>\n    <title>Eco file layout</title>\n  </head>\n  <body><h2>Eco file template: bar</h2></body>\n</html>'
@@ -215,13 +215,13 @@ port = 15600
   'eco, zappa adapter, inline + inline layout': (t) ->
     t.expect 1
     t.wait 3000
-    
+
     zapp = zappa port++, ->
       @set 'view engine': 'eco'
       @app.engine 'eco', require('consolidate').eco
       @use 'partials'
         eco: zappa.adapter 'eco'
-      
+
       @get '/': ->
         @render 'index', foo: 'bar'
 
@@ -236,7 +236,7 @@ port = 15600
           <body><%- @body %></body>
         </html>
       '''
-    
+
     c = t.client(zapp.server)
     c.get '/', (err, res) ->
       t.equal 1, res.body, '<!DOCTYPE html>\n<html>\n  <head>\n    <title>Eco inline layout</title>\n  </head>\n  <body><h2>Eco inline template: bar</h2></body>\n</html>'
@@ -244,15 +244,15 @@ port = 15600
   'jade, inline': (t) ->
     t.expect 1
     t.wait 3000
-    
+
     zapp = zappa port++, ->
       @set 'view engine': 'jade'
-      
+
       @get '/': ->
         @render 'index', foo: 'bar', layout: no
 
       @view index: "h2= 'Jade inline template: ' + foo"
-    
+
     c = t.client(zapp.server)
     c.get '/', (err, res) ->
       t.equal 1, res.body, '<h2>Jade inline template: bar</h2>'
@@ -260,11 +260,11 @@ port = 15600
   'jade, inline + inline layout': (t) ->
     t.expect 1
     t.wait 3000
-    
+
     zapp = zappa port++, ->
       @use 'partials'
       @set 'view engine': 'jade'
-      
+
       @get '/': ->
         @render 'index', foo: 'bar'
 
@@ -277,7 +277,7 @@ port = 15600
             title Jade inline layout
           body!= body
       '''
-    
+
     c = t.client(zapp.server)
     c.get '/', (err, res) ->
       t.equal 1, res.body, '<!DOCTYPE html><html><head><title>Jade inline layout</title></head><body><h2>Jade inline template: bar</h2></body></html>'
@@ -285,13 +285,13 @@ port = 15600
   'jade, file': (t) ->
     t.expect 1
     t.wait 3000
-    
+
     zapp = zappa port++, ->
       @set 'view engine': 'jade'
-      
+
       @get '/': ->
         @render 'index', foo: 'bar', layout: no
-    
+
     c = t.client(zapp.server)
     c.get '/', (err, res) ->
       t.equal 1, res.body, '<h2>Jade file template: bar</h2>'
@@ -299,14 +299,14 @@ port = 15600
   'jade, file + file layout': (t) ->
     t.expect 1
     t.wait 3000
-    
+
     zapp = zappa port++, ->
       @use 'partials'
       @set 'view engine': 'jade'
-      
+
       @get '/': ->
         @render 'index', foo: 'bar'
-    
+
     c = t.client(zapp.server)
     c.get '/', (err, res) ->
       t.equal 1, res.body, '<!DOCTYPE html><html><head><title>Jade file layout</title></head><body><h2>Jade file template: bar</h2></body></html>'
@@ -314,12 +314,12 @@ port = 15600
   'jade, zappa adapter, inline + inline layout': (t) ->
     t.expect 1
     t.wait 3000
-    
+
     zapp = zappa port++, ->
       @set 'view engine': 'jade'
       @use 'partials'
         jade: zappa.adapter 'jade'
-      
+
       @get '/': ->
         @render 'index', foo: 'bar'
 
@@ -332,7 +332,7 @@ port = 15600
             title Jade inline layout
           body!= body
       '''
-    
+
     c = t.client(zapp.server)
     c.get '/', (err, res) ->
       t.equal 1, res.body, '<!DOCTYPE html><html><head><title>Jade inline layout</title></head><body><h2>Jade inline template: bar</h2></body></html>'

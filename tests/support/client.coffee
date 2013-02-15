@@ -46,12 +46,12 @@ class Client
             else cb(null, res, window)
         else
           cb(null, res) if cb?
-  
+
   get: (args...) -> @request 'get', args...
   post: (args...) -> @request 'post', args...
   put: (args...) -> @request 'put', args...
   del: (args...) -> @request 'delete', args...
-  
+
   connect: -> @socket = io.connect("http://#{@host}:#{@port}")
   on: -> @socket.on.apply @socket, arguments
   emit: -> @socket.emit.apply @socket, arguments

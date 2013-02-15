@@ -5,14 +5,14 @@ port = 15000
   hello: (t) ->
     t.expect 1, 2, 3, 4, 5
     t.wait 3000
-    
+
     zapp = zappa port++, ->
       @get '/string': 'string'
       @get '/return': -> 'return'
       @get '/send': -> @send 'send'
       @get /\/regex$/, 'regex'
       @get /\/regex_function$/, -> 'regex function'
-    
+
     c = t.client(zapp.server)
     c.get '/string', (err, res) -> t.equal 1, res.body, 'string'
     c.get '/return', (err, res) -> t.equal 2, res.body, 'return'
@@ -23,12 +23,12 @@ port = 15000
   verbs: (t) ->
     t.expect 1, 2, 3
     t.wait 3000
-    
+
     zapp = zappa port++, ->
       @post '/': -> 'post'
       @put '/': -> 'put'
       @del '/': -> 'del'
-    
+
     c = t.client(zapp.server)
     c.post '/', (err, res) -> t.equal 1, res.body, 'post'
     c.put '/', (err, res) -> t.equal 2, res.body, 'put'
@@ -37,10 +37,10 @@ port = 15000
   redirect: (t) ->
     t.expect 1, 2
     t.wait 3000
-    
+
     zapp = zappa port++, ->
       @get '/': -> @redirect '/foo'
-    
+
     c = t.client(zapp.server)
     c.get '/', (err, res) ->
       t.equal 1, res.statusCode, 302
@@ -49,17 +49,17 @@ port = 15000
   params: (t) ->
     t.expect 1, 2
     t.wait 3000
-    
+
     zapp = zappa port++, ->
       @use 'bodyParser'
       @get '/:foo': -> @params.foo + @query.ping
       @post '/:foo': -> @params.foo + @query.ping + @body.zig
-    
+
     c = t.client(zapp.server)
 
     c.get '/bar?ping=pong', (err, res) ->
       t.equal 1, res.body, 'barpong'
-      
+
     headers = 'Content-Type': 'application/x-www-form-urlencoded'
     json = {zig: 'zag'}
     c.post '/bar?ping=pong', {headers, json}, (err, res) ->

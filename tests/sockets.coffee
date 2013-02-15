@@ -5,7 +5,7 @@ port = 15700
   connects: (t) ->
     t.expect 1
     t.wait 3000
-    
+
     zapp = zappa port++, ->
       @on connection: ->
         t.reached 1
@@ -16,7 +16,7 @@ port = 15700
   'server emits': (t) ->
     t.expect 1
     t.wait 3000
-    
+
     zapp = zappa port++, ->
       @on connection: ->
         @emit 'welcome'
@@ -30,7 +30,7 @@ port = 15700
   'server broadcasts': (t) ->
     t.expect 'reached1', 'reached2', 'data1', 'data2'
     t.wait 10000
-    
+
     zapp = zappa port++, ->
       @on shout: ->
         @broadcast 'shouted', @data

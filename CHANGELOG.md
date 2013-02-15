@@ -177,47 +177,47 @@
 **v0.3.0 "The Gumbo Variations"** (2011-09-29):
 
   - Changed: "magic locals" replaced by properties of `this` (`get` becomes `@get`). See #74 and the [announcement](http://zappajs.org/docs/0.3-gumbo/announcement).
-  
+
   - Backtraces now show the relevant file and (js) file number.
-  
+
   - Normal JS scope restored: `def`, `zappa {foo}, ->` etc gone.
-  
+
   - Changed: automatic input "importing" and "exporting" to templates now optional through the `databag` setting. See #84.
-  
+
   - Changed: removed hard dependency on `jsdom`. To use `@postrender`, `npm install jsdom` first.
 
 **v0.2.1** (2011-09-22):
 
   - Changed: using standard jquery from code.jquery.com instead of node-jquery. Updated to 1.6.4.
-  
+
   - Changed: updated sammy to 0.7.0.
-  
+
   - Fixed #80: Default layout is not being added correctly.
 
 **v0.2.0 "Peaches en Regalia"** (2011-09-08):
 
   - Changed: externals (`zappa {foo} ->`) are available at all scopes, shadow globals and root scope locals.
-  
+
   - Fixed: inline templates with multiple apps.
-  
+
   - Added `stylus` to the root scope (compiles string with stylus and serves it as css).
-  
+
   - Fixed #58: multiple socket events fail. Also applied the same fix to helpers.
-  
+
   - Changed `zappa.run` to interpret a number-castable string param as the port, to better integrate with Heroku. Closes #61 [Tim Shadel]
-  
+
   - Fixed #64: require does not pick up node_modules in app dir. [Jason King]
-  
+
   - Added: setting views dir to `__dirname + '/views'` by default. Closes #71. [rachel-carvalho]
-  
+
   - Added the `minify` setting, which uses uglify-js to minify the outputs of `serve zappa`, `client`, `shared`, `coffee` and `js`. Closes #70 (thanks @jacobrask).
-  
+
   - Added back `session` to the request handlers scope. [shimaore]
 
 **v0.2.0beta** (2011-08-02):
 
   - Complete rewrite, see `/docs/peaches.md` for a more in-depth review on changes.
-  
+
   - Fixed performance, now negligible overhead on top of express. Gone with the `with` keyword.
 
   - Scraped the `zappa` command, zappa code should go in `require('zappa') ->` blocks. All node tools and services can be used directly.
@@ -225,15 +225,15 @@
   - Changed `include`, now implemented through standard module mechanisms. Code to be included must be exported: `@include = ->`.
 
   - Added `app` and `io` variables to all scopes, providing direct access to express and socket.io.
-  
+
   - Added optimized interfaces to express features such as `use`, `set`, `enable`, `disable`, `configure`, etc.
-    
+
   - Changed `render`, now uses the rendering system from express, with all its features. Defining inline templates with `view` and passing variables through `@` is still possible.
-    
+
   - Added an optional client-side API that can be used with `client`. To just serve code as JS, use `coffee`.
-  
+
   - Added `shared`, allows sharing code between client and server.
-  
+
   - Removed most zappa's defaults, added very concise APIs to define what you need.
 
 **v0.1.5** (2011-05-06):

@@ -5,7 +5,7 @@ port = 15200
   client: (t) ->
     t.expect 1, 2, 3, 4, 5
     t.wait 3000
-    
+
     zapp = zappa port++, ->
       @client '/index.js': ->
         @get '#/': -> alert 'hi'
@@ -24,7 +24,7 @@ port = 15200
   coffee: (t) ->
     t.expect 1, 2
     t.wait 3000
-    
+
     zapp = zappa port++, ->
       @coffee '/coffee.js': ->
         alert 'hi'
@@ -47,7 +47,7 @@ port = 15200
     c.get '/js.js', (err, res) ->
       t.equal 1, res.body, "alert('hi');"
       t.equal 2, res.headers['content-type'], 'application/javascript'
-    
+
   css: (t) ->
     t.expect 1, 2
     t.wait 3000
@@ -101,12 +101,12 @@ port = 15200
       @with css:'stylus'
       @stylus '/index.css': '''
         border-radius()
-          -webkit-border-radius arguments  
-          -moz-border-radius arguments  
-          border-radius arguments  
+          -webkit-border-radius arguments
+          -moz-border-radius arguments
+          border-radius arguments
 
         body
-          font 12px Helvetica, Arial, sans-serif  
+          font 12px Helvetica, Arial, sans-serif
 
         a.button
           border-radius 5px
@@ -124,7 +124,7 @@ port = 15200
           -moz-border-radius: 5px;
           border-radius: 5px;
         }
-        
+
       '''
 
   less: (t) ->
@@ -167,7 +167,7 @@ port = 15200
   jquery: (t) ->
     t.expect 'content-type', 'length'
     t.wait 3000
-    
+
     zapp = zappa port++, ->
       @use 'zappa'
 
@@ -179,7 +179,7 @@ port = 15200
   sammy: (t) ->
     t.expect 'content-type', 'length'
     t.wait 3000
-    
+
     zapp = zappa port++, ->
       @use 'zappa'
 
@@ -202,7 +202,7 @@ port = 15200
   zappa: (t) ->
     t.expect 'content-type', 'snippet'
     t.wait 3000
-    
+
     zapp = zappa port++, ->
       @use 'zappa'
 
@@ -226,7 +226,7 @@ port = 15200
   'zappa (automatic)': (t) ->
     t.expect 'content-type', 'snippet'
     t.wait 3000
-    
+
     zapp = zappa port++, ->
       @client '/index.js': ->
 
@@ -234,11 +234,11 @@ port = 15200
     c.get '/zappa/zappa.js', (err, res) ->
       t.equal 'content-type', res.headers['content-type'], 'application/javascript'
       t.ok 'snippet', res.body.indexOf('window.zappa = {};') > -1
-      
+
   minify: (t) ->
     t.expect 'zappa', 'client', 'shared', 'coffee', 'js'
     t.wait 3000
-    
+
     zapp = zappa port++, ->
       @enable 'minify'
       @client '/client.js': -> alert 'foo'

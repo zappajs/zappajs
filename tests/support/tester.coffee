@@ -34,13 +34,13 @@ uncaught = []
 
 @add = (p) ->
   file = path.basename(require.resolve p)
-  
+
   for title, test of require(p).tests
     do (title, test) ->
       full_title = file + ': ' + title
-      
+
       tests[full_title] = test
-      
+
       test.t =
         title: title
         file: file
@@ -49,7 +49,7 @@ uncaught = []
         waits: {}
         passed: {}
         failed: {}
-        
+
         client: client
 
         all_passed: ->
@@ -84,7 +84,7 @@ uncaught = []
 
         expect: ->
           @expected[a] = true for a in arguments
-                  
+
         wait: (ms) ->
           id = timeout ms, =>
             delete @waits[id]
@@ -95,7 +95,7 @@ uncaught = []
           if not done[@full_title]
             if @ran? and (_(@expected).isEmpty() or _(@waits).isEmpty())
               @end()
-        
+
         end: ->
           clearInterval(k) for k, v of @waits
           done[@full_title] = @
@@ -110,26 +110,26 @@ uncaught = []
       catch e
         t.error = e
         t.end()
-      
+
       t.ran = yes
       t.end_check()
 
 finish_him = ->
   line = ('-' for i in [1..40]).join('')
   log ''
-  
+
   passed = 0
   failed = 0
   timedout = 0
   errors = 0
-  
+
   for full_title, test of tests
     do (full_title, test) ->
       t = done[full_title]
       if not t.all_passed() or t.error
         log full_title
         log line
-      
+
         for k, v of t.passed
           passed++
           log "#{green}✔#{reset} #{k}"
@@ -151,9 +151,9 @@ finish_him = ->
           errors++
           log "#{red}✖ Error:#{reset}"
           log t.error.stack
-        
+
         log ''
-  
+
   if uncaught.length > 0
     log "#{uncaught.length} Uncaught error(s):"
     for e in uncaught
@@ -175,7 +175,7 @@ finish_him = ->
   log "#{new Date - start} ms\n"
 
   process.exit()
-      
+
 process.on 'uncaughtException', (err) ->
   uncaught.push err
   throw err

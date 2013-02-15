@@ -1,19 +1,19 @@
 {spawn, exec} = require 'child_process'
 log = console.log
-      
+
 task 'build', ->
   run 'coffee -o lib -c src/*.coffee'
-    
+
 task 'test', ->
   # Set `ulimit -n 1024` if you run out of descriptors.
   run 'coffee tests/index.coffee'
-    
+
 task 'bench', ->
   run 'cd benchmarks && ./run'
-    
+
 task 'docs', ->
   run 'docco src/*.coffee'
-  
+
 task 'vendor', ->
   run 'mkdir -p vendor && cd vendor && curl -OL http://code.jquery.com/jquery-1.8.3.min.js', ->
     run 'cd vendor && curl -OL https://github.com/quirkey/sammy/raw/master/lib/min/sammy-0.7.4.min.js', ->
@@ -37,7 +37,7 @@ run = (args...) ->
         if a instanceof Array then params = a
         else options = a
       when 'function' then callback = a
-  
+
   command += ' ' + params.join ' ' if params?
   cmd = spawn '/bin/sh', ['-c', command], options
   cmd.stdout.on 'data', (data) -> process.stdout.write data

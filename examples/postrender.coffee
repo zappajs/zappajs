@@ -1,6 +1,6 @@
 require('./zappajs') ->
   @enable 'default layout'
-  
+
   @get '/': ->
     @user = plan: 'staff'
 

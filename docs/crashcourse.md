@@ -17,7 +17,7 @@ Get a `cuppa.coffee`:
 And give your foot a push:
 
     $ npm install zappajs
-    $ coffee cuppa.coffee    
+    $ coffee cuppa.coffee
        info  - socket.io started
     Express server listening on port 3000 in development mode
     Zappa 0.3.1 "The Gumbo Variations" orchestrating the show

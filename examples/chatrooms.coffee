@@ -1,8 +1,8 @@
 require('./zappajs') ->
-  
+
   @get '/': ->
     @render index: {layout: no}
-  
+
   @on 'set nickname': ->
     @client.nickname = @data.nickname
     @emit 'said', {nickname: 'moderator', msg: 'Your name is ' + @data.nickname}
@@ -18,19 +18,19 @@ require('./zappajs') ->
       nickname: @client.nickname
       msg: @data.msg
     @broadcast_to @client.room, 'said', data
- 
+
   @client '/index.js': ->
     @connect()
 
     @on said: ->
       $('#panel').append "<p>#{@data.nickname} said: #{@data.msg}</p>"
-    
+
     $ =>
       @emit 'set nickname': {nickname: prompt 'Pick a nickname!'}
       @emit 'set room': {room: prompt 'Pick a room!'}
-      
+
       $('#box').focus()
-      
+
       $('#sendButton').click (e) =>
         @emit said: {msg: $('#box').val()}
         $('#box').val('').focus()
