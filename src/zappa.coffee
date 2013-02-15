@@ -452,6 +452,7 @@ zappa.app = (func,options={}) ->
           json: -> res.json.apply res, arguments
           jsonp: -> res.jsonp.apply res, arguments
           redirect: -> res.redirect.apply res, arguments
+          format: -> res.format.apply res, arguments
           render: ->
             if typeof arguments[0] isnt 'object'
               render.apply @, arguments

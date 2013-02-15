@@ -629,6 +629,23 @@ Adds the following features:
 Shortcut to `@response.redirect`.
 Not available in middleware and param handlers.
 
+### @format
+
+Shortcut to `@response.format`.
+Not available in middleware and param handlers.
+
+Example:
+
+    @get '/clients/:id':
+      client = retrieve_client @params.id
+      @format
+        text: =>
+          @send client.name
+        html: =>
+          @render 'client', client
+        json: =>
+          @json client
+
 ## SOCKETS HANDLERS SCOPE
 
 The function you pass to `@on` will be called with `this`/`@` set to an object with the following attributes:
