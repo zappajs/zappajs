@@ -862,3 +862,7 @@ where `extension` accepts `path` with or without the given extension.
 
 If enabled, views will receive an object containing the merge of `@query`, `@params`, and `@body`.
 This object will be called `params` (or `@params` in coffeecup views).
+
+### `x-powered-by`
+
+Unless disabled, ZappaJS adds a `X-Powered-By` header in HTTP responses.
