@@ -36,7 +36,7 @@
     "lib/zappa.js",
     "lib/client.js",
     "vendor/jquery-1.8.3.min.js",
-    "vendor/sammy-0.7.2.min.js",
+    "vendor/sammy-0.7.4.min.js",
     "vendor/socket.io.min.js"
   ],
   "scripts": {
