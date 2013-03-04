@@ -31,7 +31,7 @@
     "gzippo": "0.2.0"
   },
   "keywords": ["framework", "websockets", "coffeescript", "express", "socket.io", "sammy", "sinatra", "dsl"],
-  "main": "./lib/zappa",
+  "main": "lib/zappa.js",
   "files": [
     "lib/zappa.js",
     "lib/client.js",
