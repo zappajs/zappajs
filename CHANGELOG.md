@@ -1,4 +1,4 @@
-**v0.4.17** (2013-03-05)
+**v0.4.18** (2013-03-05)
 
   * Dependencies: update to ExpressJS 3.1.0
   * Bump Sammy.js to 0.7.4
