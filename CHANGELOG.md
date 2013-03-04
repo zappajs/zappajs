@@ -1,3 +1,14 @@
+**v0.4.16** (2013-03-05)
+
+  * Dependencies: update to ExpressJS 3.1.0
+  * Bump Sammy.js to 0.7.4
+  * Content Negotiation (#63)
+  * Added X-Powered-By: Zappa header (#68)
+  * Documentation for x-powered-by (#68)
+  * Added example to show `format` with explicit mime-type. (#63)
+  * Tests for `X-Powered-By` (#68) and `format` (#63)
+  * README: do not recommend using ZappaJS 0.3.
+
 **v0.4.15** (2013-01-12)
 
   * Re-introduced callback arguments. Our callbacks API is closer to Express and Socket.IO.

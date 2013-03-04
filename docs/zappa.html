@@ -1,7 +1,7 @@
 <!DOCTYPE html>  <html> <head>   <title>zappa.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="client.html">                 client.coffee               </a>                                           <a class="source" href="zappa.html">                 zappa.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               zappa.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p><strong>Zappa</strong> is a <a href="http://coffeescript.org">CoffeeScript</a> DSL-ish interface
 for building web apps on the <a href="http://nodejs.org">node.js</a> runtime,
 integrating <a href="http://expressjs.com">express</a>, <a href="http://socket.io">socket.io</a>
-and other best-of-breed libraries.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">zappa = version: </span><span class="s">&#39;0.4.15&#39;</span>
+and other best-of-breed libraries.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">zappa = version: </span><span class="s">&#39;0.4.16&#39;</span>
 
 <span class="nv">codename = </span><span class="s">&#39;You can\&#39;t do that on stage anymore&#39;</span>
 
@@ -12,7 +12,7 @@ and other best-of-breed libraries.</p>             </td>             <td class="
 <span class="nv">vendor = </span><span class="nf">(name) -&gt;</span>
   <span class="nx">fs</span><span class="p">.</span><span class="nx">readFileSync</span><span class="p">(</span><span class="nx">path</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span><span class="s">&#39;..&#39;</span><span class="p">,</span><span class="s">&#39;vendor&#39;</span><span class="p">,</span><span class="nx">name</span><span class="p">)).</span><span class="nx">toString</span><span class="p">()</span>
 <span class="nv">jquery = </span><span class="nx">vendor</span> <span class="s">&#39;jquery-1.8.3.min.js&#39;</span>
-<span class="nv">sammy = </span><span class="nx">vendor</span> <span class="s">&#39;sammy-0.7.2.min.js&#39;</span>
+<span class="nv">sammy = </span><span class="nx">vendor</span> <span class="s">&#39;sammy-0.7.4.min.js&#39;</span>
 <span class="nv">socketjs = </span><span class="nx">vendor</span> <span class="s">&#39;socket.io.min.js&#39;</span>
 <span class="nv">uglify = </span><span class="nx">require</span> <span class="s">&#39;uglify-js&#39;</span>
 
@@ -395,6 +395,7 @@ Views are kept at the module level.</p>             </td>             <td class=
           <span class="nv">json: </span><span class="o">-&gt;</span> <span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">arguments</span>
           <span class="nv">jsonp: </span><span class="o">-&gt;</span> <span class="nx">res</span><span class="p">.</span><span class="nx">jsonp</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">arguments</span>
           <span class="nv">redirect: </span><span class="o">-&gt;</span> <span class="nx">res</span><span class="p">.</span><span class="nx">redirect</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">arguments</span>
+          <span class="nv">format: </span><span class="o">-&gt;</span> <span class="nx">res</span><span class="p">.</span><span class="nx">format</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">arguments</span>
           <span class="nv">render: </span><span class="o">-&gt;</span>
             <span class="k">if</span> <span class="k">typeof</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">isnt</span> <span class="s">&#39;object&#39;</span>
               <span class="nx">render</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">@</span><span class="p">,</span> <span class="nx">arguments</span>
@@ -446,6 +447,9 @@ Views are kept at the module level.</p>             </td>             <td class=
         <span class="k">if</span> <span class="nx">app</span><span class="p">.</span><span class="nx">settings</span><span class="p">[</span><span class="s">&#39;databag&#39;</span><span class="p">]</span>
           <span class="nv">ctx.data = </span><span class="p">{}</span>
           <span class="nx">copy_data_to</span> <span class="nx">ctx</span><span class="p">.</span><span class="nx">data</span><span class="p">,</span> <span class="p">[</span><span class="nx">req</span><span class="p">.</span><span class="nx">query</span><span class="p">,</span> <span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">,</span> <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nx">app</span><span class="p">.</span><span class="nx">settings</span><span class="p">[</span><span class="s">&#39;x-powered-by&#39;</span><span class="p">]</span>
+          <span class="nx">res</span><span class="p">.</span><span class="nx">setHeader</span> <span class="s">&#39;X-Powered-By&#39;</span><span class="p">,</span> <span class="s">&quot;Zappa </span><span class="si">#{</span><span class="nx">zappa</span><span class="p">.</span><span class="nx">version</span><span class="si">}</span><span class="s">&quot;</span>
 
         <span class="nv">result = </span><span class="nx">r</span><span class="p">.</span><span class="nx">handler</span><span class="p">.</span><span class="nx">call</span> <span class="nx">ctx</span><span class="p">,</span> <span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">next</span>
 
