@@ -413,13 +413,19 @@ When passing strings and objects, zappa's own middleware will be used if availab
 
 Currently available zappa middleware are:
 
-#### `'static'`
+#### static
+
+Uses the [Connect static middleware](http://www.senchalabs.org/connect/static.html) to serve static files.
 
 Same as `@express.static(root + '/public')`, where `root` is the directory of the first file that required zappa.
 
-#### `'staticGzip'`
+    @use 'static'
+    @use static: abs_path
+    @use static: {path: abs_path, maxAge: 60}
 
-Same as `static` but uses [gzippo](https://github.com/tomgco/gzippo) for compression.
+#### staticGzip
+
+Uses [gzippo](https://github.com/tomgco/gzippo) for compression.
 Make sure the `gzippo` module is available to your application.
 
     @use 'staticGzip'
