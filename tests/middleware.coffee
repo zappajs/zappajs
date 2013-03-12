@@ -111,3 +111,36 @@ port = 15500
     a = new Buffer('hello:world').toString('base64')
     c.get '/auth', headers: {Authorization:'Basic '+a}, (err, res) ->
       t.equal 3, res.body, 'authenticated'
+
+  'static + noparams': (t) ->
+    t.expect 'static'
+    t.wait 3000
+
+    zapp = zappa port++, ->
+      @use 'static'
+
+    c = t.client(zapp.server)
+    c.get '/foo.txt', (err, res) ->
+      t.equal 'static', res.body, 'bar'
+
+  'static + string': (t) ->
+    t.expect 'static'
+    t.wait 3000
+
+    zapp = zappa port++, ->
+      @use static: __dirname + '/public'
+
+    c = t.client(zapp.server)
+    c.get '/foo.txt', (err, res) ->
+      t.equal 'static', res.body, 'bar'
+
+  'static + object': (t) ->
+    t.expect 'static'
+    t.wait 3000
+
+    zapp = zappa port++, ->
+      @use static: {path: __dirname + '/public', maxAge:60}
+
+    c = t.client(zapp.server)
+    c.get '/foo.txt', (err, res) ->
+      t.equal 'static', res.body, 'bar'
