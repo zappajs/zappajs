@@ -268,8 +268,7 @@ On a step further, you have `@client`, which gives you access to a matching clie
       html ->
         head ->
           title 'Client-side zappa'
-          script src: '/zappa/Zappa-simple.js'
-          script src: '/zappa/sammy.js'
+          script src: '/zappa/Zappa.js'
           script src: '/index.js'
         body ''
 

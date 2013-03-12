@@ -10,7 +10,7 @@ require('zappajs') ->
   @get '/': ->
     @render 'index',
       title: 'Zappa!'
-      scripts: '/zappa/Zappa-simple.js /zappa/sammy.js /index.js /client.js'
+      scripts: '/zappa/Zappa-simple.js /index.js /client.js'
       stylesheet: '/index.css'
 
   @view index: ->
