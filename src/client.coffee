@@ -88,4 +88,4 @@ skeleton = ->
 @build = (version, settings) ->
   String(skeleton)
     .replace('version = null;', "version = '#{version}';")
-    .replace('settings = null;', "var settings = #{JSON.stringify settings};")
+    .replace('settings = null;', "settings = #{JSON.stringify settings};")
