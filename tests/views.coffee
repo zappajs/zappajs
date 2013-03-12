@@ -219,7 +219,7 @@ port = 15600
     zapp = zappa port++, ->
       @set 'view engine': 'eco'
       @app.engine 'eco', require('consolidate').eco
-      @use 'partials'
+      @use partials:
         eco: zappa.adapter 'eco'
 
       @get '/': ->
@@ -282,6 +282,38 @@ port = 15600
     c.get '/', (err, res) ->
       t.equal 1, res.body, '<!DOCTYPE html><html><head><title>Jade inline layout</title></head><body><h2>Jade inline template: bar</h2></body></html>'
 
+  'jade, inline + include': (t) ->
+    t.expect 1
+    t.wait 3000
+
+    zapp = zappa port++, ->
+      @set 'view engine': 'jade'
+
+      @get '/': ->
+        @render 'index', foo: 'bar'
+
+      @view index: '''
+        !!! 5
+        html
+          include head
+          body
+            h2= 'Jade inline template: ' + foo
+            include foot
+      '''
+
+      @view head: '''
+        head
+          title Jade inline template
+      '''
+
+      @view foot: '''
+        div= 'This was an example.'
+      '''
+
+    c = t.client(zapp.server)
+    c.get '/', (err, res) ->
+      t.equal 1, res.body, '<!DOCTYPE html><html><head><title>Jade inline template</title></head><body><h2>Jade inline template: bar</h2><div>This was an example.</div></body></html>'
+
   'jade, file': (t) ->
     t.expect 1
     t.wait 3000
@@ -317,7 +349,7 @@ port = 15600
 
     zapp = zappa port++, ->
       @set 'view engine': 'jade'
-      @use 'partials'
+      @use partials:
         jade: zappa.adapter 'jade'
 
       @get '/': ->
