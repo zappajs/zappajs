@@ -174,7 +174,7 @@ port = 15200
     c = t.client(zapp.server)
     c.get '/zappa/jquery.js', (err, res) ->
       t.equal 'content-type', res.headers['content-type'], 'application/javascript'
-      t.equal 'length', res.headers['content-length'], '93637'
+      t.equal 'length', res.headers['content-length'], '93106'
 
   sammy: (t) ->
     t.expect 'content-type', 'length'
@@ -186,7 +186,7 @@ port = 15200
     c = t.client(zapp.server)
     c.get '/zappa/sammy.js', (err, res) ->
       t.equal 'content-type', res.headers['content-type'], 'application/javascript'
-      t.equal 'length', res.headers['content-length'], '19228'
+      t.equal 'length', res.headers['content-length'], '18715'
 
   'socket.io': (t) ->
     t.expect 'content-type', 'length'
@@ -250,10 +250,10 @@ port = 15200
     c.get '/zappa/zappa.js', (err, res) ->
       t.ok 'zappa', res.body.indexOf('window.zappa={},') > -1
     c.get '/client.js', (err, res) ->
-      t.equal 'client', res.headers['content-length'], '42'
+      t.equal 'client', res.headers['content-length'], '43'
     c.get '/shared.js', (err, res) ->
-      t.equal 'shared', res.headers['content-length'], '87'
+      t.equal 'shared', res.headers['content-length'], '91'
     c.get '/coffee.js', (err, res) ->
-      t.equal 'coffee', res.headers['content-length'], '475'
+      t.equal 'coffee', res.headers['content-length'], '476'
     c.get '/js.js', (err, res) ->
-      t.equal 'js', res.headers['content-length'], '12'
+      t.equal 'js', res.headers['content-length'], '13'
