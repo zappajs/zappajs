@@ -2,7 +2,7 @@
 
 # Adapted from: https://raw.github.com/visionmedia/express/0.14.1/benchmarks/run
 
-SLEEP=${SLEEP-2}
+SLEEP=${SLEEP-3}
 ABFLAGS=${ABFLAGS-"-n 10000 -c 150"}
 ADDR=${ADDR-http://127.0.0.1:3000/}
 AB=${AB-ab}
@@ -15,7 +15,7 @@ log(){
 bm(){
   local file=$1
   log benchmarking $file
-  # rm v8.log; coffee --nodejs --prof $file.coffee &
+  # rm -f v8.log; coffee --nodejs --prof $file.coffee &
   coffee $file.coffee &
   pid=$!
   sleep $SLEEP
