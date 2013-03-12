@@ -11,12 +11,16 @@ log = console.log
 fs = require 'fs'
 path = require 'path'
 uuid = require 'node-uuid'
+uglify = require 'uglify-js'
+
 vendor = (name) ->
   fs.readFileSync(path.join(__dirname,'..','vendor',name)).toString()
-jquery = vendor 'jquery-1.8.3.min.js'
-sammy = vendor 'sammy-0.7.4.min.js'
-socketjs = vendor 'socket.io.min.js'
-uglify = require 'uglify-js'
+
+jquery = vendor 'jquery.js'
+jquery_minified = vendor 'jquery.min.js'
+sammy = vendor 'sammy.js'
+sammy_minified = vendor 'sammy.min.js'
+socketjs = vendor 'socket.io.js'
 
 socketio_key = '__session'
 
@@ -53,10 +57,8 @@ coffeescript_helpers = """
 """.replace /\n/g, ''
 
 minify = (js) ->
-  ast = uglify.parser.parse(js)
-  ast = uglify.uglify.ast_mangle(ast)
-  ast = uglify.uglify.ast_squeeze(ast)
-  uglify.uglify.gen_code(ast)
+  result = uglify.minify js, fromString:true
+  result.code
 
 # Shallow copy attributes from `sources` (array of objects) to `recipient`.
 # Does NOT overwrite attributes already present in `recipient`.
@@ -294,8 +296,8 @@ zappa.app = (func,options={}) ->
               when '/zappa/Zappa.js' then send client_bundled
               when '/zappa/Zappa-simple.js' then send client_bundle_simple
               when '/zappa/zappa.js' then send client
-              when '/zappa/jquery.js' then send jquery
-              when '/zappa/sammy.js' then send sammy
+              when '/zappa/jquery.js' then send jquery_minified
+              when '/zappa/sammy.js' then send sammy_minified
               else next()
           return
       partials: (maps = {}) ->
@@ -588,7 +590,6 @@ zappa.app = (func,options={}) ->
   # The stringified zappa client.
   client = require('./client').build(zappa.version, app.settings)
   client = ";#{coffeescript_helpers}(#{client})();"
-  client = minify(client) if app.settings['minify']
   client_bundle_simple =
     if io?
       jquery + socketjs + client
@@ -600,6 +601,10 @@ zappa.app = (func,options={}) ->
     else
       jquery + sammy + client
 
+  if app.settings['minify']
+    client = minify client
+    client_bundle_simple = minify client_bundle_simple
+    client_bundled = minify client_bundled
 
   if app.settings['default layout']
     context.view layout: ->

@@ -15,13 +15,17 @@ task 'docs', ->
   run 'docco src/*.coffee'
 
 task 'vendor', ->
-  run 'mkdir -p vendor && cd vendor && curl -OL http://code.jquery.com/jquery-1.8.3.min.js', ->
-    run 'cd vendor && curl -OL https://github.com/quirkey/sammy/raw/master/lib/min/sammy-0.7.4.min.js', ->
-      # run 'cd vendor && curl -OL https://raw.github.com/LearnBoost/socket.io-client/master/dist/socket.io.min.js', ->
-      run 'cd vendor && cp ../node_modules/socket.io-client/dist/socket.io.min.js .', ->
-        run 'head -n 1 vendor/jquery*', ->
-          run 'head -n 3 vendor/sammy*', ->
-            run 'head -n 1 vendor/socket.io*'
+  uglify = require 'uglify-js'
+  fs = require 'fs'
+  run 'mkdir -p vendor && cd vendor && curl -o jquery.js -L http://code.jquery.com/jquery-1.9.1.js', ->
+    run 'cd vendor && curl -OL https://raw.github.com/quirkey/sammy/v0.7.4/lib/sammy.js', ->
+      run 'cd vendor && curl -OL https://raw.github.com/LearnBoost/socket.io-client/0.9/dist/socket.io.js', ->
+        run 'head -n 2 vendor/jquery*', ->
+          run 'head -n 2 vendor/sammy*', ->
+            run 'head -n 1 vendor/socket.io*', ->
+              fs.writeFile 'vendor/jquery.min.js', uglify.minify('vendor/jquery.js').code, ->
+                fs.writeFile 'vendor/sammy.min.js', uglify.minify('vendor/sammy.js').code, ->
+                  fs.writeFile 'vendor/socket.io.min.js', uglify.minify('vendor/socket.io.js').code
 
 task 'setup', 'build + vendor', ->
   invoke 'build'
