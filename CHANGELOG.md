@@ -1,3 +1,13 @@
+**0.4.19** (2013-03-12)
+
+  * Documentation: updated to reflect minify changes.
+  * Updated documentation for static (#66,#69)
+  * Zappa's `static` middleware made compatible with Express'. (#66,#69)
+  * tests: updated to reflect new minify version and new jQuery version.
+  * Updated to jQuery 1.9.1; now minify during build.
+  * Updated devDependencies to latest versions.
+  * tests: corrected `partials` tests for jade and eco; added jade `include` example.
+
 **v0.4.18** (2013-03-05)
 
   * Dependencies: update to ExpressJS 3.1.0

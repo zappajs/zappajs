@@ -20,9 +20,9 @@ task 'vendor', ->
   run 'mkdir -p vendor && cd vendor && curl -o jquery.js -L http://code.jquery.com/jquery-1.9.1.js', ->
     run 'cd vendor && curl -OL https://raw.github.com/quirkey/sammy/v0.7.4/lib/sammy.js', ->
       run 'cd vendor && curl -OL https://raw.github.com/LearnBoost/socket.io-client/0.9/dist/socket.io.js', ->
-        run 'head -n 2 vendor/jquery*', ->
-          run 'head -n 2 vendor/sammy*', ->
-            run 'head -n 1 vendor/socket.io*', ->
+        run 'head -n 2 vendor/jquery.js', ->
+          run 'head -n 2 vendor/sammy.js', ->
+            run 'head -n 1 vendor/socket.io.js', ->
               fs.writeFile 'vendor/jquery.min.js', uglify.minify('vendor/jquery.js').code, ->
                 fs.writeFile 'vendor/sammy.min.js', uglify.minify('vendor/sammy.js').code, ->
                   fs.writeFile 'vendor/socket.io.min.js', uglify.minify('vendor/socket.io.js').code
