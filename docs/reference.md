@@ -854,7 +854,7 @@ You can use the following options with `@set`, `@enable` and `@disable`.
 
 ### 'minify'
 
-Uses uglify-js to minify the outputs of `/zappa/zappa.js`, `@client`, `@shared`, `@coffee`, `@js`.
+Uses uglify-js to minify the outputs of `/zappa/Zappa.js`, `/zappa/Zappa-simple.js`, `/zappa/zappa.js`, `@client`, `@shared`, `@coffee`, `@js`.
 
 ### 'default layout'
 
