@@ -1,7 +1,61 @@
-<!DOCTYPE html>  <html> <head>   <title>zappa.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="client.html">                 client.coffee               </a>                                           <a class="source" href="zappa.html">                 zappa.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               zappa.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p><strong>Zappa</strong> is a <a href="http://coffeescript.org">CoffeeScript</a> DSL-ish interface
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>zappa.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="client.html">
+                client.coffee
+              </a>
+            
+              
+              <a class="source" href="zappa.html">
+                zappa.coffee
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>zappa.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <p><strong>Zappa</strong> is a <a href="http://coffeescript.org">CoffeeScript</a> DSL-ish interface
 for building web apps on the <a href="http://nodejs.org">node.js</a> runtime,
 integrating <a href="http://expressjs.com">express</a>, <a href="http://socket.io">socket.io</a>
-and other best-of-breed libraries.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">zappa = version: </span><span class="s">&#39;0.4.18&#39;</span>
+and other best-of-breed libraries.</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre><span class="nv">zappa = version: </span><span class="s">&#39;0.4.19&#39;</span>
 
 <span class="nv">codename = </span><span class="s">&#39;You can\&#39;t do that on stage anymore&#39;</span>
 
@@ -9,20 +63,56 @@ and other best-of-breed libraries.</p>             </td>             <td class="
 <span class="nv">fs = </span><span class="nx">require</span> <span class="s">&#39;fs&#39;</span>
 <span class="nv">path = </span><span class="nx">require</span> <span class="s">&#39;path&#39;</span>
 <span class="nv">uuid = </span><span class="nx">require</span> <span class="s">&#39;node-uuid&#39;</span>
-<span class="nv">vendor = </span><span class="nf">(name) -&gt;</span>
-  <span class="nx">fs</span><span class="p">.</span><span class="nx">readFileSync</span><span class="p">(</span><span class="nx">path</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span><span class="s">&#39;..&#39;</span><span class="p">,</span><span class="s">&#39;vendor&#39;</span><span class="p">,</span><span class="nx">name</span><span class="p">)).</span><span class="nx">toString</span><span class="p">()</span>
-<span class="nv">jquery = </span><span class="nx">vendor</span> <span class="s">&#39;jquery-1.8.3.min.js&#39;</span>
-<span class="nv">sammy = </span><span class="nx">vendor</span> <span class="s">&#39;sammy-0.7.4.min.js&#39;</span>
-<span class="nv">socketjs = </span><span class="nx">vendor</span> <span class="s">&#39;socket.io.min.js&#39;</span>
 <span class="nv">uglify = </span><span class="nx">require</span> <span class="s">&#39;uglify-js&#39;</span>
 
-<span class="nv">socketio_key = </span><span class="s">&#39;__session&#39;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Soft dependencies:</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">jsdom = </span><span class="kc">null</span>
+<span class="nv">vendor = </span><span class="nf">(name) -&gt;</span>
+  <span class="nx">fs</span><span class="p">.</span><span class="nx">readFileSync</span><span class="p">(</span><span class="nx">path</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span><span class="s">&#39;..&#39;</span><span class="p">,</span><span class="s">&#39;vendor&#39;</span><span class="p">,</span><span class="nx">name</span><span class="p">)).</span><span class="nx">toString</span><span class="p">()</span>
+
+<span class="nv">jquery = </span><span class="nx">vendor</span> <span class="s">&#39;jquery.js&#39;</span>
+<span class="nv">jquery_minified = </span><span class="nx">vendor</span> <span class="s">&#39;jquery.min.js&#39;</span>
+<span class="nv">sammy = </span><span class="nx">vendor</span> <span class="s">&#39;sammy.js&#39;</span>
+<span class="nv">sammy_minified = </span><span class="nx">vendor</span> <span class="s">&#39;sammy.min.js&#39;</span>
+<span class="nv">socketjs = </span><span class="nx">vendor</span> <span class="s">&#39;socket.io.js&#39;</span>
+
+<span class="nv">socketio_key = </span><span class="s">&#39;__session&#39;</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              
+<p>Soft dependencies:</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre><span class="nv">jsdom = </span><span class="kc">null</span>
 <span class="nv">gzippo = </span><span class="kc">null</span>
 <span class="nv">express_partials = </span><span class="kc">null</span>
-<span class="nv">coffee_css = </span><span class="kc">null</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>CoffeeScript-generated JavaScript may contain anyone of these; when we
-"rewrite" a function (see below) though, it loses access to its parent scope,
+<span class="nv">coffee_css = </span><span class="kc">null</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              
+<p>CoffeeScript-generated JavaScript may contain anyone of these; when we
+&quot;rewrite&quot; a function (see below) though, it loses access to its parent scope,
 and consequently to any helpers it might need. So we need to reintroduce
-these helpers manually inside any "rewritten" function.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">coffeescript_helpers = </span><span class="s">&quot;&quot;&quot;</span>
+these helpers manually inside any &quot;rewritten&quot; function.</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre><span class="nv">coffeescript_helpers = </span><span class="s">&quot;&quot;&quot;</span>
 <span class="s">  var __slice = Array.prototype.slice;</span>
 <span class="s">  var __hasProp = Object.prototype.hasOwnProperty;</span>
 <span class="s">  var __bind = function(fn, me){</span>
@@ -45,25 +135,87 @@ these helpers manually inside any "rewritten" function.</p>             </td>   
 <span class="s">&quot;&quot;&quot;</span><span class="p">.</span><span class="nx">replace</span> <span class="sr">/\n/g</span><span class="p">,</span> <span class="s">&#39;&#39;</span>
 
 <span class="nv">minify = </span><span class="nf">(js) -&gt;</span>
-  <span class="nv">ast = </span><span class="nx">uglify</span><span class="p">.</span><span class="nx">parser</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">js</span><span class="p">)</span>
-  <span class="nv">ast = </span><span class="nx">uglify</span><span class="p">.</span><span class="nx">uglify</span><span class="p">.</span><span class="nx">ast_mangle</span><span class="p">(</span><span class="nx">ast</span><span class="p">)</span>
-  <span class="nv">ast = </span><span class="nx">uglify</span><span class="p">.</span><span class="nx">uglify</span><span class="p">.</span><span class="nx">ast_squeeze</span><span class="p">(</span><span class="nx">ast</span><span class="p">)</span>
-  <span class="nx">uglify</span><span class="p">.</span><span class="nx">uglify</span><span class="p">.</span><span class="nx">gen_code</span><span class="p">(</span><span class="nx">ast</span><span class="p">)</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Shallow copy attributes from <code>sources</code> (array of objects) to <code>recipient</code>.
-Does NOT overwrite attributes already present in <code>recipient</code>.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">copy_data_to = </span><span class="nf">(recipient, sources) -&gt;</span>
+  <span class="nv">result = </span><span class="nx">uglify</span><span class="p">.</span><span class="nx">minify</span> <span class="nx">js</span><span class="p">,</span> <span class="nx">fromString</span><span class="o">:</span><span class="kc">true</span>
+  <span class="nx">result</span><span class="p">.</span><span class="nx">code</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              
+<p>Shallow copy attributes from <code>sources</code> (array of objects) to <code>recipient</code>.
+Does NOT overwrite attributes already present in <code>recipient</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre><span class="nv">copy_data_to = </span><span class="nf">(recipient, sources) -&gt;</span>
   <span class="k">for</span> <span class="nx">obj</span> <span class="k">in</span> <span class="nx">sources</span>
     <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">obj</span>
       <span class="nx">recipient</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="nx">v</span> <span class="nx">unless</span> <span class="nx">recipient</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span>
-  <span class="k">return</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Flatten array recursively (copied from Express's utils.js)</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">flatten = </span><span class="nf">(arr, ret) -&gt;</span>
+  <span class="k">return</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              
+<p>Flatten array recursively (copied from Express&#39;s utils.js)</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre><span class="nv">flatten = </span><span class="nf">(arr, ret) -&gt;</span>
   <span class="nx">ret</span> <span class="o">?=</span> <span class="p">[]</span>
   <span class="k">for</span> <span class="nx">o</span> <span class="k">in</span> <span class="nx">arr</span>
     <span class="k">if</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">isArray</span> <span class="nx">o</span>
       <span class="nx">flatten</span> <span class="nx">o</span><span class="p">,</span> <span class="nx">ret</span>
     <span class="k">else</span>
       <span class="nx">ret</span><span class="p">.</span><span class="nx">push</span> <span class="nx">o</span>
-  <span class="nx">ret</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>Zappa FS</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">zappa_fs = </span><span class="p">{}</span>
+  <span class="nx">ret</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              
+<p>Zappa FS</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre><span class="nv">zappa_fs = </span><span class="p">{}</span>
 
 <span class="nv">native_name = </span><span class="nf">(p) -&gt;</span>
-  <span class="nx">p</span><span class="p">.</span><span class="nx">replace</span> <span class="sr">/\/\.zappa-[^\/]+/</span><span class="p">,</span> <span class="s">&#39;&#39;</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Patch Node.js's <code>fs</code>.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">native_readFileSync = </span><span class="nx">fs</span><span class="p">.</span><span class="nx">readFileSync</span>
+  <span class="nx">p</span><span class="p">.</span><span class="nx">replace</span> <span class="sr">/\/\.zappa-[^\/]+/</span><span class="p">,</span> <span class="s">&#39;&#39;</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              
+<p>Patch Node.js&#39;s <code>fs</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre><span class="nv">native_readFileSync = </span><span class="nx">fs</span><span class="p">.</span><span class="nx">readFileSync</span>
 <span class="nv">native_readFile = </span><span class="nx">fs</span><span class="p">.</span><span class="nx">readFile</span>
 
 <span class="nv">native_array = </span><span class="nf">(args...) -&gt;</span>
@@ -92,14 +244,62 @@ Does NOT overwrite attributes already present in <code>recipient</code>.</p>    
   <span class="k">if</span> <span class="nx">zappa_fs</span><span class="p">[</span><span class="nx">p</span><span class="p">]</span><span class="o">?</span>
     <span class="nx">callback</span> <span class="kc">true</span>
   <span class="k">else</span>
-    <span class="nx">native_exists</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">fs</span><span class="p">,</span> <span class="nx">native_array</span> <span class="nx">arguments</span><span class="p">...</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>Express must first be called after we modify the <code>fs</code> module.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">express = </span><span class="nx">require</span> <span class="s">&#39;express&#39;</span>
-<span class="nv">socketio = </span><span class="nx">require</span> <span class="s">&#39;socket.io&#39;</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>Takes in a function and builds express/socket.io apps based on the rules
-contained in it.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">zappa.app = </span><span class="nf">(func,options={}) -&gt;</span>
+    <span class="nx">native_exists</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">fs</span><span class="p">,</span> <span class="nx">native_array</span> <span class="nx">arguments</span><span class="p">...</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              
+<p>Express must first be called after we modify the <code>fs</code> module.</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre><span class="nv">express = </span><span class="nx">require</span> <span class="s">&#39;express&#39;</span>
+<span class="nv">socketio = </span><span class="nx">require</span> <span class="s">&#39;socket.io&#39;</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              
+<p>Takes in a function and builds express/socket.io apps based on the rules
+contained in it.</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre><span class="nv">zappa.app = </span><span class="nf">(func,options={}) -&gt;</span>
   <span class="nv">context = </span><span class="p">{</span><span class="nv">id: </span><span class="nx">uuid</span><span class="p">.</span><span class="nx">v4</span><span class="p">(),</span> <span class="nx">zappa</span><span class="p">,</span> <span class="nx">express</span><span class="p">}</span>
 
   <span class="nv">real_root = </span><span class="nx">path</span><span class="p">.</span><span class="nx">dirname</span><span class="p">(</span><span class="nx">module</span><span class="p">.</span><span class="nx">parent</span><span class="p">.</span><span class="nx">filename</span><span class="p">)</span>
-  <span class="nv">root = </span> <span class="nx">path</span><span class="p">.</span><span class="nx">join</span> <span class="nx">real_root</span><span class="p">,</span> <span class="s">&quot;.zappa-</span><span class="si">#{</span><span class="nx">context</span><span class="p">.</span><span class="nx">id</span><span class="si">}</span><span class="s">&quot;</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>Storage for user-provided stuff.
-Views are kept at the module level.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">ws_handlers = </span><span class="p">{}</span>
+  <span class="nv">root = </span> <span class="nx">path</span><span class="p">.</span><span class="nx">join</span> <span class="nx">real_root</span><span class="p">,</span> <span class="s">&quot;.zappa-</span><span class="si">#{</span><span class="nx">context</span><span class="p">.</span><span class="nx">id</span><span class="si">}</span><span class="s">&quot;</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              
+<p>Storage for user-provided stuff.
+Views are kept at the module level.</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre>  <span class="nv">ws_handlers = </span><span class="p">{}</span>
   <span class="nv">helpers = </span><span class="p">{}</span>
   <span class="nv">postrenders = </span><span class="p">{}</span>
   <span class="nv">partials = </span><span class="p">{}</span>
@@ -112,10 +312,74 @@ Views are kept at the module level.</p>             </td>             <td class=
   <span class="k">if</span> <span class="nx">options</span><span class="p">.</span><span class="nx">disable_io</span>
     <span class="nv">io = </span><span class="kc">null</span>
   <span class="k">else</span>
-    <span class="nv">io = context.io = </span><span class="nx">socketio</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nx">server</span><span class="p">)</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>Reference to the zappa client, the value will be set later.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">client = </span><span class="kc">null</span>
+    <span class="nv">io = context.io = </span><span class="nx">socketio</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nx">server</span><span class="p">)</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              
+<p>Reference to the zappa client, the value will be set later.</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre>  <span class="nv">client = </span><span class="kc">null</span>
   <span class="nv">client_bundled = </span><span class="kc">null</span>
-  <span class="nv">client_bundle_simple = </span><span class="kc">null</span></pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>Tracks if the zappa middleware is already mounted (<code>@use 'zappa'</code>).</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">zappa_used = </span><span class="kc">no</span></pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p>Zappa's default settings.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">app</span><span class="p">.</span><span class="nx">set</span> <span class="s">&#39;view engine&#39;</span><span class="p">,</span> <span class="s">&#39;coffee&#39;</span>
-  <span class="nx">app</span><span class="p">.</span><span class="nx">engine</span> <span class="s">&#39;coffee&#39;</span><span class="p">,</span> <span class="nx">coffeecup_adapter</span></pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <p>Sets default view dir to @root</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">app</span><span class="p">.</span><span class="nx">set</span> <span class="s">&#39;views&#39;</span><span class="p">,</span> <span class="nx">path</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">root</span><span class="p">,</span> <span class="s">&#39;/views&#39;</span><span class="p">)</span>
+  <span class="nv">client_bundle_simple = </span><span class="kc">null</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              
+<p>Tracks if the zappa middleware is already mounted (<code>@use &#39;zappa&#39;</code>).</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre>  <span class="nv">zappa_used = </span><span class="kc">no</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              
+<p>Zappa&#39;s default settings.</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre>  <span class="nx">app</span><span class="p">.</span><span class="nx">set</span> <span class="s">&#39;view engine&#39;</span><span class="p">,</span> <span class="s">&#39;coffee&#39;</span>
+  <span class="nx">app</span><span class="p">.</span><span class="nx">engine</span> <span class="s">&#39;coffee&#39;</span><span class="p">,</span> <span class="nx">coffeecup_adapter</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              
+<p>Sets default view dir to @root</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre>  <span class="nx">app</span><span class="p">.</span><span class="nx">set</span> <span class="s">&#39;views&#39;</span><span class="p">,</span> <span class="nx">path</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">root</span><span class="p">,</span> <span class="s">&#39;/views&#39;</span><span class="p">)</span>
 
   <span class="k">for</span> <span class="nx">verb</span> <span class="k">in</span> <span class="p">[</span><span class="s">&#39;get&#39;</span><span class="p">,</span> <span class="s">&#39;post&#39;</span><span class="p">,</span> <span class="s">&#39;put&#39;</span><span class="p">,</span> <span class="s">&#39;del&#39;</span><span class="p">,</span> <span class="s">&#39;all&#39;</span><span class="p">]</span>
     <span class="nx">do</span> <span class="nf">(verb) -&gt;</span>
@@ -202,7 +466,23 @@ Views are kept at the module level.</p>             </td>             <td class=
   <span class="nv">context.view = </span><span class="nf">(obj) -&gt;</span>
     <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">obj</span>
       <span class="nv">ext = </span><span class="nx">path</span><span class="p">.</span><span class="nx">extname</span> <span class="nx">k</span>
-      <span class="nv">p = </span><span class="nx">path</span><span class="p">.</span><span class="nx">join</span> <span class="nx">app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;views&#39;</span><span class="p">),</span> <span class="nx">k</span></pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>I'm not even sure this is needed -- Express doesn't ask for it</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">zappa_fs</span><span class="p">[</span><span class="nx">p</span><span class="p">]</span> <span class="o">=</span> <span class="nx">v</span>
+      <span class="nv">p = </span><span class="nx">path</span><span class="p">.</span><span class="nx">join</span> <span class="nx">app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;views&#39;</span><span class="p">),</span> <span class="nx">k</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              
+<p>I&#39;m not even sure this is needed -- Express doesn&#39;t ask for it</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre>      <span class="nx">zappa_fs</span><span class="p">[</span><span class="nx">p</span><span class="p">]</span> <span class="o">=</span> <span class="nx">v</span>
       <span class="k">if</span> <span class="o">not</span> <span class="nx">ext</span>
         <span class="nv">ext = </span><span class="s">&#39;.&#39;</span> <span class="o">+</span> <span class="nx">app</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;view engine&#39;</span>
         <span class="nx">zappa_fs</span><span class="p">[</span><span class="nx">p</span><span class="o">+</span><span class="nx">ext</span><span class="p">]</span> <span class="o">=</span> <span class="nx">v</span>
@@ -227,8 +507,29 @@ Views are kept at the module level.</p>             </td>             <td class=
     <span class="k">return</span>
 
   <span class="nv">context.use = </span><span class="o">-&gt;</span>
-    <span class="nv">zappa_middleware =</span></pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>Connect <code>static</code> middlewate uses fs.stat().</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nv">static: </span><span class="p">(</span><span class="nv">p = </span><span class="nx">path</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">real_root</span><span class="p">,</span> <span class="s">&#39;/public&#39;</span><span class="p">))</span> <span class="o">-&gt;</span>
-        <span class="nx">express</span><span class="p">.</span><span class="nx">static</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
+    <span class="nv">zappa_middleware =</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              
+<p>Connect <code>static</code> middlewate uses fs.stat().</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre>      <span class="nv">static: </span><span class="nf">(options) -&gt;</span>
+        <span class="k">if</span> <span class="k">typeof</span> <span class="nx">options</span> <span class="o">is</span> <span class="s">&#39;string&#39;</span>
+          <span class="nv">options = path: </span><span class="nx">options</span>
+        <span class="nx">options</span> <span class="o">?=</span> <span class="p">{}</span>
+        <span class="nv">p = </span><span class="nx">options</span><span class="p">.</span><span class="nx">path</span> <span class="o">?</span> <span class="nx">path</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">real_root</span><span class="p">,</span> <span class="s">&#39;/public&#39;</span><span class="p">)</span>
+        <span class="k">delete</span> <span class="nx">options</span><span class="p">.</span><span class="nx">path</span>
+        <span class="nx">express</span><span class="p">.</span><span class="nx">static</span><span class="p">(</span><span class="nx">p</span><span class="p">,</span><span class="nx">options</span><span class="p">)</span>
       <span class="nv">staticGzip: </span><span class="nf">(options) -&gt;</span>
         <span class="k">if</span> <span class="k">typeof</span> <span class="nx">options</span> <span class="o">is</span> <span class="s">&#39;string&#39;</span>
           <span class="nv">options = path: </span><span class="nx">options</span>
@@ -249,8 +550,8 @@ Views are kept at the module level.</p>             </td>             <td class=
               <span class="k">when</span> <span class="s">&#39;/zappa/Zappa.js&#39;</span> <span class="k">then</span> <span class="nx">send</span> <span class="nx">client_bundled</span>
               <span class="k">when</span> <span class="s">&#39;/zappa/Zappa-simple.js&#39;</span> <span class="k">then</span> <span class="nx">send</span> <span class="nx">client_bundle_simple</span>
               <span class="k">when</span> <span class="s">&#39;/zappa/zappa.js&#39;</span> <span class="k">then</span> <span class="nx">send</span> <span class="nx">client</span>
-              <span class="k">when</span> <span class="s">&#39;/zappa/jquery.js&#39;</span> <span class="k">then</span> <span class="nx">send</span> <span class="nx">jquery</span>
-              <span class="k">when</span> <span class="s">&#39;/zappa/sammy.js&#39;</span> <span class="k">then</span> <span class="nx">send</span> <span class="nx">sammy</span>
+              <span class="k">when</span> <span class="s">&#39;/zappa/jquery.js&#39;</span> <span class="k">then</span> <span class="nx">send</span> <span class="nx">jquery_minified</span>
+              <span class="k">when</span> <span class="s">&#39;/zappa/sammy.js&#39;</span> <span class="k">then</span> <span class="nx">send</span> <span class="nx">sammy_minified</span>
               <span class="k">else</span> <span class="nx">next</span><span class="p">()</span>
           <span class="k">return</span>
       <span class="nv">partials: </span><span class="nf">(maps = {}) -&gt;</span>
@@ -311,9 +612,41 @@ Views are kept at the module level.</p>             </td>             <td class=
         <span class="k">else</span>
           <span class="nx">ctx</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="nx">helper</span>
         <span class="k">return</span>
-    <span class="nx">ctx</span></pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>Local socket</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">request_socket = </span><span class="nf">(req) -&gt;</span>
+    <span class="nx">ctx</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              
+<p>Local socket</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre>  <span class="nv">request_socket = </span><span class="nf">(req) -&gt;</span>
     <span class="nv">socket_id = </span><span class="nx">req</span><span class="p">.</span><span class="nx">session</span><span class="o">?</span><span class="p">.</span><span class="nx">__socket</span><span class="o">?</span><span class="p">[</span><span class="s">&#39;__local&#39;</span><span class="p">]</span><span class="o">?</span><span class="p">.</span><span class="nx">id</span>
-    <span class="nx">socket_id</span> <span class="o">and</span> <span class="nx">io</span><span class="o">?</span><span class="p">.</span><span class="nx">sockets</span><span class="p">.</span><span class="nx">socket</span> <span class="nx">socket_id</span><span class="p">,</span> <span class="kc">true</span></pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>The callback will receive (err,session).</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">socket_session = </span><span class="nf">(socket,cb) -&gt;</span>
+    <span class="nx">socket_id</span> <span class="o">and</span> <span class="nx">io</span><span class="o">?</span><span class="p">.</span><span class="nx">sockets</span><span class="p">.</span><span class="nx">socket</span> <span class="nx">socket_id</span><span class="p">,</span> <span class="kc">true</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              
+<p>The callback will receive (err,session).</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre>  <span class="nv">socket_session = </span><span class="nf">(socket,cb) -&gt;</span>
     <span class="nx">socket</span><span class="p">.</span><span class="nx">get</span> <span class="nx">socketio_key</span><span class="p">,</span> <span class="nf">(err,data) -&gt;</span>
       <span class="k">if</span> <span class="nx">err</span>
         <span class="k">return</span> <span class="nx">cb</span> <span class="nx">err</span>
@@ -346,8 +679,40 @@ Views are kept at the module level.</p>             </td>             <td class=
     <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">obj</span>
       <span class="nx">@app</span><span class="p">.</span><span class="nx">param</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">build</span> <span class="nx">v</span>
 
-    <span class="k">return</span></pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>Register a route with express.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">route = </span><span class="nf">(r) -&gt;</span>
-    <span class="nx">r</span><span class="p">.</span><span class="nx">middleware</span> <span class="o">?=</span> <span class="p">[]</span></pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>Rewrite middleware</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nv">r.middleware = </span><span class="nx">r</span><span class="p">.</span><span class="nx">middleware</span><span class="p">.</span><span class="nx">map</span> <span class="nf">(f) -&gt;</span>
+    <span class="k">return</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              
+<p>Register a route with express.</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre>  <span class="nv">route = </span><span class="nf">(r) -&gt;</span>
+    <span class="nx">r</span><span class="p">.</span><span class="nx">middleware</span> <span class="o">?=</span> <span class="p">[]</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              
+<p>Rewrite middleware</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre>    <span class="nv">r.middleware = </span><span class="nx">r</span><span class="p">.</span><span class="nx">middleware</span><span class="p">.</span><span class="nx">map</span> <span class="nf">(f) -&gt;</span>
       <span class="nf">(req,res,next) -&gt;</span>
         <span class="nv">ctx =</span>
           <span class="nv">app: </span><span class="nx">app</span>
@@ -419,7 +784,23 @@ Views are kept at the module level.</p>             </td>             <td class=
             <span class="k">if</span> <span class="nx">err</span>
               <span class="nx">next</span> <span class="nx">err</span>
             <span class="k">else</span>
-              <span class="nx">res</span><span class="p">.</span><span class="nx">send</span> <span class="nx">html</span></pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>Make sure the second arg is an object.</p>             </td>             <td class="code">               <div class="highlight"><pre>          <span class="k">if</span> <span class="k">typeof</span> <span class="nx">opts</span> <span class="o">is</span> <span class="s">&#39;function&#39;</span>
+              <span class="nx">res</span><span class="p">.</span><span class="nx">send</span> <span class="nx">html</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              
+<p>Make sure the second arg is an object.</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre>          <span class="k">if</span> <span class="k">typeof</span> <span class="nx">opts</span> <span class="o">is</span> <span class="s">&#39;function&#39;</span>
             <span class="nv">fn = </span><span class="nx">opts</span>
             <span class="nv">opts = </span><span class="p">{}</span>
 
@@ -430,7 +811,23 @@ Views are kept at the module level.</p>             </td>             <td class=
             <span class="nv">postrender = </span><span class="nx">report</span>
           <span class="k">else</span>
             <span class="nv">postrender = </span><span class="nf">(err, str) -&gt;</span>
-              <span class="k">if</span> <span class="nx">err</span> <span class="k">then</span> <span class="k">return</span> <span class="nx">report</span> <span class="nx">err</span></pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>Apply postrender before sending response.</p>             </td>             <td class="code">               <div class="highlight"><pre>              <span class="nx">jsdom</span><span class="p">.</span><span class="nx">env</span> <span class="nv">html: </span><span class="nx">str</span><span class="p">,</span> <span class="nv">src: </span><span class="p">[</span><span class="nx">jquery</span><span class="p">],</span> <span class="nv">done: </span><span class="nf">(err, window) -&gt;</span>
+              <span class="k">if</span> <span class="nx">err</span> <span class="k">then</span> <span class="k">return</span> <span class="nx">report</span> <span class="nx">err</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              
+<p>Apply postrender before sending response.</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre>              <span class="nx">jsdom</span><span class="p">.</span><span class="nx">env</span> <span class="nv">html: </span><span class="nx">str</span><span class="p">,</span> <span class="nv">src: </span><span class="p">[</span><span class="nx">jquery</span><span class="p">],</span> <span class="nv">done: </span><span class="nf">(err, window) -&gt;</span>
                 <span class="k">if</span> <span class="nx">err</span> <span class="k">then</span> <span class="k">return</span> <span class="nx">report</span> <span class="nx">err</span>
                 <span class="nv">ctx.window = </span><span class="nb">window</span>
                 <span class="nv">rendered = </span><span class="nx">postrenders</span><span class="p">[</span><span class="nx">opts</span><span class="p">.</span><span class="nx">postrender</span><span class="p">].</span><span class="nx">apply</span> <span class="nx">ctx</span><span class="p">,</span> <span class="p">[</span><span class="nb">window</span><span class="p">.</span><span class="nx">$</span><span class="p">]</span>
@@ -455,7 +852,23 @@ Views are kept at the module level.</p>             </td>             <td class=
 
         <span class="nx">res</span><span class="p">.</span><span class="nx">contentType</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">contentType</span><span class="p">)</span> <span class="k">if</span> <span class="nx">r</span><span class="p">.</span><span class="nx">contentType</span><span class="o">?</span>
         <span class="k">if</span> <span class="k">typeof</span> <span class="nx">result</span> <span class="o">is</span> <span class="s">&#39;string&#39;</span> <span class="k">then</span> <span class="nx">res</span><span class="p">.</span><span class="nx">send</span> <span class="nx">result</span>
-        <span class="k">else</span> <span class="k">return</span> <span class="nx">result</span></pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <p>Register socket.io handlers.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">io</span><span class="o">?</span><span class="p">.</span><span class="nx">sockets</span><span class="p">.</span><span class="kc">on</span> <span class="s">&#39;connection&#39;</span><span class="p">,</span> <span class="nf">(socket) -&gt;</span>
+        <span class="k">else</span> <span class="k">return</span> <span class="nx">result</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              
+<p>Register socket.io handlers.</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre>  <span class="nx">io</span><span class="o">?</span><span class="p">.</span><span class="nx">sockets</span><span class="p">.</span><span class="kc">on</span> <span class="s">&#39;connection&#39;</span><span class="p">,</span> <span class="nf">(socket) -&gt;</span>
     <span class="nv">c = </span><span class="p">{}</span>
 
     <span class="nv">build_ctx = </span><span class="o">-&gt;</span>
@@ -515,9 +928,40 @@ Views are kept at the module level.</p>             </td>             <td class=
             <span class="nv">ctx.ack = </span><span class="nx">ack</span>
             <span class="nx">h</span><span class="p">.</span><span class="nx">call</span> <span class="nx">ctx</span><span class="p">,</span> <span class="nx">data</span><span class="p">,</span> <span class="nx">ack</span>
         <span class="k">return</span>
-    <span class="k">return</span></pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <p>Go!</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">func</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">context</span></pre></div>             </td>           </tr>                               <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <p>The stringified zappa client.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">client = </span><span class="nx">require</span><span class="p">(</span><span class="s">&#39;./client&#39;</span><span class="p">).</span><span class="nx">build</span><span class="p">(</span><span class="nx">zappa</span><span class="p">.</span><span class="nx">version</span><span class="p">,</span> <span class="nx">app</span><span class="p">.</span><span class="nx">settings</span><span class="p">)</span>
+    <span class="k">return</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              
+<p>Go!</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre>  <span class="nx">func</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">context</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              
+<p>The stringified zappa client.</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre>  <span class="nv">client = </span><span class="nx">require</span><span class="p">(</span><span class="s">&#39;./client&#39;</span><span class="p">).</span><span class="nx">build</span><span class="p">(</span><span class="nx">zappa</span><span class="p">.</span><span class="nx">version</span><span class="p">,</span> <span class="nx">app</span><span class="p">.</span><span class="nx">settings</span><span class="p">)</span>
   <span class="nv">client = </span><span class="s">&quot;;</span><span class="si">#{</span><span class="nx">coffeescript_helpers</span><span class="si">}</span><span class="s">(</span><span class="si">#{</span><span class="nx">client</span><span class="si">}</span><span class="s">)();&quot;</span>
-  <span class="nv">client = </span><span class="nx">minify</span><span class="p">(</span><span class="nx">client</span><span class="p">)</span> <span class="k">if</span> <span class="nx">app</span><span class="p">.</span><span class="nx">settings</span><span class="p">[</span><span class="s">&#39;minify&#39;</span><span class="p">]</span>
   <span class="nv">client_bundle_simple =</span>
     <span class="k">if</span> <span class="nx">io</span><span class="o">?</span>
       <span class="nx">jquery</span> <span class="o">+</span> <span class="nx">socketjs</span> <span class="o">+</span> <span class="nx">client</span>
@@ -529,6 +973,10 @@ Views are kept at the module level.</p>             </td>             <td class=
     <span class="k">else</span>
       <span class="nx">jquery</span> <span class="o">+</span> <span class="nx">sammy</span> <span class="o">+</span> <span class="nx">client</span>
 
+  <span class="k">if</span> <span class="nx">app</span><span class="p">.</span><span class="nx">settings</span><span class="p">[</span><span class="s">&#39;minify&#39;</span><span class="p">]</span>
+    <span class="nv">client = </span><span class="nx">minify</span> <span class="nx">client</span>
+    <span class="nv">client_bundle_simple = </span><span class="nx">minify</span> <span class="nx">client_bundle_simple</span>
+    <span class="nv">client_bundled = </span><span class="nx">minify</span> <span class="nx">client_bundled</span>
 
   <span class="k">if</span> <span class="nx">app</span><span class="p">.</span><span class="nx">settings</span><span class="p">[</span><span class="s">&#39;default layout&#39;</span><span class="p">]</span>
     <span class="nx">context</span><span class="p">.</span><span class="nx">view</span> <span class="nv">layout: </span><span class="o">-&gt;</span>
@@ -560,23 +1008,103 @@ Views are kept at the module level.</p>             </td>             <td class=
 
         <span class="nx">@session</span><span class="p">.</span><span class="nx">__socket</span> <span class="o">?=</span> <span class="p">{}</span>
 
-        <span class="k">if</span> <span class="nx">@session</span><span class="p">.</span><span class="nx">__socket</span><span class="p">[</span><span class="nx">channel_name</span><span class="p">]</span><span class="o">?</span></pre></div>             </td>           </tr>                               <tr id="section-26">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-26">&#182;</a>               </div>               <p>Client (or hijacker) trying to re-key.</p>             </td>             <td class="code">               <div class="highlight"><pre>          <span class="nx">@send</span> <span class="nx">error</span><span class="o">:</span><span class="s">&#39;Channel already assigned&#39;</span><span class="p">,</span> <span class="nv">channel_name: </span><span class="nx">channel_name</span>
+        <span class="k">if</span> <span class="nx">@session</span><span class="p">.</span><span class="nx">__socket</span><span class="p">[</span><span class="nx">channel_name</span><span class="p">]</span><span class="o">?</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-26">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-26">&#182;</a>
+              </div>
+              
+<p>Client (or hijacker) trying to re-key.</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre>          <span class="nx">@send</span> <span class="nx">error</span><span class="o">:</span><span class="s">&#39;Channel already assigned&#39;</span><span class="p">,</span> <span class="nv">channel_name: </span><span class="nx">channel_name</span>
         <span class="k">else</span>
-          <span class="nv">key = </span><span class="nx">uuid</span><span class="p">.</span><span class="nx">v4</span><span class="p">()</span> <span class="c1"># used for socket &#39;authorization&#39;</span></pre></div>             </td>           </tr>                               <tr id="section-27">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-27">&#182;</a>               </div>               <p>Update the Express session store</p>             </td>             <td class="code">               <div class="highlight"><pre>          <span class="nx">@session</span><span class="p">.</span><span class="nx">__socket</span><span class="p">[</span><span class="nx">channel_name</span><span class="p">]</span> <span class="o">=</span>
+          <span class="nv">key = </span><span class="nx">uuid</span><span class="p">.</span><span class="nx">v4</span><span class="p">()</span> <span class="c1"># used for socket &#39;authorization&#39;</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-27">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-27">&#182;</a>
+              </div>
+              
+<p>Update the Express session store</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre>          <span class="nx">@session</span><span class="p">.</span><span class="nx">__socket</span><span class="p">[</span><span class="nx">channel_name</span><span class="p">]</span> <span class="o">=</span>
             <span class="nv">id: </span><span class="nx">socket_id</span>
-            <span class="nv">key: </span><span class="nx">key</span></pre></div>             </td>           </tr>                               <tr id="section-28">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-28">&#182;</a>               </div>               <p>Update the Socket.IO store</p>             </td>             <td class="code">               <div class="highlight"><pre>          <span class="nv">io_client = </span><span class="nx">io</span><span class="p">.</span><span class="nx">sockets</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">client</span><span class="p">(</span><span class="nx">socket_id</span><span class="p">)</span>
+            <span class="nv">key: </span><span class="nx">key</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-28">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-28">&#182;</a>
+              </div>
+              
+<p>Update the Socket.IO store</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre>          <span class="nv">io_client = </span><span class="nx">io</span><span class="p">.</span><span class="nx">sockets</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">client</span><span class="p">(</span><span class="nx">socket_id</span><span class="p">)</span>
           <span class="nv">io_data = </span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span>
             <span class="nv">id: </span><span class="nx">@req</span><span class="p">.</span><span class="nx">sessionID</span>
             <span class="nv">key: </span><span class="nx">key</span>
-          <span class="nx">io_client</span><span class="p">.</span><span class="nx">set</span> <span class="nx">socketio_key</span><span class="p">,</span> <span class="nx">io_data</span></pre></div>             </td>           </tr>                               <tr id="section-29">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-29">&#182;</a>               </div>               <p>Let the client know which key to use.</p>             </td>             <td class="code">               <div class="highlight"><pre>          <span class="nx">@send</span> <span class="nv">channel_name: </span><span class="nx">channel_name</span><span class="p">,</span> <span class="nv">key: </span><span class="nx">key</span>
+          <span class="nx">io_client</span><span class="p">.</span><span class="nx">set</span> <span class="nx">socketio_key</span><span class="p">,</span> <span class="nx">io_data</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-29">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-29">&#182;</a>
+              </div>
+              
+<p>Let the client know which key to use.</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre>          <span class="nx">@send</span> <span class="nv">channel_name: </span><span class="nx">channel_name</span><span class="p">,</span> <span class="nv">key: </span><span class="nx">key</span>
       <span class="k">else</span>
         <span class="nx">@send</span> <span class="nx">error</span><span class="o">:</span><span class="s">&#39;No session&#39;</span>
       <span class="k">return</span>
 
-  <span class="nx">context</span></pre></div>             </td>           </tr>                               <tr id="section-30">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-30">&#182;</a>               </div>               <p>zappa.run [host,] [port,] [{options},] root_function
+  <span class="nx">context</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-30">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-30">&#182;</a>
+              </div>
+              
+<p>zappa.run [host,] [port,] [{options},] root_function
 Takes a function and runs it as a zappa app. Optionally accepts a port
 number, and/or a hostname (any order). The hostname must be a string, and
-the port number must be castable as a number.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">zappa.run = </span><span class="o">-&gt;</span>
+the port number must be castable as a number.</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre><span class="nv">zappa.run = </span><span class="o">-&gt;</span>
   <span class="nv">host = </span><span class="kc">null</span>
   <span class="nv">port = </span><span class="mi">3000</span>
   <span class="nv">root_function = </span><span class="kc">null</span>
@@ -611,43 +1139,102 @@ the port number must be castable as a number.</p>             </td>             
   <span class="k">else</span>
     <span class="nx">zapp</span><span class="p">.</span><span class="nx">server</span><span class="p">.</span><span class="nx">listen</span> <span class="nx">port</span><span class="p">,</span> <span class="nx">express_ready</span>
 
-  <span class="nx">zapp</span></pre></div>             </td>           </tr>                               <tr id="section-31">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-31">&#182;</a>               </div>               <p>Creates a zappa view adapter for templating engine <code>engine</code>. This adapter
+  <span class="nx">zapp</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-31">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-31">&#182;</a>
+              </div>
+              
+<p>Creates a zappa view adapter for templating engine <code>engine</code>. This adapter
 can be used with <code>context.engine</code> or <code>context.use partials:</code>
-and creates params "shortcuts".</p>
-
+and creates params &quot;shortcuts&quot;.</p>
 <p>Zappa, by default, automatically sends all request params to templates,
 but inside the <code>params</code> local.</p>
-
-<p>This adapter adds a "root local" for each of these params, <em>only</em>
-if a local with the same name doesn't exist already, <em>and</em> the name is not
+<p>This adapter adds a &quot;root local&quot; for each of these params, <em>only</em>
+if a local with the same name doesn&#39;t exist already, <em>and</em> the name is not
 in the optional blacklist.</p>
-
 <p>The blacklist is useful to prevent request params from triggering unset
 template engine options.</p>
-
 <p>If <code>engine</code> is a string, the adapter will use <code>require(engine)</code>. Otherwise,
 it will assume the <code>engine</code> param is an object with a <code>compile</code> function.</p>
-
 <p>Return an Express 2.x as well as an Express 3.x compatible object.
-The Express 2.x object supports both <code>compile</code> and <code>render</code>.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nv">zappa.adapter = </span><span class="nf">(engine, options = {}) -&gt;</span>
+The Express 2.x object supports both <code>compile</code> and <code>render</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre><span class="nv">zappa.adapter = </span><span class="nf">(engine, options = {}) -&gt;</span>
   <span class="nx">options</span><span class="p">.</span><span class="nx">blacklist</span> <span class="o">?=</span> <span class="p">[]</span>
   <span class="nv">engine = </span><span class="nx">require</span><span class="p">(</span><span class="nx">engine</span><span class="p">)</span> <span class="k">if</span> <span class="k">typeof</span> <span class="nx">engine</span> <span class="o">is</span> <span class="s">&#39;string&#39;</span>
   <span class="nv">compile = </span><span class="nf">(template, data) -&gt;</span>
     <span class="nv">template = </span><span class="nx">engine</span><span class="p">.</span><span class="nx">compile</span><span class="p">(</span><span class="nx">template</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span>
-    <span class="nf">(data) -&gt;</span></pre></div>             </td>           </tr>                               <tr id="section-32">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-32">&#182;</a>               </div>               <p>Merge down <code>@params</code> into <code>@</code>
-Bonus: if <code>databag</code> is enabled, <code>@params</code> will be the complete databag.</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">data</span><span class="p">.</span><span class="nx">params</span>
+    <span class="nf">(data) -&gt;</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-32">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-32">&#182;</a>
+              </div>
+              
+<p>Merge down <code>@params</code> into <code>@</code>
+Bonus: if <code>databag</code> is enabled, <code>@params</code> will be the complete databag.</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre>      <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">data</span><span class="p">.</span><span class="nx">params</span>
         <span class="k">if</span> <span class="k">typeof</span> <span class="nx">data</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">is</span> <span class="s">&#39;undefined&#39;</span> <span class="o">and</span> <span class="nx">k</span> <span class="o">not</span> <span class="k">in</span> <span class="nx">options</span><span class="p">.</span><span class="nx">blacklist</span>
           <span class="nx">data</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="nx">v</span>
       <span class="nx">template</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span>
   <span class="nv">render = </span><span class="nf">(template,data) -&gt;</span>
     <span class="nv">template = </span><span class="nx">compile</span> <span class="nx">template</span><span class="p">,</span> <span class="nx">data</span>
-    <span class="nx">template</span> <span class="nx">data</span></pre></div>             </td>           </tr>                               <tr id="section-33">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-33">&#182;</a>               </div>               <p>Express 3.x object:</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">renderFile = </span><span class="nf">(name,data,fn) -&gt;</span>
+    <span class="nx">template</span> <span class="nx">data</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-33">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-33">&#182;</a>
+              </div>
+              
+<p>Express 3.x object:</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre>  <span class="nv">renderFile = </span><span class="nf">(name,data,fn) -&gt;</span>
     <span class="k">try</span>
       <span class="nv">template = </span><span class="nx">fs</span><span class="p">.</span><span class="nx">readFileSync</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span><span class="s">&#39;utf8&#39;</span><span class="p">)</span>
       <span class="nv">template = </span><span class="nx">compile</span> <span class="nx">template</span><span class="p">,</span> <span class="nx">data</span>
     <span class="k">catch</span> <span class="nx">err</span>
       <span class="k">return</span> <span class="nx">fn</span> <span class="nx">err</span>
-    <span class="nx">fn</span> <span class="kc">null</span><span class="p">,</span> <span class="nx">template</span> <span class="nx">data</span></pre></div>             </td>           </tr>                               <tr id="section-34">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-34">&#182;</a>               </div>               <p>Express 2.x extensions:</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">renderFile.compile = </span><span class="nx">compile</span>
+    <span class="nx">fn</span> <span class="kc">null</span><span class="p">,</span> <span class="nx">template</span> <span class="nx">data</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-34">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-34">&#182;</a>
+              </div>
+              
+<p>Express 2.x extensions:</p>
+
+            </div>
+            
+            <div class="content"><div class="highlight"><pre>  <span class="nv">renderFile.compile = </span><span class="nx">compile</span>
   <span class="nv">renderFile.render = </span><span class="nx">render</span>
   <span class="nx">renderFile</span>
 
@@ -660,4 +1247,11 @@ Bonus: if <code>databag</code> is enabled, <code>@params</code> will be the comp
 <span class="nv">module.exports.adapter = </span><span class="nx">zappa</span><span class="p">.</span><span class="nx">adapter</span>
 <span class="nv">module.exports.version = </span><span class="nx">zappa</span><span class="p">.</span><span class="nx">version</span>
 
-</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
+</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
