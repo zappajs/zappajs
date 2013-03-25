@@ -1,4 +1,8 @@
-**0.4.19** (2013-03-12)
+**v0.4.20** (2013-03-25)
+
+  * Add `zappa_prefix` setting.
+
+**v0.4.19** (2013-03-12)
 
   * Documentation: updated to reflect minify changes.
   * Updated documentation for static (#66,#69)
