@@ -52,14 +52,14 @@
 
             </div>
             
-            <div class="content"><div class="highlight"><pre><span class="nv">skeleton = </span><span class="o">-&gt;</span>
-  <span class="nv">zappa = </span><span class="nb">window</span><span class="p">.</span><span class="nv">zappa = </span><span class="p">{}</span>
-  <span class="nv">zappa.version = </span><span class="kc">null</span>
+            <div class="content"><div class='highlight'><pre><span class="function"><span class="title">skeleton</span></span> = -&gt;
+  zappa = window.zappa = {}
+  zappa.version = <span class="literal">null</span>
 
-  <span class="nv">settings = </span><span class="kc">null</span>
+  settings = <span class="literal">null</span>
 
-  <span class="nv">zappa.run = </span><span class="nf">(func) -&gt;</span>
-    <span class="nv">context = </span><span class="p">{}</span></pre></div></div>
+  zappa.<span class="function"><span class="title">run</span></span> = (func) -&gt;
+    context = {}</pre></div></div>
             
         </li>
         
@@ -70,75 +70,75 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
-              
-<p>Storage for the functions provided by the user.</p>
+              <p>Storage for the functions provided by the user.</p>
 
             </div>
             
-            <div class="content"><div class="highlight"><pre>    <span class="nv">helpers = </span><span class="p">{}</span>
+            <div class="content"><div class='highlight'><pre>    helpers = {}
 
-    <span class="nv">apply_helpers = </span><span class="nf">(ctx) -&gt;</span>
-      <span class="k">for</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">helper</span> <span class="k">of</span> <span class="nx">helpers</span>
-        <span class="nx">do</span> <span class="nf">(name, helper) -&gt;</span>
-          <span class="k">if</span> <span class="k">typeof</span> <span class="nx">helper</span> <span class="o">is</span> <span class="s">&#39;function&#39;</span>
-            <span class="nx">ctx</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="o">-&gt;</span>
-              <span class="nx">helper</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">ctx</span><span class="p">,</span> <span class="nx">arguments</span>
-          <span class="k">else</span>
-            <span class="nx">ctx</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="nx">helper</span>
-      <span class="nx">ctx</span>
+    <span class="function"><span class="title">apply_helpers</span></span> = (ctx) -&gt;
+      <span class="keyword">for</span> name, helper <span class="keyword">of</span> helpers
+        <span class="keyword">do</span> (name, helper) -&gt;
+          <span class="keyword">if</span> <span class="keyword">typeof</span> helper <span class="keyword">is</span> <span class="string">'function'</span>
+            ctx[name] = -&gt;
+              helper.apply ctx, arguments
+          <span class="keyword">else</span>
+            ctx[name] = helper
+      ctx
 
-    <span class="nv">app = context.app = </span><span class="nx">Sammy</span><span class="p">()</span> <span class="k">if</span> <span class="nx">Sammy</span><span class="o">?</span>
+    app = context.app = Sammy() <span class="keyword">if</span> Sammy?
 
-    <span class="nv">context.get = </span><span class="o">-&gt;</span>
-      <span class="k">if</span> <span class="k">typeof</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">isnt</span> <span class="s">&#39;object&#39;</span>
-        <span class="nx">route</span> <span class="nv">path: </span><span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nv">handler: </span><span class="nx">arguments</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-      <span class="k">else</span>
-        <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-          <span class="nx">route</span> <span class="nv">path: </span><span class="nx">k</span><span class="p">,</span> <span class="nv">handler: </span><span class="nx">v</span>
+    context.<span class="function"><span class="title">get</span></span> = -&gt;
+      <span class="keyword">if</span> <span class="keyword">typeof</span> arguments[<span class="number">0</span>] <span class="keyword">isnt</span> <span class="string">'object'</span>
+        route path: arguments[<span class="number">0</span>], handler: arguments[<span class="number">1</span>]
+      <span class="keyword">else</span>
+        <span class="keyword">for</span> k, v <span class="keyword">of</span> arguments[<span class="number">0</span>]
+          route path: k, handler: v
 
-    <span class="nv">context.helper = </span><span class="nf">(obj) -&gt;</span>
-      <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">obj</span>
-        <span class="nx">helpers</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="nx">v</span>
+    context.<span class="function"><span class="title">helper</span></span> = (obj) -&gt;
+      <span class="keyword">for</span> k, v <span class="keyword">of</span> obj
+        helpers[k] = v
 
-    <span class="nv">context.on = </span><span class="nf">(obj) -&gt;</span>
-      <span class="k">for</span> <span class="nx">message</span><span class="p">,</span> <span class="nx">action</span> <span class="k">of</span> <span class="nx">obj</span>
-        <span class="nx">context</span><span class="p">.</span><span class="nx">socket</span><span class="p">.</span><span class="kc">on</span> <span class="nx">message</span><span class="p">,</span> <span class="nf">(data) -&gt;</span>
-          <span class="nv">ctx =</span>
-            <span class="nv">app: </span><span class="nx">app</span>
-            <span class="nv">socket: </span><span class="nx">context</span><span class="p">.</span><span class="nx">socket</span>
-            <span class="nv">id: </span><span class="nx">context</span><span class="p">.</span><span class="nx">socket</span><span class="p">.</span><span class="nx">id</span>
-            <span class="nv">data: </span><span class="nx">data</span>
-            <span class="nv">emit: </span><span class="nx">context</span><span class="p">.</span><span class="nx">emit</span>
-            <span class="nv">share: </span><span class="nx">context</span><span class="p">.</span><span class="nx">share</span>
+    context.<span class="function"><span class="title">on</span></span> = (obj) -&gt;
+      <span class="keyword">for</span> message, action <span class="keyword">of</span> obj
+        context.socket.<span class="literal">on</span> message, (data) -&gt;
+          ctx =
+            app: app
+            socket: context.socket
+            id: context.socket.id
+            data: data
+            emit: context.emit
+            share: context.share
 
-          <span class="nx">apply_helpers</span> <span class="nx">ctx</span>
+          apply_helpers ctx
 
-          <span class="nx">action</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">ctx</span>
+          action.apply ctx
 
-    <span class="nv">context.connect = </span><span class="o">-&gt;</span>
-      <span class="nv">context.socket = </span><span class="nx">io</span><span class="p">.</span><span class="nx">connect</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">io</span><span class="p">,</span> <span class="nx">arguments</span>
+    context.<span class="function"><span class="title">connect</span></span> = -&gt;
+      context.socket = io.connect.apply io, arguments
 
-    <span class="nv">context.emit = </span><span class="o">-&gt;</span>
-      <span class="k">if</span> <span class="k">typeof</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">isnt</span> <span class="s">&#39;object&#39;</span>
-        <span class="nx">context</span><span class="p">.</span><span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">context</span><span class="p">.</span><span class="nx">socket</span><span class="p">,</span> <span class="nx">arguments</span>
-      <span class="k">else</span>
-        <span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="k">of</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-          <span class="nx">context</span><span class="p">.</span><span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">context</span><span class="p">.</span><span class="nx">socket</span><span class="p">,</span> <span class="p">[</span><span class="nx">k</span><span class="p">,</span> <span class="nx">v</span><span class="p">]</span>
+    context.<span class="function"><span class="title">emit</span></span> = -&gt;
+      <span class="keyword">if</span> <span class="keyword">typeof</span> arguments[<span class="number">0</span>] <span class="keyword">isnt</span> <span class="string">'object'</span>
+        context.socket.emit.apply context.socket, arguments
+      <span class="keyword">else</span>
+        <span class="keyword">for</span> k, v <span class="keyword">of</span> arguments[<span class="number">0</span>]
+          context.socket.emit.apply context.socket, [k, v]
 
-    <span class="nv">context.share = </span><span class="nf">(channel,socket,cb) -&gt;</span>
-      <span class="nx">$</span><span class="p">.</span><span class="nx">getJSON</span> <span class="s">&quot;/zappa/socket/</span><span class="si">#{</span><span class="nx">channel</span><span class="si">}</span><span class="s">/</span><span class="si">#{</span><span class="nx">socket</span><span class="p">.</span><span class="nx">socket</span><span class="p">.</span><span class="nx">sessionid</span><span class="si">}</span><span class="s">&quot;</span><span class="p">,</span> <span class="nx">cb</span>
+    context.<span class="function"><span class="title">share</span></span> = (channel,socket,cb) -&gt;
+      zappa_prefix = settings.zappa_prefix
+      $.getJSON zappa_prefix+<span class="string">"/socket/<span class="subst">#{channel}</span>/<span class="subst">#{socket.socket.sessionid}</span>"</span>, cb
 
-    <span class="nv">route = </span><span class="nf">(r) -&gt;</span>
-      <span class="nv">ctx = </span><span class="p">{</span><span class="nx">app</span><span class="p">}</span>
+    <span class="function"><span class="title">route</span></span> = (r) -&gt;
+      ctx = {app}
 
-      <span class="nx">apply_helpers</span> <span class="nx">ctx</span>
+      apply_helpers ctx
 
-      <span class="nx">app</span><span class="p">.</span><span class="nx">get</span> <span class="nx">r</span><span class="p">.</span><span class="nx">path</span><span class="p">,</span> <span class="nf">(sammy_context) -&gt;</span>
-        <span class="nv">ctx.params = </span><span class="nx">sammy_context</span><span class="p">.</span><span class="nx">params</span>
-        <span class="nv">ctx.sammy_context = </span><span class="nx">sammy_context</span>
-        <span class="nv">ctx.render = </span><span class="o">-&gt;</span> <span class="nx">sammy_context</span><span class="p">.</span><span class="nx">render</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">sammy_context</span><span class="p">,</span> <span class="nx">arguments</span>
-        <span class="nv">ctx.redirect = </span><span class="o">-&gt;</span> <span class="nx">sammy_context</span><span class="p">.</span><span class="nx">redirect</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">sammy_context</span><span class="p">,</span> <span class="nx">arguments</span>
-        <span class="nx">r</span><span class="p">.</span><span class="nx">handler</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">ctx</span></pre></div></div>
+      app.get r.path, (sammy_context) -&gt;
+        ctx.params = sammy_context.params
+        ctx.sammy_context = sammy_context
+        ctx.<span class="function"><span class="title">render</span></span> = -&gt; sammy_context.render.apply sammy_context, arguments
+        ctx.<span class="function"><span class="title">redirect</span></span> = -&gt; sammy_context.redirect.apply sammy_context, arguments
+        r.handler.apply ctx</pre></div></div>
             
         </li>
         
@@ -149,12 +149,11 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-3">&#182;</a>
               </div>
-              
-<p>GO!!!</p>
+              <p>GO!!!</p>
 
             </div>
             
-            <div class="content"><div class="highlight"><pre>    <span class="nx">func</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nx">context</span><span class="p">,</span> <span class="p">[</span><span class="nx">context</span><span class="p">])</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>    func.apply(context, [context])</pre></div></div>
             
         </li>
         
@@ -165,24 +164,21 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
-              
-<p>Implements the websockets client with socket.io.</p>
+              <p>Implements the websockets client with socket.io.</p>
 
             </div>
             
-            <div class="content"><div class="highlight"><pre>    <span class="k">if</span> <span class="nx">context</span><span class="p">.</span><span class="nx">socket</span><span class="o">?</span>
-      <span class="nx">context</span><span class="p">.</span><span class="nx">socket</span><span class="p">.</span><span class="kc">on</span> <span class="s">&#39;connect&#39;</span><span class="p">,</span> <span class="o">-&gt;</span>
-        <span class="nx">context</span><span class="p">.</span><span class="nx">share</span> <span class="s">&#39;__local&#39;</span><span class="p">,</span> <span class="nx">context</span><span class="p">.</span><span class="nx">socket</span><span class="p">,</span> <span class="nf">(data) -&gt;</span>
-          <span class="nv">context.key = </span><span class="nx">data</span><span class="p">.</span><span class="nx">key</span>
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">if</span> context.socket?
+      context.socket.<span class="literal">on</span> <span class="string">'connect'</span>, -&gt;
+        context.share <span class="string">'__local'</span>, context.socket, (data) -&gt;
+          context.key = data.key
 
-    <span class="nx">$</span><span class="p">(</span><span class="o">-&gt;</span> <span class="nx">app</span><span class="p">.</span><span class="nx">run</span> <span class="s">&#39;#/&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="nx">app</span><span class="o">?</span>
+    $(-&gt; app.run <span class="string">'#/'</span>) <span class="keyword">if</span> app?
 
-<span class="vi">@build = </span><span class="nf">(version, settings) -&gt;</span>
-  <span class="nb">String</span><span class="p">(</span><span class="nx">skeleton</span><span class="p">)</span>
-    <span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="s">&#39;version = null;&#39;</span><span class="p">,</span> <span class="s">&quot;version = &#39;</span><span class="si">#{</span><span class="nx">version</span><span class="si">}</span><span class="s">&#39;;&quot;</span><span class="p">)</span>
-    <span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="s">&#39;settings = null;&#39;</span><span class="p">,</span> <span class="s">&quot;settings = </span><span class="si">#{</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span> <span class="nx">settings</span><span class="si">}</span><span class="s">;&quot;</span><span class="p">)</span>
-
-</pre></div></div>
+<span class="property">@build</span> = (version, settings) -&gt;
+  String(skeleton)
+    .replace(<span class="string">'version = null;'</span>, <span class="string">"version = '<span class="subst">#{version}</span>';"</span>)
+    .replace(<span class="string">'settings = null;'</span>, <span class="string">"settings = <span class="subst">#{JSON.stringify settings}</span>;"</span>)</pre></div></div>
             
         </li>
         
