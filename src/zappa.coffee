@@ -160,6 +160,9 @@ zappa.app = (func,options={}) ->
   # Sets default view dir to @root
   app.set 'views', path.join(root, '/views')
 
+  # Location of zappa-specific URIs.
+  app.set 'zappa_prefix', '/zappa'
+
   for verb in ['get', 'post', 'put', 'del', 'all']
     do (verb) ->
       context[verb] = (args...) ->
@@ -297,12 +300,13 @@ zappa.app = (func,options={}) ->
             res.send code
           if req.method.toUpperCase() isnt 'GET' then next()
           else
+            zappa_prefix = app.settings['zappa_prefix']
             switch req.url
-              when '/zappa/Zappa.js' then send client_bundled
-              when '/zappa/Zappa-simple.js' then send client_bundle_simple
-              when '/zappa/zappa.js' then send client
-              when '/zappa/jquery.js' then send jquery_minified
-              when '/zappa/sammy.js' then send sammy_minified
+              when zappa_prefix+'/Zappa.js' then send client_bundled
+              when zappa_prefix+'/Zappa-simple.js' then send client_bundle_simple
+              when zappa_prefix+'/zappa.js' then send client
+              when zappa_prefix+'/jquery.js' then send jquery_minified
+              when zappa_prefix+'/sammy.js' then send sammy_minified
               else next()
           return
       partials: (maps = {}) ->
@@ -634,7 +638,8 @@ zappa.app = (func,options={}) ->
         body @body
 
   if io?
-    context.get '/zappa/socket/:channel_name/:socket_id', ->
+    zappa_prefix = app.settings['zappa_prefix']
+    context.get zappa_prefix+'/socket/:channel_name/:socket_id', ->
       if @session?
         channel_name = @params.channel_name
         socket_id = @params.socket_id

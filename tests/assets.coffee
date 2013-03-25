@@ -257,3 +257,23 @@ port = 15200
       t.equal 'coffee', res.headers['content-length'], '476'
     c.get '/js.js', (err, res) ->
       t.equal 'js', res.headers['content-length'], '13'
+
+  zappa_prefix: (t) ->
+    t.expect 1, 2, 3, 4, 5
+    t.wait 3000
+
+    zapp = zappa port++, ->
+      @set zappa_prefix: '/myapp/zappa'
+      @client '/myapp/index.js': ->
+        @get '#/': -> alert 'hi'
+
+    c = t.client(zapp.server)
+    c.get '/myapp/index.js', (err, res) ->
+      t.equal 1, res.body, ';zappa.run(function () {\n            return this.get({\n              \'#/\': function() {\n                return alert(\'hi\');\n              }\n            });\n          });'
+      t.equal 2, res.headers['content-type'], 'application/javascript'
+    c.get '/myapp/zappa/zappa.js', (err, res) ->
+      t.equal 3, res.headers['content-type'], 'application/javascript'
+    c.get '/myapp/zappa/jquery.js', (err, res) ->
+      t.equal 4, res.headers['content-type'], 'application/javascript'
+    c.get '/myapp/zappa/sammy.js', (err, res) ->
+      t.equal 5, res.headers['content-type'], 'application/javascript'

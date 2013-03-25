@@ -885,3 +885,7 @@ This object will be called `params` (or `@params` in coffeecup views).
 ### 'x-powered-by'
 
 Unless disabled, ZappaJS adds a `X-Powered-By` header in HTTP responses.
+
+### 'zappa_prefix'
+
+Normally a prefix of `/zappa` is used for all Zappa-specific URIs. This settings allows you to specify a different path.
