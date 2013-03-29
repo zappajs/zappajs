@@ -122,7 +122,16 @@ socketio = require 'socket.io'
 
 # Takes in a function and builds express/socket.io apps based on the rules
 # contained in it.
-zappa.app = (func,options={}) ->
+zappa.app = ->
+  for a in arguments
+    switch typeof a
+      when 'function'
+        func = a
+      when 'object'
+        options = a
+
+  options ?= {}
+
   context = {id: uuid.v4(), zappa, express}
 
   real_root = path.dirname(module.parent.filename)
