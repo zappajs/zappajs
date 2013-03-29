@@ -49,6 +49,7 @@ You can also pass the parameters in the `options` object. The following options 
 * `port`
 * `host`
 * `disable_io`: if true, the Socket.IO interface will be disabled.
+* `io`: options for the Socket.IO server.
 * `https`: object containing [options for HTTPS](http://nodejs.org/api/tls.html#tls_tls_createserver_options_secureconnectionlistener). Generally `key` and `cert` are all you need:
 
         # Start a HTTPS server on port 3443

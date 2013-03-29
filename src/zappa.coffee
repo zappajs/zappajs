@@ -143,7 +143,7 @@ zappa.app = (func,options={}) ->
   if options.disable_io
     io = null
   else
-    io = context.io = socketio.listen(context.server)
+    io = context.io = socketio.listen context.server, options.io ? {}
 
   # Reference to the zappa client, the value will be set later.
   client = null
