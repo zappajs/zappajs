@@ -340,7 +340,7 @@ zappa.app = ->
         when 'function' then app.use a
         when 'string' then use a
         when 'object'
-          if a.stack? or a.route?
+          if a.stack? or a.route? or a.handle?
             app.use a
           else
             use k, v for k, v of a
