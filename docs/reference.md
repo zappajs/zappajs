@@ -1,6 +1,6 @@
 ---
 layout: default
-title: API Reference (v0.4.20)
+title: API Reference (v0.4.21)
 ---
 
 # {{page.title}}

@@ -55,7 +55,7 @@ and other best-of-breed libraries.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>zappa = version: <span class="string">'0.4.20'</span>
+            <div class="content"><div class='highlight'><pre>zappa = version: <span class="string">'0.4.21'</span>
 
 codename = <span class="string">'You can\'t do that on stage anymore'</span>
 
@@ -270,7 +270,16 @@ contained in it.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>zappa.<span class="function"><span class="title">app</span></span> = (func,options={}) -&gt;
+            <div class="content"><div class='highlight'><pre>zappa.<span class="function"><span class="title">app</span></span> = -&gt;
+  <span class="keyword">for</span> a <span class="keyword">in</span> arguments
+    <span class="keyword">switch</span> <span class="keyword">typeof</span> a
+      <span class="keyword">when</span> <span class="string">'function'</span>
+        func = a
+      <span class="keyword">when</span> <span class="string">'object'</span>
+        options = a
+
+  options ?= {}
+
   context = {id: uuid.v4(), zappa, express}
 
   real_root = path.dirname(module.parent.filename)
@@ -303,7 +312,7 @@ Views are kept at the module level.</p>
   <span class="keyword">if</span> options.disable_io
     io = <span class="literal">null</span>
   <span class="keyword">else</span>
-    io = context.io = socketio.listen(context.server)</pre></div></div>
+    io = context.io = socketio.listen context.server, options.io ? {}</pre></div></div>
             
         </li>
         
@@ -530,90 +539,7 @@ Views are kept at the module level.</p>
         p = options.path ? path.join(real_root, <span class="string">'/public'</span>)
         <span class="keyword">delete</span> options.path
         express.static(p,options)
-      staticGzip: (options) -&gt;
-        <span class="keyword">if</span> <span class="keyword">typeof</span> options <span class="keyword">is</span> <span class="string">'string'</span>
-          options = path: options
-        options ?= {}
-        p = options.path ? path.join(real_root, <span class="string">'/public'</span>)
-        gzippo ?= require <span class="string">'gzippo'</span>
-        gzippo.staticGzip(p, options)
-        <span class="keyword">return</span>
-      zappa: -&gt;
-        zappa_used = <span class="literal">yes</span>
-        (req, res, next) -&gt;
-          <span class="function"><span class="title">send</span></span> = (code) -&gt;
-            res.contentType <span class="string">'js'</span>
-            res.send code
-          <span class="keyword">if</span> req.method.toUpperCase() <span class="keyword">isnt</span> <span class="string">'GET'</span> <span class="keyword">then</span> next()
-          <span class="keyword">else</span>
-            zappa_prefix = app.settings[<span class="string">'zappa_prefix'</span>]
-            <span class="keyword">switch</span> req.url
-              <span class="keyword">when</span> zappa_prefix+<span class="string">'/Zappa.js'</span> <span class="keyword">then</span> send client_bundled
-              <span class="keyword">when</span> zappa_prefix+<span class="string">'/Zappa-simple.js'</span> <span class="keyword">then</span> send client_bundle_simple
-              <span class="keyword">when</span> zappa_prefix+<span class="string">'/zappa.js'</span> <span class="keyword">then</span> send client
-              <span class="keyword">when</span> zappa_prefix+<span class="string">'/jquery.js'</span> <span class="keyword">then</span> send jquery_minified
-              <span class="keyword">when</span> zappa_prefix+<span class="string">'/sammy.js'</span> <span class="keyword">then</span> send sammy_minified
-              <span class="keyword">else</span> next()
-          <span class="keyword">return</span>
-      partials: (maps = {}) -&gt;
-        express_partials ?= require <span class="string">'zappajs-partials'</span>
-        partials = express_partials()
-        partials.register <span class="string">'coffee'</span>, coffeecup_adapter.render
-        <span class="keyword">for</span> k,v <span class="keyword">of</span> maps
-          partials.register k, v
-        partials
-      session: (options) -&gt;
-        context.session_store = options.store
-        express.session options
-
-    <span class="function"><span class="title">use</span></span> = (name, arg = <span class="literal">null</span>) -&gt;
-      <span class="keyword">if</span> zappa_middleware[name]
-        app.use zappa_middleware[name](arg)
-      <span class="keyword">else</span> <span class="keyword">if</span> <span class="keyword">typeof</span> express[name] <span class="keyword">is</span> <span class="string">'function'</span>
-        app.use express[name](arg)
-
-    <span class="keyword">for</span> a <span class="keyword">in</span> arguments
-      <span class="keyword">switch</span> <span class="keyword">typeof</span> a
-        <span class="keyword">when</span> <span class="string">'function'</span> <span class="keyword">then</span> app.use a
-        <span class="keyword">when</span> <span class="string">'string'</span> <span class="keyword">then</span> use a
-        <span class="keyword">when</span> <span class="string">'object'</span>
-          <span class="keyword">if</span> a.stack? <span class="keyword">or</span> a.route?
-            app.use a
-          <span class="keyword">else</span>
-            use k, v <span class="keyword">for</span> k, v <span class="keyword">of</span> a
-    <span class="keyword">return</span>
-
-  context.<span class="function"><span class="title">configure</span></span> = (p) -&gt;
-    <span class="keyword">if</span> <span class="keyword">typeof</span> p <span class="keyword">is</span> <span class="string">'function'</span> <span class="keyword">then</span> app.configure p
-    <span class="keyword">else</span> app.configure k, v <span class="keyword">for</span> k, v <span class="keyword">of</span> p
-    <span class="keyword">return</span>
-
-  context.settings = app.settings
-  context.locals = app.locals
-
-  context.<span class="function"><span class="title">shared</span></span> = (obj) -&gt;
-    context.use <span class="string">'zappa'</span> <span class="keyword">unless</span> zappa_used
-    <span class="keyword">for</span> k, v <span class="keyword">of</span> obj
-      js = <span class="string">";zappa.run(<span class="subst">#{v}</span>);"</span>
-      js = minify(js) <span class="keyword">if</span> app.settings[<span class="string">'minify'</span>]
-      route verb: <span class="string">'get'</span>, path: k, handler: js, contentType: <span class="string">'js'</span>
-      v.apply context
-    <span class="keyword">return</span>
-
-  context.<span class="function"><span class="title">include</span></span> = (p) -&gt;
-    sub = <span class="keyword">if</span> <span class="keyword">typeof</span> p <span class="keyword">is</span> <span class="string">'string'</span> <span class="keyword">then</span> require path.join(real_root, p) <span class="keyword">else</span> p
-    sub.include.apply context
-
-  <span class="function"><span class="title">apply_helpers</span></span> = (ctx) -&gt;
-    <span class="keyword">for</span> name, helper <span class="keyword">of</span> helpers
-      <span class="keyword">do</span> (name, helper) -&gt;
-        <span class="keyword">if</span> <span class="keyword">typeof</span> helper <span class="keyword">is</span> <span class="string">'function'</span>
-          ctx[name] = -&gt;
-            helper.apply ctx, arguments
-        <span class="keyword">else</span>
-          ctx[name] = helper
-        <span class="keyword">return</span>
-    ctx</pre></div></div>
+      staticGzip: (options) -&gt;</pre></div></div>
             
         </li>
         
@@ -623,6 +549,107 @@ Views are kept at the module level.</p>
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>Remove in June 2013.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        console.error '''
+          staticGzip middleware is deprecated, please investigate using
+          standard `compress` and `staticCache` middleware instead
+        '''
+        if typeof options is 'string'
+          options = path: options
+        options ?= {}
+        p = options.path ? path.join(real_root, '/public')
+        gzippo ?= require 'gzippo'
+        gzippo.staticGzip(p, options)
+        return
+      zappa: -&gt;
+        zappa_used = yes
+        (req, res, next) -&gt;
+          send = (code) -&gt;
+            res.contentType 'js'
+            res.send code
+          if req.method.toUpperCase() isnt 'GET' then next()
+          else
+            zappa_prefix = app.settings['zappa_prefix']
+            switch req.url
+              when zappa_prefix+'/Zappa.js' then send client_bundled
+              when zappa_prefix+'/Zappa-simple.js' then send client_bundle_simple
+              when zappa_prefix+'/zappa.js' then send client
+              when zappa_prefix+'/jquery.js' then send jquery_minified
+              when zappa_prefix+'/sammy.js' then send sammy_minified
+              else next()
+          return
+      partials: (maps = {}) -&gt;
+        express_partials ?= require 'zappajs-partials'
+        partials = express_partials()
+        partials.register 'coffee', coffeecup_adapter.render
+        for k,v of maps
+          partials.register k, v
+        partials
+      session: (options) -&gt;
+        context.session_store = options.store
+        express.session options
+
+    use = (name, arg = null) -&gt;
+      if zappa_middleware[name]
+        app.use zappa_middleware[name](arg)
+      else if typeof express[name] is 'function'
+        app.use express[name](arg)
+
+    for a in arguments
+      switch typeof a
+        when 'function' then app.use a
+        when 'string' then use a
+        when 'object'
+          if a.stack? or a.route? or a.handle?
+            app.use a
+          else
+            use k, v for k, v of a
+    return
+
+  context.configure = (p) -&gt;
+    if typeof p is 'function' then app.configure p
+    else app.configure k, v for k, v of p
+    return
+
+  context.settings = app.settings
+  context.locals = app.locals
+
+  context.shared = (obj) -&gt;
+    context.use 'zappa' unless zappa_used
+    for k, v of obj
+      js = ";zappa.run(#{v});"
+      js = minify(js) if app.settings['minify']
+      route verb: 'get', path: k, handler: js, contentType: 'js'
+      v.apply context
+    return
+
+  context.include = (p) -&gt;
+    sub = if typeof p is 'string' then require path.join(real_root, p) else p
+    sub.include.apply context
+
+  apply_helpers = (ctx) -&gt;
+    for name, helper of helpers
+      do (name, helper) -&gt;
+        if typeof helper is 'function'
+          ctx[name] = -&gt;
+            helper.apply ctx, arguments
+        else
+          ctx[name] = helper
+        return
+    ctx</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
               </div>
               <p>Local socket</p>
 
@@ -635,11 +662,11 @@ Views are kept at the module level.</p>
         </li>
         
         
-        <li id="section-19">
+        <li id="section-20">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-19">&#182;</a>
+                <a class="pilcrow" href="#section-20">&#182;</a>
               </div>
               <p>The callback will receive (err,session).</p>
 
@@ -683,11 +710,11 @@ Views are kept at the module level.</p>
         </li>
         
         
-        <li id="section-20">
+        <li id="section-21">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-20">&#182;</a>
+                <a class="pilcrow" href="#section-21">&#182;</a>
               </div>
               <p>Register a route with express.</p>
 
@@ -699,11 +726,11 @@ Views are kept at the module level.</p>
         </li>
         
         
-        <li id="section-21">
+        <li id="section-22">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-21">&#182;</a>
+                <a class="pilcrow" href="#section-22">&#182;</a>
               </div>
               <p>Rewrite middleware</p>
 
@@ -786,11 +813,11 @@ Views are kept at the module level.</p>
         </li>
         
         
-        <li id="section-22">
+        <li id="section-23">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-22">&#182;</a>
+                <a class="pilcrow" href="#section-23">&#182;</a>
               </div>
               <p>Make sure the second arg is an object.</p>
 
@@ -801,7 +828,7 @@ Views are kept at the module level.</p>
             opts = {}
 
           <span class="keyword">if</span> app.settings[<span class="string">'databag'</span>]
-            opts.params = data
+            opts.params = ctx.data
 
           <span class="keyword">if</span> <span class="keyword">not</span> opts.postrender?
             postrender = report
@@ -812,11 +839,11 @@ Views are kept at the module level.</p>
         </li>
         
         
-        <li id="section-23">
+        <li id="section-24">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-23">&#182;</a>
+                <a class="pilcrow" href="#section-24">&#182;</a>
               </div>
               <p>Apply postrender before sending response.</p>
 
@@ -852,11 +879,11 @@ Views are kept at the module level.</p>
         </li>
         
         
-        <li id="section-24">
+        <li id="section-25">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-24">&#182;</a>
+                <a class="pilcrow" href="#section-25">&#182;</a>
               </div>
               <p>Register socket.io handlers.</p>
 
@@ -927,11 +954,11 @@ Views are kept at the module level.</p>
         </li>
         
         
-        <li id="section-25">
+        <li id="section-26">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-25">&#182;</a>
+                <a class="pilcrow" href="#section-26">&#182;</a>
               </div>
               <p>Go!</p>
 
@@ -942,11 +969,11 @@ Views are kept at the module level.</p>
         </li>
         
         
-        <li id="section-26">
+        <li id="section-27">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-26">&#182;</a>
+                <a class="pilcrow" href="#section-27">&#182;</a>
               </div>
               <p>The stringified zappa client.</p>
 
@@ -1006,11 +1033,11 @@ Views are kept at the module level.</p>
         </li>
         
         
-        <li id="section-27">
+        <li id="section-28">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-27">&#182;</a>
+                <a class="pilcrow" href="#section-28">&#182;</a>
               </div>
               <p>Client (or hijacker) trying to re-key.</p>
 
@@ -1023,11 +1050,11 @@ Views are kept at the module level.</p>
         </li>
         
         
-        <li id="section-28">
+        <li id="section-29">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-28">&#182;</a>
+                <a class="pilcrow" href="#section-29">&#182;</a>
               </div>
               <p>Update the Express session store</p>
 
@@ -1040,11 +1067,11 @@ Views are kept at the module level.</p>
         </li>
         
         
-        <li id="section-29">
+        <li id="section-30">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-29">&#182;</a>
+                <a class="pilcrow" href="#section-30">&#182;</a>
               </div>
               <p>Update the Socket.IO store</p>
 
@@ -1059,11 +1086,11 @@ Views are kept at the module level.</p>
         </li>
         
         
-        <li id="section-30">
+        <li id="section-31">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-30">&#182;</a>
+                <a class="pilcrow" href="#section-31">&#182;</a>
               </div>
               <p>Let the client know which key to use.</p>
 
@@ -1079,11 +1106,11 @@ Views are kept at the module level.</p>
         </li>
         
         
-        <li id="section-31">
+        <li id="section-32">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-31">&#182;</a>
+                <a class="pilcrow" href="#section-32">&#182;</a>
               </div>
               <p>zappa.run [host,] [port,] [{options},] root_function
 Takes a function and runs it as a zappa app. Optionally accepts a port
@@ -1132,11 +1159,11 @@ the port number must be castable as a number.</p>
         </li>
         
         
-        <li id="section-32">
+        <li id="section-33">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-32">&#182;</a>
+                <a class="pilcrow" href="#section-33">&#182;</a>
               </div>
               <p>Creates a zappa view adapter for templating engine <code>engine</code>. This adapter
 can be used with <code>context.engine</code> or <code>context.use partials:</code>
@@ -1165,11 +1192,11 @@ The Express 2.x object supports both <code>compile</code> and <code>render</code
         </li>
         
         
-        <li id="section-33">
+        <li id="section-34">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-33">&#182;</a>
+                <a class="pilcrow" href="#section-34">&#182;</a>
               </div>
               <p>Merge down <code>@params</code> into <code>@</code>
 Bonus: if <code>databag</code> is enabled, <code>@params</code> will be the complete databag.</p>
@@ -1187,11 +1214,11 @@ Bonus: if <code>databag</code> is enabled, <code>@params</code> will be the comp
         </li>
         
         
-        <li id="section-34">
+        <li id="section-35">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-34">&#182;</a>
+                <a class="pilcrow" href="#section-35">&#182;</a>
               </div>
               <p>Express 3.x object:</p>
 
@@ -1208,11 +1235,11 @@ Bonus: if <code>databag</code> is enabled, <code>@params</code> will be the comp
         </li>
         
         
-        <li id="section-35">
+        <li id="section-36">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-35">&#182;</a>
+                <a class="pilcrow" href="#section-36">&#182;</a>
               </div>
               <p>Express 2.x extensions:</p>
 

@@ -1,3 +1,15 @@
+**v0.4.21** (2013-04-03)
+
+  * deprecate `staticGzip` (#45)
+  * Handle sub-apps in `@use` (fixes #79)
+  * Documented `zappa.app` argument ordering (#78)
+  * `zappa.app` argument order doesn't matter (closes #78)
+  * Proper reference for `databag` (#77)
+  * Corrected arguments for `zappa.app` (#78)
+  * socket.io: pass options to socket.io server
+  * tests: add test for named layout
+  * updated dependencies
+
 **v0.4.20** (2013-03-25)
 
   * Add `zappa_prefix` setting.
