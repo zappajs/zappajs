@@ -5,6 +5,14 @@ title: API Reference (v0.4.21)
 
 # {{page.title}}
 
+## References
+
+For a list of standard middleware, see [the Connect documentation](http://www.senchalabs.org/connect/).
+
+A lot of Zappa methods are shortcuts or extensions of the [Express API](http://expressjs.com/api.html).
+
+Only some of the [Socket.IO events](https://github.com/LearnBoost/socket.io/wiki/Exposed-events) are documented here.
+
 ## EXPORTS
 
 `require 'zappajs'` returns a function with the following attributes:
@@ -146,6 +154,8 @@ Define handlers for events emitted by the client through socket.io.
 Shortcut to socket.io's `socket.on 'event'`.
 
 The handler functions will have access to all variables described in the **sockets handlers scope** section. They won't have access to their parent scope. To make variables available to these handlers, use `helper`.
+
+Some standard [events](https://github.com/LearnBoost/socket.io/wiki/Exposed-events): `connection`, `message`, `disconnect`.
 
 ### @helper
 
@@ -779,6 +789,8 @@ Should be called first when the client is started to establish the Socket.IO web
 ### @on
 
 Event handlers with socket.io.
+
+Some standard [events](https://github.com/LearnBoost/socket.io/wiki/Exposed-events#client): `connect`, `connecting`, `disconnect`, `connect_failed`, `error`, `message`, `reconnect_failed`, `reconnect`, `reconnecting`.
 
 ### @emit
 
