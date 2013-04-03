@@ -294,6 +294,11 @@ zappa.app = ->
         delete options.path
         express.static(p,options)
       staticGzip: (options) ->
+        # Remove in June 2013.
+        console.error '''
+          staticGzip middleware is deprecated, please investigate using
+          standard `compress` and `staticCache` middleware instead
+        '''
         if typeof options is 'string'
           options = path: options
         options ?= {}
