@@ -443,6 +443,8 @@ Same as `@express.static(root + '/public')`, where `root` is the directory of th
 
 #### staticGzip
 
+_This features is deprecated and will be removed soon. Please use the new [`compress`](http://www.senchalabs.org/connect/compress.html) middleware, optionally with the [`staticCache`](http://www.senchalabs.org/connect/staticCache.html) middleware._
+
 Uses [gzippo](https://github.com/tomgco/gzippo) for compression.
 Make sure the `gzippo` module is available to your application.
 
