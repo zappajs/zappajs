@@ -32,7 +32,8 @@ task 'setup', 'build + vendor', ->
   invoke 'vendor'
 
 task 'clean', ->
-  run 'rm -r vendor node_modules lib/*.js benchmarks/out/*.dat benchmarks/out/*.out tests/*.js _site'
+  run 'rm -r vendor node_modules lib/*.js benchmarks/out/*.dat benchmarks/out/*.out tests/*.js _site', ->
+    run 'npm cache clear'
 
 run = (args...) ->
   for a in args
