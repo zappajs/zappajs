@@ -93,7 +93,7 @@ See `@view` for more details.
 
 The function you pass to `zappa.app` or `zappa.run` will be called with `this`/`@` set to an object with the following attributes:
 
-### @get, @post, @put, @del, @all
+### @get, @post, @put, @del, @head, @patch, .., @all
 
     @get '/path': handler
 
