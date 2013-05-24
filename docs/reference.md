@@ -467,24 +467,14 @@ Same as `@express.static(root + '/public')`, where `root` is the directory of th
     @use static: abs_path
     @use static: {path: abs_path, maxAge: 60}
 
-#### staticGzip
-
-_This features is deprecated and will be removed soon. Please use the new [`compress`](http://www.senchalabs.org/connect/compress.html) middleware, optionally with the [`staticCache`](http://www.senchalabs.org/connect/staticCache.html) middleware._
-
-Uses [gzippo](https://github.com/tomgco/gzippo) for compression.
-Make sure the `gzippo` module is available to your application.
-
-    @use 'staticGzip'
-    @use staticGzip: __dirname + '/public'
-    @use staticGzip: { path: __dirname + '/public' }   # same as above
-    @use staticGzip: { contentTypeMatch: /text|javascript|json|coffee/ }
-
 #### zappa
 
 Serves `/zappa/Zappa-simple.js`, `/zappa/Zappa.js`, `/zappa/zappa.js`, `/zappa/jquery.js` and `/zappa/sammy.js`. Automatically added by `@client` and `@shared` if not added before.
 
 To minimize page download delay on the client, use `/zappa/Zappa.js`, which combines Zappa, jQuery, Sammy.js, and Socket.IO client-side scripts into a single download.
 If your client-side code doesn't require Sammy, use `/zappa/Zappa-simple.js` which combines Zappa, jQuery, and Socket.IO.
+
+If the `minify` setting is enabled, the contents will be minified using `uglify-js`.
 
 #### partials
 
@@ -537,17 +527,23 @@ Shortcut to `@app.set`. Accepts an object as param. Ex.:
 
     @set foo: 'bar', ping: 'pong'
 
+See the section on `APP SETTINGS` at the bottom of this document for Zappa-specific settings.
+
 ### @enable
 
 Shortcut to `@app.enable`. Accepts multiple params in one go. Ex.:
 
     @enable 'foo', 'bar'
 
+See the section on `APP SETTINGS` at the bottom of this document for Zappa-specific settings.
+
 ### @disable
 
 Shortcut to `@app.disable`. Accepts multiple params in one go. Ex.:
 
     @disable 'foo', 'bar'
+
+See the section on `APP SETTINGS` at the bottom of this document for Zappa-specific settings.
 
 ### @engine
 
@@ -917,6 +913,8 @@ For a multi-server / Node.js cluster example, see `examples/share_*.coffee`.
 ## APP SETTINGS
 
 You can use the following options with `@set`, `@enable` and `@disable`.
+
+Any of Express' options are available as well.
 
 ### 'minify'
 
