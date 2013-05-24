@@ -91,3 +91,24 @@ port = 15000
     c.get '/return/bob', (err, res) -> t.equal 2, res.body, 'return'
     c.get '/send/bob', (err, res) -> t.equal 3, res.body, 'send'
     c.get '/send/bar', (err, res) -> t.equal 3, res.body, 'Failed to load user bar'
+
+  methods: (t) ->
+    t.expect [1..6]...
+    t.wait 3000
+
+    zapp = zappa port++, ->
+
+      @get '/', -> @send 'got'
+      @post '/', -> @send 'posted'
+      @put '/', -> @send 'put'
+      @del '/', -> @send 'deleted'
+      @head '/', -> @send 'head'
+      @patch '/', -> @send 'patched'
+
+    c = t.client zapp.server
+    c.get '/', (err,res) -> t.equal 1, res.body, 'got'
+    c.post '/', (err,res) -> t.equal 2, res.body, 'posted'
+    c.put '/', (err,res) -> t.equal 3, res.body, 'put'
+    c.del '/', (err,res) -> t.equal 4, res.body, 'deleted'
+    c.head '/', (err,res) -> t.equal 5, res.body, undefined
+    c.patch '/', (err,res) -> t.equal 6, res.body, 'patched'

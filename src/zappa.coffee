@@ -12,6 +12,7 @@ fs = require 'fs'
 path = require 'path'
 uuid = require 'node-uuid'
 uglify = require 'uglify-js'
+methods = require 'methods'
 
 vendor = (name) ->
   fs.readFileSync(path.join(__dirname,'..','vendor',name)).toString()
@@ -172,7 +173,7 @@ zappa.app = ->
   # Location of zappa-specific URIs.
   app.set 'zappa_prefix', '/zappa'
 
-  for verb in ['get', 'post', 'put', 'del', 'all']
+  for verb in [methods...,'del','all']
     do (verb) ->
       context[verb] = (args...) ->
         arity = args.length
