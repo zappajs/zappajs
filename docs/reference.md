@@ -439,6 +439,22 @@ And objects:
 When passing strings and objects, zappa's own middleware will be used if available, or express (connect) middleware otherwise.
 (Tip: middleware added with `@use` will be ran for every request. If you only want some requests to use a specific middleware, use the `@get '/path', middleware1, middleware2, -> ...` syntax.)
 
+When passing functions, those function might use the Express API:
+
+    @use (req,res,next) -> res.locals.user = 'foo'
+
+or they might be wrapped to use the Zappa API:
+
+    @use @middleware -> @locals.user = 'foo'
+
+Alternatively all middleware functions might be automatically wrapped by using
+
+    @enable 'magic middleware'
+    # Zappa API works
+    @use -> @locals.user = 'foo'
+    # Express API works too
+    @use (req,res,next) -> res.locals.user = 'foo'
+
 Currently available zappa middleware are:
 
 #### static
@@ -481,6 +497,31 @@ Since Express 3.x requires asynchronous template engines, but partials require s
       html: @zappa.adapter 'jade'
 
 As with `@engine`, this is not required if the file extension matches the template engine name, and the `.coffee` extension is already mapped to CoffeeCup.
+
+### @middleware
+
+Wraps a middleware function so that it supports both the Express API and the Zappa API:
+
+    # Middleware written using the Zappa API: must be wrapped
+    mw = @middleware ->
+      @locals.user = @query.user
+
+    # Middleware using the Express API: wrapping is optional
+    mw = (req,res,next) ->
+      res.locals.user = req.query.user
+
+    # Both can be used with `@use`
+    @use mw
+
+    # Or as inline middleware
+    @get '/user', mw, ->
+      @send @locals.user
+
+Alternatively you may
+
+    @enable 'magic middleware'
+
+in which case all middleware is automatically wrapped.
 
 ### @configure
 
@@ -901,6 +942,12 @@ If enabled, zappa adds the following template with the name `layout`:
       body @body
 
 where `extension` accepts `path` with or without the given extension.
+
+### 'magic middleware'
+
+If enabled, all middleware functions are wrapped using `@middleware` so that they may support the Zappa API.
+
+If disabled, middleware functions that use the Zappa API must be wrapped individually using `@middleware`.
 
 ### 'databag'
 

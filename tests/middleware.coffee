@@ -144,3 +144,100 @@ port = 15500
     c = t.client(zapp.server)
     c.get '/foo.txt', (err, res) ->
       t.equal 'static', res.body, 'bar'
+
+  'no magic middleware': (t) ->
+    t.expect 1
+    t.wait 3000
+
+    zapp = zappa port++, ->
+      mw = (req,res,next) ->
+        res.locals.foo = 'bar'
+        next()
+      @use mw
+      @get '/', ->
+          @send @locals.foo
+
+    c = t.client(zapp.server)
+    c.get '/', (err, res) ->
+      t.equal 1, res.body, 'bar'
+
+  'no magic middleware, wrapped middleware': (t) ->
+    t.expect 1
+    t.wait 3000
+
+    zapp = zappa port++, ->
+      mw = ->
+        @locals.foo = 'bar'
+        @next()
+      @use @middleware mw
+      @get '/', ->
+          @send @locals.foo
+
+    c = t.client(zapp.server)
+    c.get '/', (err, res) ->
+      t.equal 1, res.body, 'bar'
+
+  'magic middleware': (t) ->
+    t.expect 1
+    t.wait 3000
+
+    zapp = zappa port++, ->
+      @enable 'magic middleware'
+      mw = ->
+        @locals.foo = 'bar'
+        @next()
+      @use mw
+      @get '/', ->
+          @send @locals.foo
+
+    c = t.client(zapp.server)
+    c.get '/', (err, res) ->
+      t.equal 1, res.body, 'bar'
+
+  'magic middleware, wrapped middleware': (t) ->
+    t.expect 1
+    t.wait 3000
+
+    zapp = zappa port++, ->
+      @enable 'magic middleware'
+      mw = ->
+        @locals.foo = 'bar'
+        @next()
+      @use @middleware mw
+      @get '/', ->
+          @send @locals.foo
+
+    c = t.client(zapp.server)
+    c.get '/', (err, res) ->
+      t.equal 1, res.body, 'bar'
+
+  'magic middleware, inline not wrapped': (t) ->
+    t.expect 1
+    t.wait 3000
+
+    zapp = zappa port++, ->
+      @enable 'magic middleware'
+      mw = ->
+        @locals.foo = 'bar'
+        @next()
+      @get '/', mw, ->
+          @send @locals.foo
+
+    c = t.client(zapp.server)
+    c.get '/', (err, res) ->
+      t.equal 1, res.body, 'bar'
+
+  'wrapped middleware, inline': (t) ->
+    t.expect 1
+    t.wait 3000
+
+    zapp = zappa port++, ->
+      mw = @middleware ->
+        @locals.foo = 'bar'
+        @next()
+      @get '/', mw, ->
+          @send @locals.foo
+
+    c = t.client(zapp.server)
+    c.get '/', (err, res) ->
+      t.equal 1, res.body, 'bar'
