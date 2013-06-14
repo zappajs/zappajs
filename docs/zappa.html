@@ -55,7 +55,7 @@ and other best-of-breed libraries.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>zappa = version: <span class="string">'0.4.21'</span>
+            <div class="content"><div class='highlight'><pre>zappa = version: <span class="string">'0.4.22'</span>
 
 codename = <span class="string">'You can\'t do that on stage anymore'</span>
 
@@ -64,6 +64,7 @@ fs = require <span class="string">'fs'</span>
 path = require <span class="string">'path'</span>
 uuid = require <span class="string">'node-uuid'</span>
 uglify = require <span class="string">'uglify-js'</span>
+methods = require <span class="string">'methods'</span>
 
 <span class="function"><span class="title">vendor</span></span> = (name) -&gt;
   fs.readFileSync(path.join(__dirname,<span class="string">'..'</span>,<span class="string">'vendor'</span>,name)).toString()
@@ -90,7 +91,6 @@ socketio_key = <span class="string">'__session'</span></pre></div></div>
             </div>
             
             <div class="content"><div class='highlight'><pre>jsdom = <span class="literal">null</span>
-gzippo = <span class="literal">null</span>
 express_partials = <span class="literal">null</span>
 coffee_css = <span class="literal">null</span></pre></div></div>
             
@@ -392,7 +392,7 @@ Views are kept at the module level.</p>
             
             <div class="content"><div class='highlight'><pre>  app.set <span class="string">'zappa_prefix'</span>, <span class="string">'/zappa'</span>
 
-  <span class="keyword">for</span> verb <span class="keyword">in</span> [<span class="string">'get'</span>, <span class="string">'post'</span>, <span class="string">'put'</span>, <span class="string">'del'</span>, <span class="string">'all'</span>]
+  <span class="keyword">for</span> verb <span class="keyword">in</span> [methods...,<span class="string">'del'</span>,<span class="string">'all'</span>]
     <span class="keyword">do</span> (verb) -&gt;
       context[verb] = (args...) -&gt;
         arity = args.length
@@ -516,8 +516,31 @@ Views are kept at the module level.</p>
     app.disable i <span class="keyword">for</span> i <span class="keyword">in</span> arguments
     <span class="keyword">return</span>
 
-  context.<span class="function"><span class="title">use</span></span> = -&gt;
-    zappa_middleware =</pre></div></div>
+  <span class="function"><span class="title">wrap_middleware</span></span> = (f) -&gt;
+    (req,res,next) -&gt;
+      ctx =
+        app: app
+        settings: app.settings
+        locals: res.locals
+        request: req
+        req: req
+        query: req.query
+        params: req.params
+        body: req.body
+        session: req.session
+        response: res
+        res: res
+        next: next
+
+      apply_helpers ctx
+
+      <span class="keyword">if</span> app.settings[<span class="string">'databag'</span>]
+        ctx.data = {}
+        copy_data_to ctx.data, [req.query, req.params, req.body]
+
+      f.call ctx, req, res, next
+
+  context.<span class="function"><span class="title">middleware</span></span> = (f) -&gt;</pre></div></div>
             
         </li>
         
@@ -527,6 +550,34 @@ Views are kept at the module level.</p>
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>If magic middleware is enabled the function will get wrapped
+by the caller; do not double-wrap it.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">if</span> app.settings[<span class="string">'magic middleware'</span>]
+      f
+    <span class="keyword">else</span>
+      wrap_middleware f
+
+  <span class="function"><span class="title">use_middleware</span></span> = (f) -&gt;
+    <span class="keyword">if</span> app.settings[<span class="string">'magic middleware'</span>]
+      wrap_middleware f
+    <span class="keyword">else</span>
+      f
+
+  context.<span class="function"><span class="title">use</span></span> = -&gt;
+    zappa_middleware =</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
               </div>
               <p>Connect <code>static</code> middlewate uses fs.stat().</p>
 
@@ -539,107 +590,83 @@ Views are kept at the module level.</p>
         p = options.path ? path.join(real_root, <span class="string">'/public'</span>)
         <span class="keyword">delete</span> options.path
         express.static(p,options)
-      staticGzip: (options) -&gt;</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-18">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-18">&#182;</a>
-              </div>
-              <p>Remove in June 2013.</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>        console.error '''
-          staticGzip middleware is deprecated, please investigate using
-          standard `compress` and `staticCache` middleware instead
-        '''
-        if typeof options is 'string'
-          options = path: options
-        options ?= {}
-        p = options.path ? path.join(real_root, '/public')
-        gzippo ?= require 'gzippo'
-        gzippo.staticGzip(p, options)
-        return
       zappa: -&gt;
-        zappa_used = yes
+        zappa_used = <span class="literal">yes</span>
         (req, res, next) -&gt;
-          send = (code) -&gt;
-            res.contentType 'js'
+          <span class="function"><span class="title">send</span></span> = (code) -&gt;
+            res.contentType <span class="string">'js'</span>
             res.send code
-          if req.method.toUpperCase() isnt 'GET' then next()
-          else
-            zappa_prefix = app.settings['zappa_prefix']
-            switch req.url
-              when zappa_prefix+'/Zappa.js' then send client_bundled
-              when zappa_prefix+'/Zappa-simple.js' then send client_bundle_simple
-              when zappa_prefix+'/zappa.js' then send client
-              when zappa_prefix+'/jquery.js' then send jquery_minified
-              when zappa_prefix+'/sammy.js' then send sammy_minified
-              else next()
-          return
+          <span class="keyword">if</span> req.method.toUpperCase() <span class="keyword">isnt</span> <span class="string">'GET'</span> <span class="keyword">then</span> next()
+          <span class="keyword">else</span>
+            zappa_prefix = app.settings[<span class="string">'zappa_prefix'</span>]
+            <span class="keyword">switch</span> req.url
+              <span class="keyword">when</span> zappa_prefix+<span class="string">'/Zappa.js'</span> <span class="keyword">then</span> send client_bundled
+              <span class="keyword">when</span> zappa_prefix+<span class="string">'/Zappa-simple.js'</span> <span class="keyword">then</span> send client_bundle_simple
+              <span class="keyword">when</span> zappa_prefix+<span class="string">'/zappa.js'</span> <span class="keyword">then</span> send client
+              <span class="keyword">when</span> zappa_prefix+<span class="string">'/jquery.js'</span> <span class="keyword">then</span> send jquery_minified
+              <span class="keyword">when</span> zappa_prefix+<span class="string">'/sammy.js'</span> <span class="keyword">then</span> send sammy_minified
+              <span class="keyword">else</span> next()
+          <span class="keyword">return</span>
       partials: (maps = {}) -&gt;
-        express_partials ?= require 'zappajs-partials'
+        express_partials ?= require <span class="string">'zappajs-partials'</span>
         partials = express_partials()
-        partials.register 'coffee', coffeecup_adapter.render
-        for k,v of maps
+        partials.register <span class="string">'coffee'</span>, coffeecup_adapter.render
+        <span class="keyword">for</span> k,v <span class="keyword">of</span> maps
           partials.register k, v
         partials
       session: (options) -&gt;
         context.session_store = options.store
         express.session options
 
-    use = (name, arg = null) -&gt;
-      if zappa_middleware[name]
+    <span class="function"><span class="title">use</span></span> = (name, arg = <span class="literal">null</span>) -&gt;
+      <span class="keyword">if</span> zappa_middleware[name]
         app.use zappa_middleware[name](arg)
-      else if typeof express[name] is 'function'
-        app.use express[name](arg)
+      <span class="keyword">else</span> <span class="keyword">if</span> <span class="keyword">typeof</span> express[name] <span class="keyword">is</span> <span class="string">'function'</span>
+        app.use use_middleware express[name](arg)
+      <span class="keyword">else</span>
+        <span class="keyword">throw</span> <span class="string">"Unknown middleware <span class="subst">#{name}</span>"</span>
 
-    for a in arguments
-      switch typeof a
-        when 'function' then app.use a
-        when 'string' then use a
-        when 'object'
-          if a.stack? or a.route? or a.handle?
+    <span class="keyword">for</span> a <span class="keyword">in</span> arguments
+      <span class="keyword">switch</span> <span class="keyword">typeof</span> a
+        <span class="keyword">when</span> <span class="string">'function'</span> <span class="keyword">then</span> app.use use_middleware a
+        <span class="keyword">when</span> <span class="string">'string'</span> <span class="keyword">then</span> use a
+        <span class="keyword">when</span> <span class="string">'object'</span>
+          <span class="keyword">if</span> a.stack? <span class="keyword">or</span> a.route? <span class="keyword">or</span> a.handle?
             app.use a
-          else
-            use k, v for k, v of a
-    return
+          <span class="keyword">else</span>
+            use k, v <span class="keyword">for</span> k, v <span class="keyword">of</span> a
+    <span class="keyword">return</span>
 
-  context.configure = (p) -&gt;
-    if typeof p is 'function' then app.configure p
-    else app.configure k, v for k, v of p
-    return
+  context.<span class="function"><span class="title">configure</span></span> = (p) -&gt;
+    <span class="keyword">if</span> <span class="keyword">typeof</span> p <span class="keyword">is</span> <span class="string">'function'</span> <span class="keyword">then</span> app.configure p
+    <span class="keyword">else</span> app.configure k, v <span class="keyword">for</span> k, v <span class="keyword">of</span> p
+    <span class="keyword">return</span>
 
   context.settings = app.settings
   context.locals = app.locals
 
-  context.shared = (obj) -&gt;
-    context.use 'zappa' unless zappa_used
-    for k, v of obj
-      js = ";zappa.run(#{v});"
-      js = minify(js) if app.settings['minify']
-      route verb: 'get', path: k, handler: js, contentType: 'js'
+  context.<span class="function"><span class="title">shared</span></span> = (obj) -&gt;
+    context.use <span class="string">'zappa'</span> <span class="keyword">unless</span> zappa_used
+    <span class="keyword">for</span> k, v <span class="keyword">of</span> obj
+      js = <span class="string">";zappa.run(<span class="subst">#{v}</span>);"</span>
+      js = minify(js) <span class="keyword">if</span> app.settings[<span class="string">'minify'</span>]
+      route verb: <span class="string">'get'</span>, path: k, handler: js, contentType: <span class="string">'js'</span>
       v.apply context
-    return
+    <span class="keyword">return</span>
 
-  context.include = (p) -&gt;
-    sub = if typeof p is 'string' then require path.join(real_root, p) else p
+  context.<span class="function"><span class="title">include</span></span> = (p) -&gt;
+    sub = <span class="keyword">if</span> <span class="keyword">typeof</span> p <span class="keyword">is</span> <span class="string">'string'</span> <span class="keyword">then</span> require path.join(real_root, p) <span class="keyword">else</span> p
     sub.include.apply context
 
-  apply_helpers = (ctx) -&gt;
-    for name, helper of helpers
-      do (name, helper) -&gt;
-        if typeof helper is 'function'
+  <span class="function"><span class="title">apply_helpers</span></span> = (ctx) -&gt;
+    <span class="keyword">for</span> name, helper <span class="keyword">of</span> helpers
+      <span class="keyword">do</span> (name, helper) -&gt;
+        <span class="keyword">if</span> <span class="keyword">typeof</span> helper <span class="keyword">is</span> <span class="string">'function'</span>
           ctx[name] = -&gt;
             helper.apply ctx, arguments
-        else
+        <span class="keyword">else</span>
           ctx[name] = helper
-        return
+        <span class="keyword">return</span>
     ctx</pre></div></div>
             
         </li>
@@ -736,29 +763,7 @@ Views are kept at the module level.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    r.middleware = r.middleware.map (f) -&gt;
-      (req,res,next) -&gt;
-        ctx =
-          app: app
-          settings: app.settings
-          locals: res.locals
-          request: req
-          req: req
-          query: req.query
-          params: req.params
-          body: req.body
-          session: req.session
-          response: res
-          res: res
-          next: next
-
-        apply_helpers ctx
-
-        <span class="keyword">if</span> app.settings[<span class="string">'databag'</span>]
-          ctx.data = {}
-          copy_data_to ctx.data, [req.query, req.params, req.body]
-
-        f.call ctx, req, res, next
+            <div class="content"><div class='highlight'><pre>    r.middleware = r.middleware.map wrap_middleware
 
     <span class="keyword">if</span> <span class="keyword">typeof</span> r.handler <span class="keyword">is</span> <span class="string">'string'</span>
       app[r.verb] r.path, r.middleware, (req, res) -&gt;
