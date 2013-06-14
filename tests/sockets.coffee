@@ -21,11 +21,13 @@ port = 15700
       @on connection: ->
         @emit 'welcome'
 
-    c = t.client(zapp.server)
-    c.connect()
+    setTimeout ->
+      c = t.client(zapp.server)
+      c.connect()
 
-    c.on 'welcome', ->
-      t.reached 1
+      c.on 'welcome', ->
+        t.reached 1
+    , 1000
 
   'server broadcasts': (t) ->
     t.expect 'reached1', 'reached2', 'data1', 'data2'

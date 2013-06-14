@@ -49,7 +49,9 @@ port = 15800
     zapp = zappa 'localhost', '15803', ->
       @get '/': 'host + string port'
 
-    c = t.client 'http://localhost:15803'
-    c.get '/', (err, res) -> t.equal 'localhost', res.body, 'host + string port'
-    c2 = t.client 'http://127.0.0.1:15803'
-    c2.get '/', (err, res) -> t.equal '127.0.0.1', res.body, 'host + string port'
+    setTimeout ->
+      c = t.client 'http://localhost:15803'
+      c.get '/', (err, res) -> t.equal 'localhost', res.body, 'host + string port'
+      c2 = t.client 'http://127.0.0.1:15803'
+      c2.get '/', (err, res) -> t.equal '127.0.0.1', res.body, 'host + string port'
+    , 1000
