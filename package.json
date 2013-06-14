@@ -55,7 +55,7 @@
     "vendor/socket.io.min.js"
   ],
   "scripts": {
-    "pretest": "npm install; cake setup",
+    "pretest": "npm install -d && cake setup",
     "test": "cake test",
     "prepublish": "cake setup"
   },
