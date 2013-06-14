@@ -254,7 +254,7 @@ port = 15200
     c.get '/shared.js', (err, res) ->
       t.equal 'shared', res.headers['content-length'], '91'
     c.get '/coffee.js', (err, res) ->
-      t.equal 'coffee', res.headers['content-length'], '476'
+      t.equal 'coffee', res.headers['content-length'], '475'
     c.get '/js.js', (err, res) ->
       t.equal 'js', res.headers['content-length'], '13'
 

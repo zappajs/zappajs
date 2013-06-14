@@ -14,7 +14,7 @@
     "socket.io": "0.9.16",
     "coffee-css": "0.0.5",
     "node-uuid": "1.4.0",
-    "uglify-js": "2.2.5",
+    "uglify-js": "2.3.6",
     "methods": "0.0.1"
   },
   "devDependencies": {
