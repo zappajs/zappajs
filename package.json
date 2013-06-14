@@ -10,8 +10,8 @@
   },
   "dependencies": {
     "express": "3.1.1",
-    "socket.io": "0.9.14",
     "coffeecup": "0.3.19",
+    "socket.io": "0.9.16",
     "coffee-css": "0.0.5",
     "node-uuid": "1.4.0",
     "uglify-js": "2.2.5",
@@ -22,7 +22,7 @@
     "underscore": "1.4.4",
     "request": "2.16.6",
     "consolidate": "0.9.0",
-    "socket.io-client": "0.9.11",
+    "socket.io-client": "0.9.16",
     "eco": "1.1.0-rc-3",
     "jade": "0.28.2",
     "stylus": "0.32.1",

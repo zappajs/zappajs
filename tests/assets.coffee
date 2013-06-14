@@ -197,7 +197,7 @@ port = 15200
     c = t.client(zapp.server)
     c.get '/socket.io/socket.io.js', (err, res) ->
       t.equal 'content-type', res.headers['content-type'], 'application/javascript'
-      t.equal 'length', res.headers['content-length'], '74659'
+      t.equal 'length', res.headers['content-length'], '74747'
 
   zappa: (t) ->
     t.expect 'content-type', 'snippet'
