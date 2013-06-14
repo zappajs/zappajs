@@ -27,7 +27,6 @@ socketio_key = '__session'
 
 # Soft dependencies:
 jsdom = null
-gzippo = null
 express_partials = null
 coffee_css = null
 
@@ -332,19 +331,6 @@ zappa.app = ->
         p = options.path ? path.join(real_root, '/public')
         delete options.path
         express.static(p,options)
-      staticGzip: (options) ->
-        # Remove in June 2013.
-        console.error '''
-          staticGzip middleware is deprecated, please investigate using
-          standard `compress` and `staticCache` middleware instead
-        '''
-        if typeof options is 'string'
-          options = path: options
-        options ?= {}
-        p = options.path ? path.join(real_root, '/public')
-        gzippo ?= require 'gzippo'
-        gzippo.staticGzip(p, options)
-        return
       zappa: ->
         zappa_used = yes
         (req, res, next) ->

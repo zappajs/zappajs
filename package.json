@@ -32,7 +32,6 @@
     "redis": "0.8.2",
     "connect-redis": "1.4.5",
     "coffee-script": "1.6.2",
-    "gzippo": "0.2.0"
   },
   "keywords": [
     "framework",
