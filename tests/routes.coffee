@@ -110,5 +110,6 @@ port = 15000
     c.post '/', (err,res) -> t.equal 2, res.body, 'posted'
     c.put '/', (err,res) -> t.equal 3, res.body, 'put'
     c.del '/', (err,res) -> t.equal 4, res.body, 'deleted'
-    c.head '/', (err,res) -> t.equal 5, res.body, undefined
+    # c.head '/', (err,res) -> t.equal 5, res.body, undefined
+    c.head '/', (err,res) -> t.equal 5, res.body, ''
     c.patch '/', (err,res) -> t.equal 6, res.body, 'patched'
