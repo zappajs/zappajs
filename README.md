@@ -36,7 +36,7 @@ require('zappajs') ->
       id: 123
       name: @params.name
       email: "#{@params.name}@example.com"
-    @send record
+    @json record
 
   @on 'ready': ->
     console.log "Client #{@id} is ready and says #{@data}."
