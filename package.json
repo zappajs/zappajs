@@ -18,6 +18,7 @@
     "methods": "0.0.1"
   },
   "devDependencies": {
+    "coffee-script": "1.6.3",
     "jsdom": "0.6.5",
     "underscore": "1.4.4",
     "request": "2.21.0",
@@ -54,9 +55,9 @@
     "vendor/socket.io.min.js"
   ],
   "scripts": {
-    "pretest": "npm install -d && cake setup",
-    "test": "cake test",
-    "prepublish": "cake setup"
+    "pretest": "npm install -d && node_modules/coffee-script/bin/cake setup",
+    "test": "node_modules/coffee-script/bin/cake test",
+    "prepublish": "node_modules/coffee-script/bin/cake setup"
   },
   "contributors": [
     "Maurice Machado <maurice@bitbending.com>",
