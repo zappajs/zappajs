@@ -113,3 +113,43 @@ port = 15000
     # c.head '/', (err,res) -> t.equal 5, res.body, undefined
     c.head '/', (err,res) -> t.equal 5, res.body, ''
     c.patch '/', (err,res) -> t.equal 6, res.body, 'patched'
+
+  json: (t) ->
+    t.expect 2
+    t.wait 3000
+
+    zapp = zappa port++, ->
+
+      @get '/', -> @json {attr1: 'attr1', attr2: 'attr2'}
+
+    c = t.client zapp.server
+    c.get '/', (err, res) ->
+        t.equal 1, res.headers['content-type'], 'application/json; charset=utf-8'
+        t.equal 2, res.body, '{\n  "attr1": "attr1",\n  "attr2": "attr2"\n}'
+
+  jsonp: (t) ->
+    t.expect 2
+    t.wait 3000
+
+    zapp = zappa port++, ->
+
+      @get '/', -> @jsonp {attr1: 'attr1', attr2: 'attr2'}
+
+    c = t.client zapp.server
+    c.get '/?callback=foo', (err, res) ->
+        t.equal 1, res.headers['content-type'], 'text/javascript; charset=utf-8'
+        t.equal 2, res.body, 'foo && foo({\n  "attr1": "attr1",\n  "attr2": "attr2"\n});'
+
+  'jsonp + custom callback': (t) ->
+    t.expect 2
+    t.wait 3000
+
+    zapp = zappa port++, ->
+
+      @set 'jsonp callback name': 'cb'
+      @get '/', -> @jsonp {attr1: 'attr1', attr2: 'attr2'}
+
+    c = t.client zapp.server
+    c.get '/?cb=foo', (err, res) ->
+        t.equal 1, res.headers['content-type'], 'text/javascript; charset=utf-8'
+        t.equal 2, res.body, 'foo && foo({\n  "attr1": "attr1",\n  "attr2": "attr2"\n});'

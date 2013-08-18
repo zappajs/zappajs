@@ -241,3 +241,29 @@ port = 15500
     c = t.client(zapp.server)
     c.get '/', (err, res) ->
       t.equal 1, res.body, 'bar'
+
+  all: (t) ->
+    t.expect '1', '2', '3', '4'
+    t.wait 4000
+
+    zapp = zappa port++, ->
+
+      @all '/*', ->
+        if @query.hello is 'hi' then @next()
+        else @next 'Where is your manners?'
+
+      @get '/bonjour', ->
+        @send 'bonjour'
+
+      @get '/hola', ->
+        @send 'hola!'
+
+    c = t.client(zapp.server)
+    c.get '/bonjour?hello=hi', (err, res) ->
+      t.equal '1', res.body, 'bonjour'
+    c.get '/bonjour', (err, res) ->
+      t.equal '2', res.body, 'Where is your manners?'
+    c.get '/hola?hello=hi', (err, res) ->
+      t.equal '3', res.body, 'hola!'
+    c.get '/hola?hello=boo', (err, res) ->
+      t.equal '4', res.body, 'Where is your manners?'
