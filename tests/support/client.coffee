@@ -54,7 +54,9 @@ class Client
   head: (args...) -> @request 'head', args...
   patch: (args...) -> @request 'patch', args...
 
-  connect: -> @socket = io.connect("http://#{@host}:#{@port}")
+  connect: ->
+      @socket = io.connect("http://#{@host}:#{@port}", { 'force new connection': true })
+
   on: -> @socket.on.apply @socket, arguments
   emit: -> @socket.emit.apply @socket, arguments
 
