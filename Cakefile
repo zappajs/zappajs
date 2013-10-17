@@ -25,7 +25,7 @@ task 'vendor', ->
             run 'head -n 1 vendor/socket.io.js', ->
               fs.writeFile 'vendor/jquery.min.js', uglify.minify('vendor/jquery.js').code, ->
                 fs.writeFile 'vendor/sammy.min.js', uglify.minify('vendor/sammy.js').code, ->
-                  fs.writeFile 'vendor/socket.io.min.js', uglify.minify('vendor/socket.io.js').code
+                  fs.writeFile 'vendor/socket.io.min.js', uglify.minify('vendor/socket.io.js').code, ->
 
 task 'setup', 'build + vendor', ->
   invoke 'build'

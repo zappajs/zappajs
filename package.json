@@ -55,9 +55,9 @@
     "vendor/socket.io.min.js"
   ],
   "scripts": {
-    "pretest": "npm install -d && node_modules/coffee-script/bin/cake setup",
-    "test": "node_modules/coffee-script/bin/cake test",
-    "prepublish": "node_modules/coffee-script/bin/cake setup"
+    "pretest": "npm install -d && cake setup",
+    "test": "cake test",
+    "prepublish": "cake setup"
   },
   "contributors": [
     "Maurice Machado <maurice@bitbending.com>",
