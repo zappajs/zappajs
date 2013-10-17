@@ -278,7 +278,7 @@ port = 15200
     c.get '/myapp/zappa/sammy.js', (err, res) ->
       t.equal 5, res.headers['content-type'], 'application/javascript'
 
-  ###
+###
   'socket.io_prefix': (t) ->
     t.expect 'content-type', 'length'
     t.wait 3000
@@ -289,4 +289,4 @@ port = 15200
     c.get '/myapp/socket.io/socket.io.js', (err, res) ->
       t.equal 'content-type', res.headers['content-type'], 'application/javascript'
       t.equal 'length', res.headers['content-length'], '74659'
-  ###
+###
