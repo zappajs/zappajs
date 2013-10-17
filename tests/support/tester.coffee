@@ -60,7 +60,7 @@ uncaught = []
             delete @expected[key]
             @end_check()
 
-        reached: -> @pass.apply @, arguments
+        reached: -> @pass.apply this, arguments
 
         pass: (key) ->
           @passed[key] = true
@@ -98,7 +98,7 @@ uncaught = []
 
         end: ->
           clearInterval(k) for k, v of @waits
-          done[@full_title] = @
+          done[@full_title] = this
           finish_him() if _(done).size() is _(tests).size()
 
 @run = ->

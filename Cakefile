@@ -2,11 +2,12 @@
 log = console.log
 
 task 'build', ->
-  run 'coffee -o lib -c src/*.coffee'
+  run './node_modules/coffee-script-redux/bin/coffee ---js -i src/zappa.coffee -o lib/zappa.js'
+  run './node_modules/coffee-script-redux/bin/coffee ---js -i src/client.coffee -o lib/client.js'
 
 task 'test', ->
   # Set `ulimit -n 1024` if you run out of descriptors.
-  run 'coffee tests/index.coffee'
+  run './node_modules/coffee-script-redux/bin/coffee tests/index.coffee'
 
 task 'bench', ->
   run 'cd benchmarks && ./run'

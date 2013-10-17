@@ -485,10 +485,10 @@ zappa.app = ->
           format: -> res.format.apply res, arguments
           render: ->
             if typeof arguments[0] isnt 'object'
-              render.apply @, arguments
+              render.apply this, arguments
             else
               for k, v of arguments[0]
-                render.apply @, [k, v]
+                render.apply this, [k, v]
             return
           emit: ->
             socket = request_socket req
@@ -722,8 +722,7 @@ zappa.run = ->
   app = zapp.app
 
   express_ready = ->
-    log 'Express server listening on port %d in %s mode',
-      zapp.server.address()?.port, app.settings.env
+    log 'Express server listening on port %d in %s mode', zapp.server.address()?.port, app.settings.env
     log "Zappa #{zappa.version} \"#{codename}\" orchestrating the show"
 
   if host
