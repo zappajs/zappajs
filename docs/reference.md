@@ -132,6 +132,9 @@ Ex.:
         @next "Failed to load user #{@params.id}"
 
     @get '/', load_user, -> 'hi'
+    
+    # Or using alternate syntax
+    @get '/': [load_user, -> 'hi']
 
 You can pass middleware arrays using Coffee-Script's `...` splats:
 
@@ -144,6 +147,9 @@ Or as plain arrays, as Express allows:
     common = [auth, load_user, apply_policy]
 
     @get '/', common, -> 'hi'
+    
+    # Or using alternate syntax
+    @get '/': [common, -> 'hi']
 
 ### @on
 
