@@ -184,7 +184,16 @@ zappa.app = ->
             handler: args[arity-1]
         else
           for k, v of arguments[0]
-            route verb: verb, path: k, handler: v
+            # Apply middleware if value is array
+            if v instanceof Array
+              route
+                verb: verb
+                path: k
+                middleware: flatten v[0...v.length-1]
+                handler: v[v.length-1]
+                
+            else
+              route verb: verb, path: k, handler: v
         return
 
   context.client = (obj) ->
