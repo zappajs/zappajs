@@ -85,12 +85,21 @@ port = 15000
       @get '/string/:id', load_user, -> 'string'
       @get '/return/:id', load_user, -> 'return'
       @get '/send/:id', load_user, -> @send 'send'
+      
+      @get '/string1/:id': [load_user, -> 'string']
+      @get '/return1/:id': [load_user, -> 'return']
+      @get '/send1/:id': [load_user, -> @send 'send']
 
     c = t.client(zapp.server)
     c.get '/string/bob', (err, res) -> t.equal 1, res.body, 'string'
     c.get '/return/bob', (err, res) -> t.equal 2, res.body, 'return'
     c.get '/send/bob', (err, res) -> t.equal 3, res.body, 'send'
     c.get '/send/bar', (err, res) -> t.equal 3, res.body, 'Failed to load user bar'
+    
+    c.get '/string1/bob', (err, res) -> t.equal 1, res.body, 'string'
+    c.get '/return1/bob', (err, res) -> t.equal 2, res.body, 'return'
+    c.get '/send1/bob', (err, res) -> t.equal 3, res.body, 'send'
+    c.get '/send1/bar', (err, res) -> t.equal 3, res.body, 'Failed to load user bar'
 
   methods: (t) ->
     t.expect [1..6]...
