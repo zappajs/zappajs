@@ -1,5 +1,7 @@
 Zappa is a [CoffeeScript](http://coffeescript.org)-optimized interface to [Express](http://expressjs.com) and [Socket.IO](http://socket.io).
 
+[![Build Status](https://secure.travis-ci.org/zappajs/zappajs.png)](http://travis-ci.org/zappajs/zappajs) [![Dependency Status](https://gemnasium.com/zappajs/zappajs.png)](https://gemnasium.com/zappajs/zappajs)
+
 ## Synopsis
 
 ```coffee
@@ -84,4 +86,3 @@ require('zappajs') ->
 
 - Deploying to heroku? Check [this blog post](http://superbigtree.tumblr.com/post/20748825617/hosting-zappa-on-heroku)
 
-[![Build Status](https://secure.travis-ci.org/zappajs/zappajs.png)](http://travis-ci.org/zappajs/zappajs)
