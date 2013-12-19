@@ -293,7 +293,10 @@ zappa.app = ->
     return
 
   wrap_middleware = (f) ->
-    (req,res,next) ->
+    if f._zappa_wrapped
+      return f
+
+    fn = (req,res,next) ->
       ctx =
         app: app
         settings: app.settings
@@ -316,6 +319,9 @@ zappa.app = ->
 
       f.call ctx, req, res, next
 
+    fn._zappa_wrapped = true
+    fn
+
   context.middleware = (f) ->
     # If magic middleware is enabled the function will get wrapped
     # by the caller; do not double-wrap it.
@@ -323,6 +329,38 @@ zappa.app = ->
       f
     else
       wrap_middleware f
+
+  context.error = (f) ->
+    if f._zappa_wrapped
+      return f
+
+    fn = (err,req,res,next) ->
+      ctx =
+        app: app
+        settings: app.settings
+        locals: res.locals
+        request: req
+        req: req
+        query: req.query
+        params: req.params
+        body: req.body
+        session: req.session
+        response: res
+        res: res
+        error: err
+        err: err
+        next: next
+
+      apply_helpers ctx
+
+      if app.settings['databag']
+        ctx.data = {}
+        copy_data_to ctx.data, [req.query, req.params, req.body]
+
+      f.call ctx, err, req, res, next
+
+    fn._zappa_wrapped = true
+    fn
 
   use_middleware = (f) ->
     if app.settings['magic middleware']
