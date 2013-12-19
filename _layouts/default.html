@@ -5836,6 +5836,18 @@ nav a:hover{text-decoration:underline}
 #menu li a:hover{text-decoration:underline}
 #menu ul{height:0;overflow-y:hidden}
     </style>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/zepto/1.1.1/zepto.min.js"></script>
+    <script>
+      var table = $('<ul/>');
+      $(".content h2").each(function(){
+          $('<li><a href="#'+$(this).attr('id')+'">'+$(this).html+'</a><ul>').appendTo(table);
+          $(this).find('h3').each(function(){
+            $('<li><a href="#'+$(this).attr('id')+'">'+$(this).html+'</a></li>').appendTo(table);
+          });
+          $('</ul></li>').appendTo(table);
+      });
+      $('#menu').html(table);
+    </script>
   </head>
   <body>
     <div id="header">
@@ -5855,6 +5867,7 @@ nav a:hover{text-decoration:underline}
       <div id="api">
         {{ content }}
       </div>
+      <div id="menu" />
     </div>
   </body>
 </html>
