@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "express": "3.2.6",
-    "socket.io": "0.9.16",
+    "socket.io": "~1.0.0",
     "coffeecup": "0.3.20",
     "coffee-css": "0.0.5",
     "node-uuid": "1.4.0",
