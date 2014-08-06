@@ -14,6 +14,14 @@ uuid = require 'node-uuid'
 uglify = require 'uglify-js'
 methods = require 'methods'
 
+bodyParser = require 'body-parser'
+responseTime = require 'response-time'
+cookieParser = require 'cookie-parser'
+methodOverride = require 'method-override'
+session = require 'express-session'
+serveStatic = require 'serve-static'
+serveIndex = require 'serve-index'
+
 vendor = (name) ->
   fs.readFileSync(path.join(__dirname,'..','vendor',name)).toString()
 
@@ -191,7 +199,7 @@ zappa.app = ->
                 path: k
                 middleware: flatten v[0...v.length-1]
                 handler: v[v.length-1]
-                
+
             else
               route verb: verb, path: k, handler: v
         return
@@ -339,7 +347,7 @@ zappa.app = ->
         options ?= {}
         p = options.path ? path.join(real_root, '/public')
         delete options.path
-        express.static(p,options)
+        serveStatic(p,options)
       zappa: ->
         zappa_used = yes
         (req, res, next) ->
@@ -366,7 +374,12 @@ zappa.app = ->
         partials
       session: (options) ->
         context.session_store = options.store
-        express.session options
+        session options
+      bodyParser: bodyParser
+      responseTime: responseTime
+      cookieParser: cookieParser
+      methodOverride: methodOverride
+      directory: serveIndex
 
     use = (name, arg = null) ->
       if zappa_middleware[name]

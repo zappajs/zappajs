@@ -51,11 +51,11 @@ You have direct access to the low-level APIs via `@app` and `@io`:
       @io.sockets.on 'connection', (socket) ->
         socket.emit 'boring'
 
-On top of that, you also have some handy shortcuts such as the `@get` you already know, `@on` (to define *socket.io* handlers), `@use`, `@set`, `@configure`, etc. Those are not only shorter but also accept smarter parameters:
+On top of that, you also have some handy shortcuts such as the `@get` you already know, `@on` (to define *socket.io* handlers), `@use`, `@set`, etc. Those are not only shorter but also accept smarter parameters:
 
     require('zappajs') ->
       @get '/foo': 'bar', '/ping': 'pong', '/zig': 'zag'
-      @use 'bodyParser', 'methodOverride', @app.router, 'static'
+      @use 'bodyParser', 'methodOverride', 'static'
       @set 'view engine': 'jade', views: "#{__dirname}/custom/dir"
 
 After running your function, zappa automatically starts the whole thing and spits out a message with some useful info.
@@ -166,7 +166,7 @@ Note that zappa comes with a default templating engine, [CoffeeCup](https://gith
     '''
 
     @view 'layout.jade': '''
-      !!! 5
+      doctype html
       html
         head
           title= title
@@ -349,15 +349,15 @@ You can specify your middleware through the standard `@app.use`, or zappa's shor
 
 It accepts many params in a row. Ex.:
 
-    @use @express.bodyParser(), @app.router, @express.cookies()
+    @use (require 'body-parser')(), (require 'cookie-parser')()
 
 It accepts strings as parameters. This is syntactic sugar to the equivalent express middleware with no arguments. Ex.:
 
-    @use 'bodyParser', @app.router, 'cookies'
+    @use 'bodyParser', 'cookieParser'
 
 You can also specify parameters by using objects. Ex.:
 
-    @use 'bodyParser', static: __dirname + '/public', session: {secret: 'fnord'}, 'cookies'
+    @use 'bodyParser', static: __dirname + '/public', session: {secret: 'fnord'}, 'cookieParser'
 
 Finally, when using strings and objects, zappa will intercept some specific middleware and add behaviour, usually default parameters. Ex.:
 
@@ -365,6 +365,8 @@ Finally, when using strings and objects, zappa will intercept some specific midd
 
     # Syntactic sugar for:
     @app.use @express.static(__dirname + '/public')
+
+Note: only `static` is available as an `@express` middleware; see [the Express 3.x to 4.x migration guide](https://github.com/visionmedia/express/wiki/Migrating-from-3.x-to-4.x#overview).
 
 ## Aaaaaand that's it for tonight.
 

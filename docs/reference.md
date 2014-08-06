@@ -432,15 +432,15 @@ Shortcut to `@app.use`. It can be used in a number of additional ways:
 
 It accepts multiple parameters:
 
-    @use express.bodyParser(), @app.router, express.cookies()
+    @use express.bodyParser(), express.cookies()
 
 Strings:
 
-    @use 'bodyParser', @app.router, 'cookies'
+    @use 'bodyParser', 'cookieParser'
 
 And objects:
 
-    @use 'bodyParser', static: __dirname + '/public', session: {secret: 'fnord'}, 'cookies'
+    @use 'bodyParser', static: __dirname + '/public', session: {secret: 'fnord'}, 'cookieParser'
 
 When passing strings and objects, zappa's own middleware will be used if available, or express (connect) middleware otherwise.
 (Tip: middleware added with `@use` will be ran for every request. If you only want some requests to use a specific middleware, use the `@get '/path', middleware1, middleware2, -> ...` syntax.)

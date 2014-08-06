@@ -21,18 +21,20 @@ port = 15000
     c.get '/regex_function', (err, res) -> t.equal 5, res.body, 'regex function'
 
   verbs: (t) ->
-    t.expect 1, 2, 3
+    t.expect 1, 2, 3, 4
     t.wait 3000
 
     zapp = zappa port++, ->
       @post '/': -> 'post'
       @put '/': -> 'put'
       @del '/': -> 'del'
+      @delete '/': -> 'delete'
 
     c = t.client(zapp.server)
     c.post '/', (err, res) -> t.equal 1, res.body, 'post'
     c.put '/', (err, res) -> t.equal 2, res.body, 'put'
     c.del '/', (err, res) -> t.equal 3, res.body, 'del'
+    c.delete '/', (err, res) -> t.equal 4, res.body, 'delete'
 
   redirect: (t) ->
     t.expect 1, 2

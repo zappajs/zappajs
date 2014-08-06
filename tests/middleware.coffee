@@ -8,7 +8,7 @@ port = 15500
 
     zapp = zappa port++, ->
       @app.use @express.static(__dirname + '/public')
-      @app.use @express.responseTime()
+      @app.use (require 'response-time')()
 
     c = t.client(zapp.server)
     c.get '/foo.txt', (err, res) ->
@@ -35,13 +35,12 @@ port = 15500
     c.get '/something2', (err, res) ->
       t.equal 'array', res.body, 'ok'
 
-
   use: (t) ->
     t.expect 'static', 'response time'
     t.wait 3000
 
     zapp = zappa port++, ->
-      @use @express.static(__dirname + '/public'), @express.responseTime()
+      @use @express.static(__dirname + '/public'), (require 'response-time')()
 
     c = t.client(zapp.server)
     c.get '/foo.txt', (err, res) ->
@@ -83,7 +82,7 @@ port = 15500
     t.wait 3000
 
     zapp = zappa port++, ->
-      @use @app.router, 'static'
+      @use 'static'
       @get '/foo.txt': 'intercepted!'
 
     c = t.client(zapp.server)
