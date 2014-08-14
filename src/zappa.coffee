@@ -18,9 +18,10 @@ bodyParser = require 'body-parser'
 responseTime = require 'response-time'
 cookieParser = require 'cookie-parser'
 methodOverride = require 'method-override'
-session = require 'express-session'
+esession = require 'express-session'
 serveStatic = require 'serve-static'
 serveIndex = require 'serve-index'
+csurf = require 'csurf'
 
 vendor = (name) ->
   fs.readFileSync(path.join(__dirname,'..','vendor',name)).toString()
@@ -374,12 +375,24 @@ zappa.app = ->
         partials
       session: (options) ->
         context.session_store = options.store
-        session options
+        esession options
+      sessionRedis: (options) ->
+        console.log "Options:",options
+        redis_options = options.connectRedis
+        console.log "redis:",redis_options
+        session_options = options.session
+        console.log "session:",session_options
+        RedisStore = require('connect-redis')(esession)
+        sessionStore = new RedisStore(redis_options)
+        context.session_store = sessionStore
+        session_options.store = sessionStore
+        esession session_options
       bodyParser: bodyParser
       responseTime: responseTime
       cookieParser: cookieParser
       methodOverride: methodOverride
       directory: serveIndex
+      csrf: csurf
 
     use = (name, arg = null) ->
       if zappa_middleware[name]
@@ -389,15 +402,15 @@ zappa.app = ->
       else
         throw "Unknown middleware #{name}"
 
-    for a in arguments
-      switch typeof a
-        when 'function' then app.use use_middleware a
-        when 'string' then use a
-        when 'object'
-          if a.stack? or a.route? or a.handle?
-            app.use a
-          else
-            use k, v for k, v of a
+    switch typeof arguments[0]
+      when 'function' then app.use use_middleware arguments[0]
+      when 'string' then use arguments[0],arguments[1]
+      when 'object'
+        if arguments[0].stack? or arguments[0].route? or arguments[0].handle?
+          app.use arguments[0]
+        else
+          use k, v for k, v of arguments
+
     return
 
   context.configure = (p) ->
