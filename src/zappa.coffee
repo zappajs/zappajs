@@ -3,7 +3,7 @@
 # integrating [express](http://expressjs.com), [socket.io](http://socket.io)
 # and other best-of-breed libraries.
 
-zappa = version: '0.4.22'
+zappa = version: '0.49.0'
 
 codename = 'You can\'t do that on stage anymore'
 
@@ -22,6 +22,7 @@ esession = require 'express-session'
 serveStatic = require 'serve-static'
 serveIndex = require 'serve-index'
 csurf = require 'csurf'
+morgan = require 'morgan'
 
 vendor = (name) ->
   fs.readFileSync(path.join(__dirname,'..','vendor',name)).toString()
@@ -374,25 +375,45 @@ zappa.app = ->
           partials.register k, v
         partials
       session: (options) ->
-        context.session_store = options.store
+        options.resave ?= yes
+        options.saveUninitialized ?= yes
         esession options
       sessionRedis: (options) ->
-        console.log "Options:",options
+#        console.log "Options:",options
         redis_options = options.connectRedis
-        console.log "redis:",redis_options
+#        console.log "redis:",redis_options
         session_options = options.session
-        console.log "session:",session_options
+#        console.log "session:",session_options
         RedisStore = require('connect-redis')(esession)
         sessionStore = new RedisStore(redis_options)
         context.session_store = sessionStore
         session_options.store = sessionStore
+        session_options.resave ?= yes
+        session_options.saveUninitialized ?= yes
         esession session_options
-      bodyParser: bodyParser
+      sessionMongo: (options) ->
+        mongo_options = options.connectMongo
+#        console.log "redis:",mongo_options
+        session_options = options.session
+#        console.log "session:",session_options
+        MongoStore = require('connect-mongo')(esession)
+        sessionStore = new MongoStore(mongo_options)
+        context.session_store = sessionStore
+        session_options.store = sessionStore
+        session_options.resave ?= yes
+        session_options.saveUninitialized ?= yes
+        esession session_options
+      morgan: (options) ->
+        morgan options
+      bodyParser: ->
+        bodyParser.json()
+        bodyParser.urlencoded extended:yes
       responseTime: responseTime
       cookieParser: cookieParser
       methodOverride: methodOverride
       directory: serveIndex
-      csrf: csurf
+      csrf: (options) ->
+        csurf options
 
     use = (name, arg = null) ->
       if zappa_middleware[name]

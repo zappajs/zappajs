@@ -1,7 +1,7 @@
 {
   "name": "zappajs",
   "description": "CoffeeScript minimalist interface to express, socket.io and others",
-  "version": "0.4.22",
+  "version": "0.5.0",
   "author": "Stephane Alnet <stephane@shimaore.net>",
   "homepage": "http://zappajs.github.com/zappajs/",
   "repository": {
@@ -21,10 +21,13 @@
     "cookie-parser": "^1.1.0",
     "csurf":         "^1.4.0",
     "connect-redis": "^2.0.0",
+    "connect-mongo": "^0.4.1",
     "method-override": "^2.0.0",
     "express-session": "^1.2.1",
     "serve-static": "^1.2.0",
+    "morgan": "^1.2.2",
     "serve-index": "^1.1.0"
+
   },
   "devDependencies": {
     "coffee-script": "1.7.1",
