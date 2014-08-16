@@ -3,7 +3,7 @@
 # integrating [express](http://expressjs.com), [socket.io](http://socket.io)
 # and other best-of-breed libraries.
 
-zappa = version: '0.49.0'
+zappa = version: '0.5.0'
 
 codename = 'You can\'t do that on stage anymore'
 
