@@ -18,20 +18,20 @@
     "methods": "1.1.0"
   },
   "devDependencies": {
-    "coffee-script": "1.6.3",
-    "jsdom": "0.6.5",
-    "underscore": "1.4.4",
     "request": "2.21.0",
-    "consolidate": "0.9.1",
+    "coffee-script": "1.8.0",
+    "jsdom": "0.11.1",
+    "underscore": "1.7.0",
+    "consolidate": "0.10.0",
     "socket.io-client": "1.0.6",
     "eco": "1.1.0-rc-3",
     "jade": "1.5.0",
     "stylus": "0.48.1",
     "less": "1.7.4",
     "zappajs-partials": "0.0.7",
-    "connect-assets": "2.4.3",
-    "redis": "0.8.3",
-    "connect-redis": "1.4.5"
+    "connect-assets": "4.3.0",
+    "redis": "0.12.1",
+    "connect-redis": "2.0.0"
   },
   "keywords": [
     "framework",
