@@ -197,7 +197,7 @@ port = 15200
     c = t.client(zapp.server)
     c.get '/socket.io/socket.io.js', (err, res) ->
       t.equal 'content-type', res.headers['content-type'], 'application/javascript'
-      t.equal 'length', res.headers['content-length'], '74747'
+      t.equal 'length', res.body.length, 155212
 
   zappa: (t) ->
     t.expect 'content-type', 'snippet'
@@ -278,8 +278,7 @@ port = 15200
     c.get '/myapp/zappa/sammy.js', (err, res) ->
       t.equal 5, res.headers['content-type'], 'application/javascript'
 
-###
-  'socket.io_prefix': (t) ->
+  'socket.io_path': (t) ->
     t.expect 'content-type', 'length'
     t.wait 3000
 
@@ -288,5 +287,4 @@ port = 15200
     c = t.client(zapp.server)
     c.get '/myapp/socket.io/socket.io.js', (err, res) ->
       t.equal 'content-type', res.headers['content-type'], 'application/javascript'
-      t.equal 'length', res.headers['content-length'], '74659'
-###
+      t.equal 'length', res.body.length, 155212

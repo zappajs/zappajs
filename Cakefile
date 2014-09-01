@@ -17,9 +17,9 @@ task 'docs', ->
 task 'vendor', ->
   uglify = require 'uglify-js'
   fs = require 'fs'
-  run 'mkdir -p vendor && cd vendor && curl -o jquery.js -L http://code.jquery.com/jquery-1.10.1.js', ->
+  run 'mkdir -p vendor && cd vendor && curl -o jquery.js -L http://code.jquery.com/jquery-1.11.1.js', ->
     run 'cd vendor && curl -OL https://raw.github.com/quirkey/sammy/v0.7.4/lib/sammy.js', ->
-      run 'cd vendor && curl -OL https://raw.github.com/LearnBoost/socket.io-client/0.9/dist/socket.io.js', ->
+      run 'cd vendor && curl -L https://cdn.socket.io/socket.io-1.0.6.js > socket.io.js', ->
         run 'head -n 2 vendor/jquery.js', ->
           run 'head -n 2 vendor/sammy.js', ->
             run 'head -n 1 vendor/socket.io.js', ->
