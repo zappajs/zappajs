@@ -60,8 +60,10 @@ skeleton = ->
           context.socket.emit.apply context.socket, [k, v]
 
     context.share = (channel,socket,cb) ->
-      zappa_prefix = settings.zappa_prefix
-      $.getJSON zappa_prefix+"/socket/#{channel}/#{socket.io.engine.id}", cb
+      zappa_prefix = settings.zappa_prefix ? ""
+      sessionid = socket.io?.engine.id ? socket.socket?.sessionid
+      if sessionid?
+        $.getJSON "#{zappa_prefix}/socket/#{channel}/#{sessionid}", cb
 
     route = (r) ->
       ctx = {app}
