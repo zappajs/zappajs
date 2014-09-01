@@ -126,7 +126,6 @@ path.exists = fs.exists = (p,callback) ->
 
 # Express must first be called after we modify the `fs` module.
 express = require 'express'
-socketio = require 'socket.io'
 
 # Takes in a function and builds express/socket.io apps based on the rules
 # contained in it.
@@ -160,6 +159,7 @@ zappa.app = ->
   if options.disable_io
     io = null
   else
+    socketio = options.socketio ? require 'socket.io'
     io = context.io = socketio.listen context.server, options.io ? {}
 
   # Reference to the zappa client, the value will be set later.
@@ -737,8 +737,7 @@ zappa.run = ->
           switch k
             when 'host' then host = v
             when 'port' then port = v
-            when 'disable_io' then options.disable_io = v
-            when 'https' then options.https = v
+            else options[k] = v
 
   zapp = zappa.app(root_function,options)
   app = zapp.app
