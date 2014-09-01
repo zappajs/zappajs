@@ -47,7 +47,7 @@ port = 15000
       t.ok 2, res.headers.location.match /\/foo$/
 
   params: (t) ->
-    t.expect 1, 2
+    t.expect 1, 2, 3
     t.wait 3000
 
     zapp = zappa port++, ->
@@ -61,9 +61,16 @@ port = 15000
       t.equal 1, res.body, 'barpong'
 
     headers = 'Content-Type': 'application/x-www-form-urlencoded'
+    form = {zig: 'zag'}
+    c.post '/bar?ping=pong', {headers, form}, (err, res) ->
+      t.equal 2, res.body, 'barpongzag'
+
+    c2 = t.client(zapp.server)
+
+    headers = 'Content-Type': 'application/json'
     json = {zig: 'zag'}
     c.post '/bar?ping=pong', {headers, json}, (err, res) ->
-      t.equal 2, res.body, 'barpongzag'
+      t.equal 3, res.body, 'barpongzag'
 
   middleware: (t) ->
     t.expect 1, 2, 3

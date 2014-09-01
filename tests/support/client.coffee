@@ -37,9 +37,10 @@ class Client
     opts.url = "http://#{@host}:#{@port}#{path}"
     opts.encoding ?= 'utf8'
 
-    req = request opts, (err, res) ->
+    req = request opts, (err, res, body) ->
       if err and cb? then cb(err)
       else
+        res.body = body
         if opts.dom?
           jsdom.env html: res.body, done: (err, window) ->
             if err and cb? then cb(err)

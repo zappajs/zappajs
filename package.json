@@ -18,10 +18,10 @@
     "methods": "1.1.0"
   },
   "devDependencies": {
-    "request": "2.21.0",
     "coffee-script": "1.8.0",
     "jsdom": "0.11.1",
     "underscore": "1.7.0",
+    "request": "2.40.0",
     "consolidate": "0.10.0",
     "socket.io-client": "1.0.6",
     "eco": "1.1.0-rc-3",
