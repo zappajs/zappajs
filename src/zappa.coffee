@@ -3,7 +3,7 @@
 # integrating [express](http://expressjs.com), [socket.io](http://socket.io)
 # and other best-of-breed libraries.
 
-zappa = version: '0.4.22'
+zappa = version: '0.5.0'
 
 codename = 'You can\'t do that on stage anymore'
 
@@ -198,7 +198,7 @@ zappa.app = ->
                 path: k
                 middleware: flatten v[0...v.length-1]
                 handler: v[v.length-1]
-                
+
             else
               route verb: verb, path: k, handler: v
         return
