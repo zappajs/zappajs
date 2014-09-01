@@ -293,7 +293,7 @@ port = 15600
       @view index: "h2= 'Jade inline template: ' + foo"
 
       @view layout: '''
-        !!! 5
+        doctype html
         html
           head
             title Jade inline layout
@@ -315,7 +315,7 @@ port = 15600
         @render 'index', foo: 'bar'
 
       @view index: '''
-        !!! 5
+        doctype html
         html
           include head
           body
@@ -380,7 +380,7 @@ port = 15600
       @view index: "h2= 'Jade inline template: ' + foo"
 
       @view layout: '''
-        !!! 5
+        doctype html
         html
           head
             title Jade inline layout
