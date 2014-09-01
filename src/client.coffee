@@ -62,10 +62,10 @@ skeleton = ->
     context.share = (channel,socket,cb) ->
       zappa_prefix = settings.zappa_prefix
       if (socket.socket != null)
-        	sessionid = socket.socket.sessionid
-        if (socket.io != null)
-        	sessionid = socket.io.engine.id
-        return $.getJSON(zappa_prefix + ("/socket/" + channel + "/" + sessionid), cb);
+        sessionid = socket.socket.sessionid
+      if (socket.io != null)
+        sessionid = socket.io.engine.id
+      return $.getJSON(zappa_prefix + ("/socket/" + channel + "/" + sessionid), cb);
 
     route = (r) ->
       ctx = {app}
