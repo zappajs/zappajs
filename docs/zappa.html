@@ -55,27 +55,28 @@ and other best-of-breed libraries.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>zappa = version: <span class="string">'0.4.22'</span>
+            <div class="content"><div class='highlight'><pre>
+zappa = <span class="hljs-attribute">version</span>: <span class="hljs-string">'0.5.0'</span>
 
-codename = <span class="string">'You can\'t do that on stage anymore'</span>
+codename = <span class="hljs-string">'You can\'t do that on stage anymore'</span>
 
-log = console.log
-fs = require <span class="string">'fs'</span>
-path = require <span class="string">'path'</span>
-uuid = require <span class="string">'node-uuid'</span>
-uglify = require <span class="string">'uglify-js'</span>
-methods = require <span class="string">'methods'</span>
+log = <span class="hljs-built_in">console</span>.log
+fs = <span class="hljs-built_in">require</span> <span class="hljs-string">'fs'</span>
+path = <span class="hljs-built_in">require</span> <span class="hljs-string">'path'</span>
+uuid = <span class="hljs-built_in">require</span> <span class="hljs-string">'node-uuid'</span>
+uglify = <span class="hljs-built_in">require</span> <span class="hljs-string">'uglify-js'</span>
+methods = <span class="hljs-built_in">require</span> <span class="hljs-string">'methods'</span>
+<span class="hljs-function">
+<span class="hljs-title">vendor</span> = <span class="hljs-params">(name)</span> -&gt;</span>
+  fs.readFileSync(path.join(__dirname,<span class="hljs-string">'..'</span>,<span class="hljs-string">'vendor'</span>,name)).toString()
 
-<span class="function"><span class="title">vendor</span></span> = (name) -&gt;
-  fs.readFileSync(path.join(__dirname,<span class="string">'..'</span>,<span class="string">'vendor'</span>,name)).toString()
+jquery = vendor <span class="hljs-string">'jquery.js'</span>
+jquery_minified = vendor <span class="hljs-string">'jquery.min.js'</span>
+sammy = vendor <span class="hljs-string">'sammy.js'</span>
+sammy_minified = vendor <span class="hljs-string">'sammy.min.js'</span>
+socketjs = vendor <span class="hljs-string">'socket.io.js'</span>
 
-jquery = vendor <span class="string">'jquery.js'</span>
-jquery_minified = vendor <span class="string">'jquery.min.js'</span>
-sammy = vendor <span class="string">'sammy.js'</span>
-sammy_minified = vendor <span class="string">'sammy.min.js'</span>
-socketjs = vendor <span class="string">'socket.io.js'</span>
-
-socketio_key = <span class="string">'__session'</span></pre></div></div>
+socketio_key = <span class="hljs-string">'__session'</span></pre></div></div>
             
         </li>
         
@@ -90,9 +91,9 @@ socketio_key = <span class="string">'__session'</span></pre></div></div>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>jsdom = <span class="literal">null</span>
-express_partials = <span class="literal">null</span>
-coffee_css = <span class="literal">null</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>jsdom = <span class="hljs-literal">null</span>
+express_partials = <span class="hljs-literal">null</span>
+coffee_css = <span class="hljs-literal">null</span></pre></div></div>
             
         </li>
         
@@ -104,13 +105,13 @@ coffee_css = <span class="literal">null</span></pre></div></div>
                 <a class="pilcrow" href="#section-3">&#182;</a>
               </div>
               <p>CoffeeScript-generated JavaScript may contain anyone of these; when we
-&quot;rewrite&quot; a function (see below) though, it loses access to its parent scope,
+“rewrite” a function (see below) though, it loses access to its parent scope,
 and consequently to any helpers it might need. So we need to reintroduce
-these helpers manually inside any &quot;rewritten&quot; function.</p>
+these helpers manually inside any “rewritten” function.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>coffeescript_helpers = <span class="string">"""
+            <div class="content"><div class='highlight'><pre>coffeescript_helpers = <span class="hljs-string">"""
   var __slice = Array.prototype.slice;
   var __hasProp = Object.prototype.hasOwnProperty;
   var __bind = function(fn, me){
@@ -130,10 +131,10 @@ these helpers manually inside any &quot;rewritten&quot; function.</p>
     for (var i = 0, l = this.length; i &lt; l; i++) {
       if (this[i] === item) return i;
     } return -1; };
-"""</span>.replace <span class="regexp">/\n/g</span>, <span class="string">''</span>
-
-<span class="function"><span class="title">minify</span></span> = (js) -&gt;
-  result = uglify.minify js, fromString:<span class="literal">true</span>
+"""</span>.replace <span class="hljs-regexp">/\n/g</span>, <span class="hljs-string">''</span>
+<span class="hljs-function">
+<span class="hljs-title">minify</span> = <span class="hljs-params">(js)</span> -&gt;</span>
+  result = uglify.minify js, <span class="hljs-attribute">fromString</span>:<span class="hljs-literal">true</span>
   result.code</pre></div></div>
             
         </li>
@@ -150,11 +151,11 @@ Does NOT overwrite attributes already present in <code>recipient</code>.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="function"><span class="title">copy_data_to</span></span> = (recipient, sources) -&gt;
-  <span class="keyword">for</span> obj <span class="keyword">in</span> sources
-    <span class="keyword">for</span> k, v <span class="keyword">of</span> obj
-      recipient[k] = v <span class="keyword">unless</span> recipient[k]
-  <span class="keyword">return</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-title">copy_data_to</span> = <span class="hljs-params">(recipient, sources)</span> -&gt;</span>
+  <span class="hljs-keyword">for</span> obj <span class="hljs-keyword">in</span> sources
+    <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">of</span> obj
+      recipient[k] = v <span class="hljs-keyword">unless</span> recipient[k]
+  <span class="hljs-keyword">return</span></pre></div></div>
             
         </li>
         
@@ -165,16 +166,16 @@ Does NOT overwrite attributes already present in <code>recipient</code>.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
-              <p>Flatten array recursively (copied from Express&#39;s utils.js)</p>
+              <p>Flatten array recursively (copied from Express’s utils.js)</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="function"><span class="title">flatten</span></span> = (arr, ret) -&gt;
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-title">flatten</span> = <span class="hljs-params">(arr, ret)</span> -&gt;</span>
   ret ?= []
-  <span class="keyword">for</span> o <span class="keyword">in</span> arr
-    <span class="keyword">if</span> Array.isArray o
+  <span class="hljs-keyword">for</span> o <span class="hljs-keyword">in</span> arr
+    <span class="hljs-keyword">if</span> Array.isArray o
       flatten o, ret
-    <span class="keyword">else</span>
+    <span class="hljs-keyword">else</span>
       ret.push o
   ret</pre></div></div>
             
@@ -192,9 +193,13 @@ Does NOT overwrite attributes already present in <code>recipient</code>.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>zappa_fs = {}
-
-<span class="function"><span class="title">native_name</span></span> = (p) -&gt;
-  p.replace <span class="regexp">/\/\.zappa-[^\/]+/</span>, <span class="string">''</span></pre></div></div>
+<span class="hljs-function">
+<span class="hljs-title">native_name</span> = <span class="hljs-params">(p)</span> -&gt;</span>
+  p.replace <span class="hljs-regexp">/\/\.zappa-[^\/]+/</span>, <span class="hljs-string">''</span>
+<span class="hljs-function">
+<span class="hljs-title">install_zappa_fs</span> = -&gt;</span>
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> install_zappa_fs.done
+  install_zappa_fs.done = <span class="hljs-literal">true</span></pre></div></div>
             
         </li>
         
@@ -205,40 +210,40 @@ Does NOT overwrite attributes already present in <code>recipient</code>.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
-              <p>Patch Node.js&#39;s <code>fs</code>.</p>
+              <p>Patch Node.js’s <code>fs</code>.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>native_readFileSync = fs.readFileSync
-native_readFile = fs.readFile
+            <div class="content"><div class='highlight'><pre>  native_readFileSync = fs.readFileSync
+  native_readFile = fs.readFile
+<span class="hljs-function">
+  <span class="hljs-title">native_array</span> = <span class="hljs-params">(args...)</span> -&gt;</span>
+    args[<span class="hljs-number">0</span>] = native_name args[<span class="hljs-number">0</span>]
+    args
 
-<span class="function"><span class="title">native_array</span></span> = (args...) -&gt;
-  args[<span class="number">0</span>] = native_name args[<span class="number">0</span>]
-  args
+  fs.r<span class="hljs-function"><span class="hljs-title">eadFileSync</span> = <span class="hljs-params">(p,encoding)</span> -&gt;</span>
+    zappa_fs[p] ? native_readFileSync.apply fs, native_array arguments...
 
-fs.<span class="function"><span class="title">readFileSync</span></span> = (p,encoding) -&gt;
-  zappa_fs[p] ? native_readFileSync.apply fs, native_array arguments...
+  fs.r<span class="hljs-function"><span class="hljs-title">eadFile</span> = <span class="hljs-params">(p,encoding,callback)</span> -&gt;</span>
+    view = zappa_fs[p]
+    <span class="hljs-keyword">if</span> view
+      <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> encoding <span class="hljs-keyword">is</span> <span class="hljs-string">'function'</span> <span class="hljs-keyword">and</span> <span class="hljs-keyword">not</span> callback?
+        callback = encoding
+      callback <span class="hljs-literal">null</span>, view
+    <span class="hljs-keyword">else</span>
+      native_readFile.apply fs, native_array arguments...
 
-fs.<span class="function"><span class="title">readFile</span></span> = (p,encoding,callback) -&gt;
-  view = zappa_fs[p]
-  <span class="keyword">if</span> view
-    <span class="keyword">if</span> <span class="keyword">typeof</span> encoding <span class="keyword">is</span> <span class="string">'function'</span> <span class="keyword">and</span> <span class="keyword">not</span> callback?
-      callback = encoding
-    callback <span class="literal">null</span>, view
-  <span class="keyword">else</span>
-    native_readFile.apply fs, native_array arguments...
+  native_existsSync = fs.existsSync ? path.existsSync
+  native_exists = fs.exists ? path.exists
 
-native_existsSync = fs.existsSync ? path.existsSync
-native_exists = fs.exists ? path.exists
+  path.existsSync = fs.e<span class="hljs-function"><span class="hljs-title">xistsSync</span> = <span class="hljs-params">(p)</span> -&gt;</span>
+    zappa_fs[p]? <span class="hljs-keyword">or</span> native_existsSync.apply fs, native_array arguments...
 
-path.existsSync = fs.<span class="function"><span class="title">existsSync</span></span> = (p) -&gt;
-  zappa_fs[p]? <span class="keyword">or</span> native_existsSync.apply fs, native_array arguments...
-
-path.exists = fs.<span class="function"><span class="title">exists</span></span> = (p,callback) -&gt;
-  <span class="keyword">if</span> zappa_fs[p]?
-    callback <span class="literal">true</span>
-  <span class="keyword">else</span>
-    native_exists.apply fs, native_array arguments...</pre></div></div>
+  path.exists = fs.e<span class="hljs-function"><span class="hljs-title">xists</span> = <span class="hljs-params">(p,callback)</span> -&gt;</span>
+    <span class="hljs-keyword">if</span> zappa_fs[p]?
+      callback <span class="hljs-literal">true</span>
+    <span class="hljs-keyword">else</span>
+      native_exists.apply fs, native_array arguments...</pre></div></div>
             
         </li>
         
@@ -249,12 +254,20 @@ path.exists = fs.<span class="function"><span class="title">exists</span></span>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
-              <p>Express must first be called after we modify the <code>fs</code> module.</p>
+              <p>Takes in a function and builds express/socket.io apps based on the rules
+contained in it.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>express = require <span class="string">'express'</span>
-socketio = require <span class="string">'socket.io'</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>zappa.a<span class="hljs-function"><span class="hljs-title">pp</span> = -&gt;</span>
+  <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> arguments
+    <span class="hljs-keyword">switch</span> <span class="hljs-keyword">typeof</span> a
+      <span class="hljs-keyword">when</span> <span class="hljs-string">'function'</span>
+        func = a
+      <span class="hljs-keyword">when</span> <span class="hljs-string">'object'</span>
+        options = a
+
+  options ?= {}</pre></div></div>
             
         </li>
         
@@ -265,25 +278,11 @@ socketio = require <span class="string">'socket.io'</span></pre></div></div>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
-              <p>Takes in a function and builds express/socket.io apps based on the rules
-contained in it.</p>
+              <p>All ZappaJS instances MUST share the same Express module.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>zappa.<span class="function"><span class="title">app</span></span> = -&gt;
-  <span class="keyword">for</span> a <span class="keyword">in</span> arguments
-    <span class="keyword">switch</span> <span class="keyword">typeof</span> a
-      <span class="keyword">when</span> <span class="string">'function'</span>
-        func = a
-      <span class="keyword">when</span> <span class="string">'object'</span>
-        options = a
-
-  options ?= {}
-
-  context = {id: uuid.v4(), zappa, express}
-
-  real_root = path.dirname(module.parent.filename)
-  root =  path.join real_root, <span class="string">".zappa-<span class="subst">#{context.id}</span>"</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  install_zappa_fs()</pre></div></div>
             
         </li>
         
@@ -293,6 +292,27 @@ contained in it.</p>
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>Express must first be called after we modify the <code>fs</code> module.
+If using a different version of Express, make sure to call zappa.install_fs() first.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  express = options.express ? <span class="hljs-built_in">require</span> <span class="hljs-string">'express'</span>
+
+  context = {<span class="hljs-attribute">id</span>: uuid.v4(), zappa, express}
+
+  real_root = path.dirname(<span class="hljs-built_in">module</span>.parent.filename)
+  root =  path.join real_root, <span class="hljs-string">".zappa-<span class="hljs-subst">#{context.id}</span>"</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
               </div>
               <p>Storage for user-provided stuff.
 Views are kept at the module level.</p>
@@ -305,31 +325,15 @@ Views are kept at the module level.</p>
   partials = {}
 
   app = context.app = express()
-  <span class="keyword">if</span> options.https?
-    context.server = require(<span class="string">'https'</span>).createServer options.https, app
-  <span class="keyword">else</span>
-    context.server = require(<span class="string">'http'</span>).createServer app
-  <span class="keyword">if</span> options.disable_io
-    io = <span class="literal">null</span>
-  <span class="keyword">else</span>
+  <span class="hljs-keyword">if</span> options.https?
+    context.server = <span class="hljs-built_in">require</span>(<span class="hljs-string">'https'</span>).createServer options.https, app
+  <span class="hljs-keyword">else</span>
+    context.server = <span class="hljs-built_in">require</span>(<span class="hljs-string">'http'</span>).createServer app
+  <span class="hljs-keyword">if</span> options.disable_io
+    io = <span class="hljs-literal">null</span>
+  <span class="hljs-keyword">else</span>
+    socketio = options.socketio ? <span class="hljs-built_in">require</span> <span class="hljs-string">'socket.io'</span>
     io = context.io = socketio.listen context.server, options.io ? {}</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-11">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-11">&#182;</a>
-              </div>
-              <p>Reference to the zappa client, the value will be set later.</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  client = <span class="literal">null</span>
-  client_bundled = <span class="literal">null</span>
-  client_bundle_simple = <span class="literal">null</span></pre></div></div>
             
         </li>
         
@@ -340,11 +344,13 @@ Views are kept at the module level.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-12">&#182;</a>
               </div>
-              <p>Tracks if the zappa middleware is already mounted (<code>@use &#39;zappa&#39;</code>).</p>
+              <p>Reference to the zappa client, the value will be set later.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  zappa_used = <span class="literal">no</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  client = <span class="hljs-literal">null</span>
+  client_bundled = <span class="hljs-literal">null</span>
+  client_bundle_simple = <span class="hljs-literal">null</span></pre></div></div>
             
         </li>
         
@@ -355,12 +361,11 @@ Views are kept at the module level.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-13">&#182;</a>
               </div>
-              <p>Zappa&#39;s default settings.</p>
+              <p>Tracks if the zappa middleware is already mounted (<code>@use &#39;zappa&#39;</code>).</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  app.set <span class="string">'view engine'</span>, <span class="string">'coffee'</span>
-  app.engine <span class="string">'coffee'</span>, coffeecup_adapter</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  zappa_used = <span class="hljs-literal">no</span></pre></div></div>
             
         </li>
         
@@ -371,11 +376,12 @@ Views are kept at the module level.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-14">&#182;</a>
               </div>
-              <p>Sets default view dir to @root</p>
+              <p>Zappa’s default settings.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  app.set <span class="string">'views'</span>, path.join(root, <span class="string">'/views'</span>)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  app.set <span class="hljs-string">'view engine'</span>, <span class="hljs-string">'coffee'</span>
+  app.engine <span class="hljs-string">'coffee'</span>, coffeecup_adapter</pre></div></div>
             
         </li>
         
@@ -386,98 +392,11 @@ Views are kept at the module level.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-15">&#182;</a>
               </div>
-              <p>Location of zappa-specific URIs.</p>
+              <p>Sets default view dir to @root</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  app.set <span class="string">'zappa_prefix'</span>, <span class="string">'/zappa'</span>
-
-  <span class="keyword">for</span> verb <span class="keyword">in</span> [methods...,<span class="string">'del'</span>,<span class="string">'all'</span>]
-    <span class="keyword">do</span> (verb) -&gt;
-      context[verb] = (args...) -&gt;
-        arity = args.length
-        <span class="keyword">if</span> arity &gt; <span class="number">1</span>
-          route
-            verb: verb
-            path: args[<span class="number">0</span>]
-            middleware: flatten args[<span class="number">1.</span>..arity-<span class="number">1</span>]
-            handler: args[arity-<span class="number">1</span>]
-        <span class="keyword">else</span>
-          <span class="keyword">for</span> k, v <span class="keyword">of</span> arguments[<span class="number">0</span>]
-            route verb: verb, path: k, handler: v
-        <span class="keyword">return</span>
-
-  context.<span class="function"><span class="title">client</span></span> = (obj) -&gt;
-    context.use <span class="string">'zappa'</span> <span class="keyword">unless</span> zappa_used
-    <span class="keyword">for</span> k, v <span class="keyword">of</span> obj
-      js = <span class="string">";zappa.run(<span class="subst">#{v}</span>);"</span>
-      js = minify(js) <span class="keyword">if</span> app.settings[<span class="string">'minify'</span>]
-      route verb: <span class="string">'get'</span>, path: k, handler: js, contentType: <span class="string">'js'</span>
-    <span class="keyword">return</span>
-
-  context.<span class="function"><span class="title">coffee</span></span> = (obj) -&gt;
-    <span class="keyword">for</span> k, v <span class="keyword">of</span> obj
-      js = <span class="string">";<span class="subst">#{coffeescript_helpers}</span>(<span class="subst">#{v}</span>)();"</span>
-      js = minify(js) <span class="keyword">if</span> app.settings[<span class="string">'minify'</span>]
-      route verb: <span class="string">'get'</span>, path: k, handler: js, contentType: <span class="string">'js'</span>
-    <span class="keyword">return</span>
-
-  context.<span class="function"><span class="title">js</span></span> = (obj) -&gt;
-    <span class="keyword">for</span> k, v <span class="keyword">of</span> obj
-      js = String(v)
-      js = minify(js) <span class="keyword">if</span> app.settings[<span class="string">'minify'</span>]
-      route verb: <span class="string">'get'</span>, path: k, handler: js, contentType: <span class="string">'js'</span>
-    <span class="keyword">return</span>
-
-  context.<span class="function"><span class="title">css</span></span> = (obj) -&gt;
-    <span class="keyword">for</span> k, v <span class="keyword">of</span> obj
-      <span class="keyword">if</span> <span class="keyword">typeof</span> v <span class="keyword">is</span> <span class="string">'object'</span>
-        coffee_css ?= require <span class="string">'coffee-css'</span>
-        css = coffee_css.compile v
-      <span class="keyword">else</span>
-        css = String(v)
-      route verb: <span class="string">'get'</span>, path: k, handler: css, contentType: <span class="string">'css'</span>
-    <span class="keyword">return</span>
-
-  context.<span class="function"><span class="title">with</span></span> = (obj) -&gt;
-    zappa_with =
-      css: (modules) -&gt;
-        <span class="keyword">if</span> <span class="keyword">typeof</span> modules <span class="keyword">is</span> <span class="string">'string'</span>
-          modules = [modules]
-        <span class="keyword">for</span> name <span class="keyword">in</span> modules
-          module = require(name)
-          context[name] = (obj) -&gt;
-            <span class="keyword">for</span> k, v <span class="keyword">of</span> obj
-              module.render v, filename: k, (err, css) -&gt;
-                <span class="keyword">throw</span> err <span class="keyword">if</span> err
-                route verb: <span class="string">'get'</span>, path: k, handler: css, contentType: <span class="string">'css'</span>
-            <span class="keyword">return</span>
-        <span class="keyword">return</span>
-
-    <span class="keyword">for</span> k,v <span class="keyword">of</span> obj
-      <span class="keyword">if</span> zappa_with[k]
-        zappa_with[k] v
-
-  context.<span class="function"><span class="title">helper</span></span> = (obj) -&gt;
-    <span class="keyword">for</span> k, v <span class="keyword">of</span> obj
-      helpers[k] = v
-    <span class="keyword">return</span>
-
-  context.<span class="function"><span class="title">postrender</span></span> = (obj) -&gt;
-    jsdom = require <span class="string">'jsdom'</span>
-    <span class="keyword">for</span> k, v <span class="keyword">of</span> obj
-      postrenders[k] = v
-    <span class="keyword">return</span>
-
-  context.<span class="function"><span class="title">on</span></span> = (obj) -&gt;
-    <span class="keyword">for</span> k, v <span class="keyword">of</span> obj
-      ws_handlers[k] = v
-    <span class="keyword">return</span>
-
-  context.<span class="function"><span class="title">view</span></span> = (obj) -&gt;
-    <span class="keyword">for</span> k, v <span class="keyword">of</span> obj
-      ext = path.extname k
-      p = path.join app.get(<span class="string">'views'</span>), k</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  app.set <span class="hljs-string">'views'</span>, path.join(root, <span class="hljs-string">'/views'</span>)</pre></div></div>
             
         </li>
         
@@ -488,59 +407,24 @@ Views are kept at the module level.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-16">&#182;</a>
               </div>
-              <p>I&#39;m not even sure this is needed -- Express doesn&#39;t ask for it</p>
+              <p>Location of zappa-specific URIs.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      zappa_fs[p] = v
-      <span class="keyword">if</span> <span class="keyword">not</span> ext
-        ext = <span class="string">'.'</span> + app.get <span class="string">'view engine'</span>
-        zappa_fs[p+ext] = v
-    <span class="keyword">return</span>
+            <div class="content"><div class='highlight'><pre>  app.set <span class="hljs-string">'zappa_prefix'</span>, <span class="hljs-string">'/zappa'</span>
 
-  context.<span class="function"><span class="title">engine</span></span> = (obj) -&gt;
-    <span class="keyword">for</span> k, v <span class="keyword">of</span> obj
-      app.engine k, v
-    <span class="keyword">return</span>
-
-  context.<span class="function"><span class="title">set</span></span> = (obj) -&gt;
-    <span class="keyword">for</span> k, v <span class="keyword">of</span> obj
-      app.set k, v
-    <span class="keyword">return</span>
-
-  context.<span class="function"><span class="title">enable</span></span> = -&gt;
-    app.enable i <span class="keyword">for</span> i <span class="keyword">in</span> arguments
-    <span class="keyword">return</span>
-
-  context.<span class="function"><span class="title">disable</span></span> = -&gt;
-    app.disable i <span class="keyword">for</span> i <span class="keyword">in</span> arguments
-    <span class="keyword">return</span>
-
-  <span class="function"><span class="title">wrap_middleware</span></span> = (f) -&gt;
-    (req,res,next) -&gt;
-      ctx =
-        app: app
-        settings: app.settings
-        locals: res.locals
-        request: req
-        req: req
-        query: req.query
-        params: req.params
-        body: req.body
-        session: req.session
-        response: res
-        res: res
-        next: next
-
-      apply_helpers ctx
-
-      <span class="keyword">if</span> app.settings[<span class="string">'databag'</span>]
-        ctx.data = {}
-        copy_data_to ctx.data, [req.query, req.params, req.body]
-
-      f.call ctx, req, res, next
-
-  context.<span class="function"><span class="title">middleware</span></span> = (f) -&gt;</pre></div></div>
+  <span class="hljs-keyword">for</span> verb <span class="hljs-keyword">in</span> [methods...,<span class="hljs-string">'del'</span>,<span class="hljs-string">'all'</span>]
+    <span class="hljs-keyword">do</span> <span class="hljs-function"><span class="hljs-params">(verb)</span> -&gt;</span>
+      context[verb] = <span class="hljs-function"><span class="hljs-params">(args...)</span> -&gt;</span>
+        arity = args.length
+        <span class="hljs-keyword">if</span> arity &gt; <span class="hljs-number">1</span>
+          route
+            <span class="hljs-attribute">verb</span>: verb
+            <span class="hljs-attribute">path</span>: args[<span class="hljs-number">0</span>]
+            <span class="hljs-attribute">middleware</span>: flatten args[<span class="hljs-number">1.</span>..arity-<span class="hljs-number">1</span>]
+            <span class="hljs-attribute">handler</span>: args[arity-<span class="hljs-number">1</span>]
+        <span class="hljs-keyword">else</span>
+          <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">of</span> arguments[<span class="hljs-number">0</span>]</pre></div></div>
             
         </li>
         
@@ -551,24 +435,92 @@ Views are kept at the module level.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-17">&#182;</a>
               </div>
-              <p>If magic middleware is enabled the function will get wrapped
-by the caller; do not double-wrap it.</p>
+              <p>Apply middleware if value is array</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="keyword">if</span> app.settings[<span class="string">'magic middleware'</span>]
-      f
-    <span class="keyword">else</span>
-      wrap_middleware f
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">if</span> v <span class="hljs-keyword">instanceof</span> Array
+              route
+                <span class="hljs-attribute">verb</span>: verb
+                <span class="hljs-attribute">path</span>: k
+                <span class="hljs-attribute">middleware</span>: flatten v[<span class="hljs-number">0.</span>..v.length-<span class="hljs-number">1</span>]
+                <span class="hljs-attribute">handler</span>: v[v.length-<span class="hljs-number">1</span>]
 
-  <span class="function"><span class="title">use_middleware</span></span> = (f) -&gt;
-    <span class="keyword">if</span> app.settings[<span class="string">'magic middleware'</span>]
-      wrap_middleware f
-    <span class="keyword">else</span>
-      f
+            <span class="hljs-keyword">else</span>
+              route <span class="hljs-attribute">verb</span>: verb, <span class="hljs-attribute">path</span>: k, <span class="hljs-attribute">handler</span>: v
+        <span class="hljs-keyword">return</span>
 
-  context.<span class="function"><span class="title">use</span></span> = -&gt;
-    zappa_middleware =</pre></div></div>
+  context.c<span class="hljs-function"><span class="hljs-title">lient</span> = <span class="hljs-params">(obj)</span> -&gt;</span>
+    context.use <span class="hljs-string">'zappa'</span> <span class="hljs-keyword">unless</span> zappa_used
+    <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">of</span> obj
+      js = <span class="hljs-string">";zappa.run(<span class="hljs-subst">#{v}</span>);"</span>
+      js = minify(js) <span class="hljs-keyword">if</span> app.settings[<span class="hljs-string">'minify'</span>]
+      route <span class="hljs-attribute">verb</span>: <span class="hljs-string">'get'</span>, <span class="hljs-attribute">path</span>: k, <span class="hljs-attribute">handler</span>: js, <span class="hljs-attribute">contentType</span>: <span class="hljs-string">'js'</span>
+    <span class="hljs-keyword">return</span>
+
+  context.c<span class="hljs-function"><span class="hljs-title">offee</span> = <span class="hljs-params">(obj)</span> -&gt;</span>
+    <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">of</span> obj
+      js = <span class="hljs-string">";<span class="hljs-subst">#{coffeescript_helpers}</span>(<span class="hljs-subst">#{v}</span>)();"</span>
+      js = minify(js) <span class="hljs-keyword">if</span> app.settings[<span class="hljs-string">'minify'</span>]
+      route <span class="hljs-attribute">verb</span>: <span class="hljs-string">'get'</span>, <span class="hljs-attribute">path</span>: k, <span class="hljs-attribute">handler</span>: js, <span class="hljs-attribute">contentType</span>: <span class="hljs-string">'js'</span>
+    <span class="hljs-keyword">return</span>
+
+  context.j<span class="hljs-function"><span class="hljs-title">s</span> = <span class="hljs-params">(obj)</span> -&gt;</span>
+    <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">of</span> obj
+      js = String(v)
+      js = minify(js) <span class="hljs-keyword">if</span> app.settings[<span class="hljs-string">'minify'</span>]
+      route <span class="hljs-attribute">verb</span>: <span class="hljs-string">'get'</span>, <span class="hljs-attribute">path</span>: k, <span class="hljs-attribute">handler</span>: js, <span class="hljs-attribute">contentType</span>: <span class="hljs-string">'js'</span>
+    <span class="hljs-keyword">return</span>
+
+  context.c<span class="hljs-function"><span class="hljs-title">ss</span> = <span class="hljs-params">(obj)</span> -&gt;</span>
+    <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">of</span> obj
+      <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> v <span class="hljs-keyword">is</span> <span class="hljs-string">'object'</span>
+        coffee_css ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'coffee-css'</span>
+        css = coffee_css.compile v
+      <span class="hljs-keyword">else</span>
+        css = String(v)
+      route <span class="hljs-attribute">verb</span>: <span class="hljs-string">'get'</span>, <span class="hljs-attribute">path</span>: k, <span class="hljs-attribute">handler</span>: css, <span class="hljs-attribute">contentType</span>: <span class="hljs-string">'css'</span>
+    <span class="hljs-keyword">return</span>
+
+  context.w<span class="hljs-function"><span class="hljs-title">ith</span> = <span class="hljs-params">(obj)</span> -&gt;</span>
+    zappa_with =
+      <span class="hljs-attribute">css</span>: <span class="hljs-function"><span class="hljs-params">(modules)</span> -&gt;</span>
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> modules <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span>
+          modules = [modules]
+        <span class="hljs-keyword">for</span> name <span class="hljs-keyword">in</span> modules
+          <span class="hljs-built_in">module</span> = <span class="hljs-built_in">require</span>(name)
+          context[name] = <span class="hljs-function"><span class="hljs-params">(obj)</span> -&gt;</span>
+            <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">of</span> obj
+              <span class="hljs-built_in">module</span>.render v, <span class="hljs-attribute">filename</span>: k, <span class="hljs-function"><span class="hljs-params">(err, css)</span> -&gt;</span>
+                <span class="hljs-keyword">throw</span> err <span class="hljs-keyword">if</span> err
+                route <span class="hljs-attribute">verb</span>: <span class="hljs-string">'get'</span>, <span class="hljs-attribute">path</span>: k, <span class="hljs-attribute">handler</span>: css, <span class="hljs-attribute">contentType</span>: <span class="hljs-string">'css'</span>
+            <span class="hljs-keyword">return</span>
+        <span class="hljs-keyword">return</span>
+
+    <span class="hljs-keyword">for</span> k,v <span class="hljs-keyword">of</span> obj
+      <span class="hljs-keyword">if</span> zappa_with[k]
+        zappa_with[k] v
+
+  context.h<span class="hljs-function"><span class="hljs-title">elper</span> = <span class="hljs-params">(obj)</span> -&gt;</span>
+    <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">of</span> obj
+      helpers[k] = v
+    <span class="hljs-keyword">return</span>
+
+  context.p<span class="hljs-function"><span class="hljs-title">ostrender</span> = <span class="hljs-params">(obj)</span> -&gt;</span>
+    jsdom = <span class="hljs-built_in">require</span> <span class="hljs-string">'jsdom'</span>
+    <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">of</span> obj
+      postrenders[k] = v
+    <span class="hljs-keyword">return</span>
+
+  context.o<span class="hljs-function"><span class="hljs-title">n</span> = <span class="hljs-params">(obj)</span> -&gt;</span>
+    <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">of</span> obj
+      ws_handlers[k] = v
+    <span class="hljs-keyword">return</span>
+
+  context.v<span class="hljs-function"><span class="hljs-title">iew</span> = <span class="hljs-params">(obj)</span> -&gt;</span>
+    <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">of</span> obj
+      ext = path.extname k
+      p = path.join app.get(<span class="hljs-string">'views'</span>), k</pre></div></div>
             
         </li>
         
@@ -579,95 +531,59 @@ by the caller; do not double-wrap it.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-18">&#182;</a>
               </div>
-              <p>Connect <code>static</code> middlewate uses fs.stat().</p>
+              <p>I’m not even sure this is needed — Express doesn’t ask for it</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      static: (options) -&gt;
-        <span class="keyword">if</span> <span class="keyword">typeof</span> options <span class="keyword">is</span> <span class="string">'string'</span>
-          options = path: options
-        options ?= {}
-        p = options.path ? path.join(real_root, <span class="string">'/public'</span>)
-        <span class="keyword">delete</span> options.path
-        express.static(p,options)
-      zappa: -&gt;
-        zappa_used = <span class="literal">yes</span>
-        (req, res, next) -&gt;
-          <span class="function"><span class="title">send</span></span> = (code) -&gt;
-            res.contentType <span class="string">'js'</span>
-            res.send code
-          <span class="keyword">if</span> req.method.toUpperCase() <span class="keyword">isnt</span> <span class="string">'GET'</span> <span class="keyword">then</span> next()
-          <span class="keyword">else</span>
-            zappa_prefix = app.settings[<span class="string">'zappa_prefix'</span>]
-            <span class="keyword">switch</span> req.url
-              <span class="keyword">when</span> zappa_prefix+<span class="string">'/Zappa.js'</span> <span class="keyword">then</span> send client_bundled
-              <span class="keyword">when</span> zappa_prefix+<span class="string">'/Zappa-simple.js'</span> <span class="keyword">then</span> send client_bundle_simple
-              <span class="keyword">when</span> zappa_prefix+<span class="string">'/zappa.js'</span> <span class="keyword">then</span> send client
-              <span class="keyword">when</span> zappa_prefix+<span class="string">'/jquery.js'</span> <span class="keyword">then</span> send jquery_minified
-              <span class="keyword">when</span> zappa_prefix+<span class="string">'/sammy.js'</span> <span class="keyword">then</span> send sammy_minified
-              <span class="keyword">else</span> next()
-          <span class="keyword">return</span>
-      partials: (maps = {}) -&gt;
-        express_partials ?= require <span class="string">'zappajs-partials'</span>
-        partials = express_partials()
-        partials.register <span class="string">'coffee'</span>, coffeecup_adapter.render
-        <span class="keyword">for</span> k,v <span class="keyword">of</span> maps
-          partials.register k, v
-        partials
-      session: (options) -&gt;
-        context.session_store = options.store
-        express.session options
+            <div class="content"><div class='highlight'><pre>      zappa_fs[p] = v
+      <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> ext
+        ext = <span class="hljs-string">'.'</span> + app.get <span class="hljs-string">'view engine'</span>
+        zappa_fs[p+ext] = v
+    <span class="hljs-keyword">return</span>
 
-    <span class="function"><span class="title">use</span></span> = (name, arg = <span class="literal">null</span>) -&gt;
-      <span class="keyword">if</span> zappa_middleware[name]
-        app.use zappa_middleware[name](arg)
-      <span class="keyword">else</span> <span class="keyword">if</span> <span class="keyword">typeof</span> express[name] <span class="keyword">is</span> <span class="string">'function'</span>
-        app.use use_middleware express[name](arg)
-      <span class="keyword">else</span>
-        <span class="keyword">throw</span> <span class="string">"Unknown middleware <span class="subst">#{name}</span>"</span>
+  context.e<span class="hljs-function"><span class="hljs-title">ngine</span> = <span class="hljs-params">(obj)</span> -&gt;</span>
+    <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">of</span> obj
+      app.engine k, v
+    <span class="hljs-keyword">return</span>
 
-    <span class="keyword">for</span> a <span class="keyword">in</span> arguments
-      <span class="keyword">switch</span> <span class="keyword">typeof</span> a
-        <span class="keyword">when</span> <span class="string">'function'</span> <span class="keyword">then</span> app.use use_middleware a
-        <span class="keyword">when</span> <span class="string">'string'</span> <span class="keyword">then</span> use a
-        <span class="keyword">when</span> <span class="string">'object'</span>
-          <span class="keyword">if</span> a.stack? <span class="keyword">or</span> a.route? <span class="keyword">or</span> a.handle?
-            app.use a
-          <span class="keyword">else</span>
-            use k, v <span class="keyword">for</span> k, v <span class="keyword">of</span> a
-    <span class="keyword">return</span>
+  context.s<span class="hljs-function"><span class="hljs-title">et</span> = <span class="hljs-params">(obj)</span> -&gt;</span>
+    <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">of</span> obj
+      app.set k, v
+    <span class="hljs-keyword">return</span>
 
-  context.<span class="function"><span class="title">configure</span></span> = (p) -&gt;
-    <span class="keyword">if</span> <span class="keyword">typeof</span> p <span class="keyword">is</span> <span class="string">'function'</span> <span class="keyword">then</span> app.configure p
-    <span class="keyword">else</span> app.configure k, v <span class="keyword">for</span> k, v <span class="keyword">of</span> p
-    <span class="keyword">return</span>
+  context.e<span class="hljs-function"><span class="hljs-title">nable</span> = -&gt;</span>
+    app.enable i <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> arguments
+    <span class="hljs-keyword">return</span>
 
-  context.settings = app.settings
-  context.locals = app.locals
+  context.d<span class="hljs-function"><span class="hljs-title">isable</span> = -&gt;</span>
+    app.disable i <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> arguments
+    <span class="hljs-keyword">return</span>
+<span class="hljs-function">
+  <span class="hljs-title">wrap_middleware</span> = <span class="hljs-params">(f)</span> -&gt;</span>
+<span class="hljs-function">    <span class="hljs-params">(req,res,next)</span> -&gt;</span>
+      ctx =
+        <span class="hljs-attribute">app</span>: app
+        <span class="hljs-attribute">settings</span>: app.settings
+        <span class="hljs-attribute">locals</span>: res.locals
+        <span class="hljs-attribute">request</span>: req
+        <span class="hljs-attribute">req</span>: req
+        <span class="hljs-attribute">query</span>: req.query
+        <span class="hljs-attribute">params</span>: req.params
+        <span class="hljs-attribute">body</span>: req.body
+        <span class="hljs-attribute">session</span>: req.session
+        <span class="hljs-attribute">response</span>: res
+        <span class="hljs-attribute">res</span>: res
+        <span class="hljs-attribute">next</span>: next
 
-  context.<span class="function"><span class="title">shared</span></span> = (obj) -&gt;
-    context.use <span class="string">'zappa'</span> <span class="keyword">unless</span> zappa_used
-    <span class="keyword">for</span> k, v <span class="keyword">of</span> obj
-      js = <span class="string">";zappa.run(<span class="subst">#{v}</span>);"</span>
-      js = minify(js) <span class="keyword">if</span> app.settings[<span class="string">'minify'</span>]
-      route verb: <span class="string">'get'</span>, path: k, handler: js, contentType: <span class="string">'js'</span>
-      v.apply context
-    <span class="keyword">return</span>
+      apply_helpers ctx
 
-  context.<span class="function"><span class="title">include</span></span> = (p) -&gt;
-    sub = <span class="keyword">if</span> <span class="keyword">typeof</span> p <span class="keyword">is</span> <span class="string">'string'</span> <span class="keyword">then</span> require path.join(real_root, p) <span class="keyword">else</span> p
-    sub.include.apply context
+      <span class="hljs-keyword">if</span> app.settings[<span class="hljs-string">'databag'</span>]
+        ctx.data = {}
+        copy_data_to ctx.data, [req.query, req.params, req.body]
 
-  <span class="function"><span class="title">apply_helpers</span></span> = (ctx) -&gt;
-    <span class="keyword">for</span> name, helper <span class="keyword">of</span> helpers
-      <span class="keyword">do</span> (name, helper) -&gt;
-        <span class="keyword">if</span> <span class="keyword">typeof</span> helper <span class="keyword">is</span> <span class="string">'function'</span>
-          ctx[name] = -&gt;
-            helper.apply ctx, arguments
-        <span class="keyword">else</span>
-          ctx[name] = helper
-        <span class="keyword">return</span>
-    ctx</pre></div></div>
+      f.call ctx, req, res, next
+
+  context.m<span class="hljs-function"><span class="hljs-title">iddleware</span> = <span class="hljs-params">(f)</span> -&gt;</span></pre></div></div>
             
         </li>
         
@@ -678,13 +594,24 @@ by the caller; do not double-wrap it.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-19">&#182;</a>
               </div>
-              <p>Local socket</p>
+              <p>If magic middleware is enabled the function will get wrapped
+by the caller; do not double-wrap it.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="function"><span class="title">request_socket</span></span> = (req) -&gt;
-    socket_id = req.session?.__socket?[<span class="string">'__local'</span>]?.id
-    socket_id <span class="keyword">and</span> io?.sockets.socket socket_id, <span class="literal">true</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> app.settings[<span class="hljs-string">'magic middleware'</span>]
+      f
+    <span class="hljs-keyword">else</span>
+      wrap_middleware f
+<span class="hljs-function">
+  <span class="hljs-title">use_middleware</span> = <span class="hljs-params">(f)</span> -&gt;</span>
+    <span class="hljs-keyword">if</span> app.settings[<span class="hljs-string">'magic middleware'</span>]
+      wrap_middleware f
+    <span class="hljs-keyword">else</span>
+      f
+
+  context.u<span class="hljs-function"><span class="hljs-title">se</span> = -&gt;</span>
+    zappa_middleware =</pre></div></div>
             
         </li>
         
@@ -695,44 +622,95 @@ by the caller; do not double-wrap it.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-20">&#182;</a>
               </div>
-              <p>The callback will receive (err,session).</p>
+              <p>Connect <code>static</code> middlewate uses fs.stat().</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="function"><span class="title">socket_session</span></span> = (socket,cb) -&gt;
-    socket.get socketio_key, (err,data) -&gt;
-      <span class="keyword">if</span> err
-        <span class="keyword">return</span> cb err
-      data = JSON.parse data
-      <span class="keyword">if</span> data.id?
-        context.session_store.get data.id, cb
-      <span class="keyword">else</span>
-        cb err
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-attribute">static</span>: <span class="hljs-function"><span class="hljs-params">(options)</span> -&gt;</span>
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> options <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span>
+          options = <span class="hljs-attribute">path</span>: options
+        options ?= {}
+        p = options.path ? path.join(real_root, <span class="hljs-string">'/public'</span>)
+        <span class="hljs-keyword">delete</span> options.path
+        express.static(p,options)
+      <span class="hljs-attribute">zappa</span>:<span class="hljs-function"> -&gt;</span>
+        zappa_used = <span class="hljs-literal">yes</span>
+<span class="hljs-function">        <span class="hljs-params">(req, res, next)</span> -&gt;</span>
+<span class="hljs-function">          <span class="hljs-title">send</span> = <span class="hljs-params">(code)</span> -&gt;</span>
+            res.contentType <span class="hljs-string">'js'</span>
+            res.send code
+          <span class="hljs-keyword">if</span> req.method.toUpperCase() <span class="hljs-keyword">isnt</span> <span class="hljs-string">'GET'</span> <span class="hljs-keyword">then</span> next()
+          <span class="hljs-keyword">else</span>
+            zappa_prefix = app.settings[<span class="hljs-string">'zappa_prefix'</span>]
+            <span class="hljs-keyword">switch</span> req.url
+              <span class="hljs-keyword">when</span> zappa_prefix+<span class="hljs-string">'/Zappa.js'</span> <span class="hljs-keyword">then</span> send client_bundled
+              <span class="hljs-keyword">when</span> zappa_prefix+<span class="hljs-string">'/Zappa-simple.js'</span> <span class="hljs-keyword">then</span> send client_bundle_simple
+              <span class="hljs-keyword">when</span> zappa_prefix+<span class="hljs-string">'/zappa.js'</span> <span class="hljs-keyword">then</span> send client
+              <span class="hljs-keyword">when</span> zappa_prefix+<span class="hljs-string">'/jquery.js'</span> <span class="hljs-keyword">then</span> send jquery_minified
+              <span class="hljs-keyword">when</span> zappa_prefix+<span class="hljs-string">'/sammy.js'</span> <span class="hljs-keyword">then</span> send sammy_minified
+              <span class="hljs-keyword">else</span> next()
+          <span class="hljs-keyword">return</span>
+      <span class="hljs-attribute">partials</span>: <span class="hljs-function"><span class="hljs-params">(maps = {})</span> -&gt;</span>
+        express_partials ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'zappajs-partials'</span>
+        partials = express_partials()
+        partials.register <span class="hljs-string">'coffee'</span>, coffeecup_adapter.render
+        <span class="hljs-keyword">for</span> k,v <span class="hljs-keyword">of</span> maps
+          partials.register k, v
+        partials
+      <span class="hljs-attribute">session</span>: <span class="hljs-function"><span class="hljs-params">(options)</span> -&gt;</span>
+        context.session_store = options.store
+        express.session options
+<span class="hljs-function">
+    <span class="hljs-title">use</span> = <span class="hljs-params">(name, arg = <span class="hljs-literal">null</span>)</span> -&gt;</span>
+      <span class="hljs-keyword">if</span> zappa_middleware[name]
+        app.use zappa_middleware[name](arg)
+      <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> express[name] <span class="hljs-keyword">is</span> <span class="hljs-string">'function'</span>
+        app.use use_middleware express[name](arg)
+      <span class="hljs-keyword">else</span>
+        <span class="hljs-keyword">throw</span> <span class="hljs-string">"Unknown middleware <span class="hljs-subst">#{name}</span>"</span>
 
-  context.<span class="function"><span class="title">param</span></span> = (obj) -&gt;
-    <span class="function"><span class="title">build</span></span> = (callback) -&gt;
-      (req,res,next,p) -&gt;
-        ctx =
-          app: app
-          settings: app.settings
-          locals: res.locals
-          request: req
-          req: req
-          query: req.query
-          params: req.params
-          body: req.body
-          session: req.session
-          response: res
-          res: res
-          next: next
-          param: p
-        apply_helpers ctx
-        callback.call ctx, req, res, next, p
+    <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> arguments
+      <span class="hljs-keyword">switch</span> <span class="hljs-keyword">typeof</span> a
+        <span class="hljs-keyword">when</span> <span class="hljs-string">'function'</span> <span class="hljs-keyword">then</span> app.use use_middleware a
+        <span class="hljs-keyword">when</span> <span class="hljs-string">'string'</span> <span class="hljs-keyword">then</span> use a
+        <span class="hljs-keyword">when</span> <span class="hljs-string">'object'</span>
+          <span class="hljs-keyword">if</span> a.stack? <span class="hljs-keyword">or</span> a.route? <span class="hljs-keyword">or</span> a.handle?
+            app.use a
+          <span class="hljs-keyword">else</span>
+            use k, v <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">of</span> a
+    <span class="hljs-keyword">return</span>
 
-    <span class="keyword">for</span> k, v <span class="keyword">of</span> obj
-      <span class="property">@app</span>.param k, build v
+  context.c<span class="hljs-function"><span class="hljs-title">onfigure</span> = <span class="hljs-params">(p)</span> -&gt;</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> p <span class="hljs-keyword">is</span> <span class="hljs-string">'function'</span> <span class="hljs-keyword">then</span> app.configure p
+    <span class="hljs-keyword">else</span> app.configure k, v <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">of</span> p
+    <span class="hljs-keyword">return</span>
 
-    <span class="keyword">return</span></pre></div></div>
+  context.settings = app.settings
+  context.locals = app.locals
+
+  context.s<span class="hljs-function"><span class="hljs-title">hared</span> = <span class="hljs-params">(obj)</span> -&gt;</span>
+    context.use <span class="hljs-string">'zappa'</span> <span class="hljs-keyword">unless</span> zappa_used
+    <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">of</span> obj
+      js = <span class="hljs-string">";zappa.run(<span class="hljs-subst">#{v}</span>);"</span>
+      js = minify(js) <span class="hljs-keyword">if</span> app.settings[<span class="hljs-string">'minify'</span>]
+      route <span class="hljs-attribute">verb</span>: <span class="hljs-string">'get'</span>, <span class="hljs-attribute">path</span>: k, <span class="hljs-attribute">handler</span>: js, <span class="hljs-attribute">contentType</span>: <span class="hljs-string">'js'</span>
+      v.apply context
+    <span class="hljs-keyword">return</span>
+
+  context.i<span class="hljs-function"><span class="hljs-title">nclude</span> = <span class="hljs-params">(p)</span> -&gt;</span>
+    sub = <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> p <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span> <span class="hljs-keyword">then</span> <span class="hljs-built_in">require</span> path.join(real_root, p) <span class="hljs-keyword">else</span> p
+    sub.include.apply context
+<span class="hljs-function">
+  <span class="hljs-title">apply_helpers</span> = <span class="hljs-params">(ctx)</span> -&gt;</span>
+    <span class="hljs-keyword">for</span> name, helper <span class="hljs-keyword">of</span> helpers
+      <span class="hljs-keyword">do</span> <span class="hljs-function"><span class="hljs-params">(name, helper)</span> -&gt;</span>
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> helper <span class="hljs-keyword">is</span> <span class="hljs-string">'function'</span>
+          ctx[name] =<span class="hljs-function"> -&gt;</span>
+            helper.apply ctx, arguments
+        <span class="hljs-keyword">else</span>
+          ctx[name] = helper
+        <span class="hljs-keyword">return</span>
+    ctx</pre></div></div>
             
         </li>
         
@@ -743,12 +721,13 @@ by the caller; do not double-wrap it.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-21">&#182;</a>
               </div>
-              <p>Register a route with express.</p>
+              <p>Local socket</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="function"><span class="title">route</span></span> = (r) -&gt;
-    r.middleware ?= []</pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="hljs-function">  <span class="hljs-title">request_socket</span> = <span class="hljs-params">(req)</span> -&gt;</span>
+    socket_id = req.session?.__socket?[<span class="hljs-string">'__local'</span>]?.id
+    socket_id <span class="hljs-keyword">and</span> io?.sockets.socket socket_id, <span class="hljs-literal">true</span></pre></div></div>
             
         </li>
         
@@ -759,61 +738,44 @@ by the caller; do not double-wrap it.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-22">&#182;</a>
               </div>
-              <p>Rewrite middleware</p>
+              <p>The callback will receive (err,session).</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    r.middleware = r.middleware.map wrap_middleware
+            <div class="content"><div class='highlight'><pre><span class="hljs-function">  <span class="hljs-title">socket_session</span> = <span class="hljs-params">(socket,cb)</span> -&gt;</span>
+    socket.get socketio_key, <span class="hljs-function"><span class="hljs-params">(err,data)</span> -&gt;</span>
+      <span class="hljs-keyword">if</span> err
+        <span class="hljs-keyword">return</span> cb err
+      data = JSON.parse data
+      <span class="hljs-keyword">if</span> data.id?
+        context.session_store.get data.id, cb
+      <span class="hljs-keyword">else</span>
+        cb err
 
-    <span class="keyword">if</span> <span class="keyword">typeof</span> r.handler <span class="keyword">is</span> <span class="string">'string'</span>
-      app[r.verb] r.path, r.middleware, (req, res) -&gt;
-        res.contentType r.contentType <span class="keyword">if</span> r.contentType?
-        res.send r.handler
-        <span class="keyword">return</span>
-    <span class="keyword">else</span>
-      app[r.verb] r.path, r.middleware, (req, res, next) -&gt;
+  context.p<span class="hljs-function"><span class="hljs-title">aram</span> = <span class="hljs-params">(obj)</span> -&gt;</span>
+<span class="hljs-function">    <span class="hljs-title">build</span> = <span class="hljs-params">(callback)</span> -&gt;</span>
+<span class="hljs-function">      <span class="hljs-params">(req,res,next,p)</span> -&gt;</span>
         ctx =
-          app: app
-          settings: app.settings
-          locals: res.locals
-          request: req
-          req: req
-          query: req.query
-          params: req.params
-          body: req.body
-          session: req.session
-          response: res
-          res: res
-          next: next
-          send: -&gt; res.send.apply res, arguments
-          json: -&gt; res.json.apply res, arguments
-          jsonp: -&gt; res.jsonp.apply res, arguments
-          redirect: -&gt; res.redirect.apply res, arguments
-          format: -&gt; res.format.apply res, arguments
-          render: -&gt;
-            <span class="keyword">if</span> <span class="keyword">typeof</span> arguments[<span class="number">0</span>] <span class="keyword">isnt</span> <span class="string">'object'</span>
-              render.apply @, arguments
-            <span class="keyword">else</span>
-              <span class="keyword">for</span> k, v <span class="keyword">of</span> arguments[<span class="number">0</span>]
-                render.apply @, [k, v]
-            <span class="keyword">return</span>
-          emit: -&gt;
-            socket = request_socket req
-            <span class="keyword">if</span> socket?
-              <span class="keyword">if</span> <span class="keyword">typeof</span> arguments[<span class="number">0</span>] <span class="keyword">isnt</span> <span class="string">'object'</span>
-                socket.emit.apply socket, arguments
-              <span class="keyword">else</span>
-                <span class="keyword">for</span> k, v <span class="keyword">of</span> arguments[<span class="number">0</span>]
-                  socket.emit.apply socket, [k, v]
-            <span class="keyword">return</span>
+          <span class="hljs-attribute">app</span>: app
+          <span class="hljs-attribute">settings</span>: app.settings
+          <span class="hljs-attribute">locals</span>: res.locals
+          <span class="hljs-attribute">request</span>: req
+          <span class="hljs-attribute">req</span>: req
+          <span class="hljs-attribute">query</span>: req.query
+          <span class="hljs-attribute">params</span>: req.params
+          <span class="hljs-attribute">body</span>: req.body
+          <span class="hljs-attribute">session</span>: req.session
+          <span class="hljs-attribute">response</span>: res
+          <span class="hljs-attribute">res</span>: res
+          <span class="hljs-attribute">next</span>: next
+          <span class="hljs-attribute">param</span>: p
+        apply_helpers ctx
+        callback.call ctx, req, res, next, p
 
-        <span class="function"><span class="title">render</span></span> = (name,opts = {},fn) -&gt;
+    <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">of</span> obj
+      <span class="hljs-property">@app</span>.param k, build v
 
-          report = fn ? (err,html) -&gt;
-            <span class="keyword">if</span> err
-              next err
-            <span class="keyword">else</span>
-              res.send html</pre></div></div>
+    <span class="hljs-keyword">return</span></pre></div></div>
             
         </li>
         
@@ -824,22 +786,12 @@ by the caller; do not double-wrap it.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-23">&#182;</a>
               </div>
-              <p>Make sure the second arg is an object.</p>
+              <p>Register a route with express.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>          <span class="keyword">if</span> <span class="keyword">typeof</span> opts <span class="keyword">is</span> <span class="string">'function'</span>
-            fn = opts
-            opts = {}
-
-          <span class="keyword">if</span> app.settings[<span class="string">'databag'</span>]
-            opts.params = ctx.data
-
-          <span class="keyword">if</span> <span class="keyword">not</span> opts.postrender?
-            postrender = report
-          <span class="keyword">else</span>
-            <span class="function"><span class="title">postrender</span></span> = (err, str) -&gt;
-              <span class="keyword">if</span> err <span class="keyword">then</span> <span class="keyword">return</span> report err</pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="hljs-function">  <span class="hljs-title">route</span> = <span class="hljs-params">(r)</span> -&gt;</span>
+    r.middleware ?= []</pre></div></div>
             
         </li>
         
@@ -850,36 +802,61 @@ by the caller; do not double-wrap it.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-24">&#182;</a>
               </div>
-              <p>Apply postrender before sending response.</p>
+              <p>Rewrite middleware</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>              jsdom.env html: str, src: [jquery], done: (err, window) -&gt;
-                <span class="keyword">if</span> err <span class="keyword">then</span> <span class="keyword">return</span> report err
-                ctx.window = window
-                rendered = postrenders[opts.postrender].apply ctx, [window.$]
+            <div class="content"><div class='highlight'><pre>    r.middleware = r.middleware.map wrap_middleware
 
-                doctype = (window.document.doctype <span class="keyword">or</span> <span class="string">''</span>) + <span class="string">"\n"</span>
-                html = doctype + window.document.documentElement.outerHTML
-                report <span class="literal">null</span>, html
-              <span class="keyword">return</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> r.handler <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span>
+      app[r.verb] r.path, r.middleware, <span class="hljs-function"><span class="hljs-params">(req, res)</span> -&gt;</span>
+        res.contentType r.contentType <span class="hljs-keyword">if</span> r.contentType?
+        res.send r.handler
+        <span class="hljs-keyword">return</span>
+    <span class="hljs-keyword">else</span>
+      app[r.verb] r.path, r.middleware, <span class="hljs-function"><span class="hljs-params">(req, res, next)</span> -&gt;</span>
+        ctx =
+          <span class="hljs-attribute">app</span>: app
+          <span class="hljs-attribute">settings</span>: app.settings
+          <span class="hljs-attribute">locals</span>: res.locals
+          <span class="hljs-attribute">request</span>: req
+          <span class="hljs-attribute">req</span>: req
+          <span class="hljs-attribute">query</span>: req.query
+          <span class="hljs-attribute">params</span>: req.params
+          <span class="hljs-attribute">body</span>: req.body
+          <span class="hljs-attribute">session</span>: req.session
+          <span class="hljs-attribute">response</span>: res
+          <span class="hljs-attribute">res</span>: res
+          <span class="hljs-attribute">next</span>: next
+          <span class="hljs-attribute">send</span>:<span class="hljs-function"> -&gt;</span> res.send.apply res, arguments
+          <span class="hljs-attribute">json</span>:<span class="hljs-function"> -&gt;</span> res.json.apply res, arguments
+          <span class="hljs-attribute">jsonp</span>:<span class="hljs-function"> -&gt;</span> res.jsonp.apply res, arguments
+          <span class="hljs-attribute">redirect</span>:<span class="hljs-function"> -&gt;</span> res.redirect.apply res, arguments
+          <span class="hljs-attribute">format</span>:<span class="hljs-function"> -&gt;</span> res.format.apply res, arguments
+          <span class="hljs-attribute">render</span>:<span class="hljs-function"> -&gt;</span>
+            <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> arguments[<span class="hljs-number">0</span>] <span class="hljs-keyword">isnt</span> <span class="hljs-string">'object'</span>
+              render.apply @, arguments
+            <span class="hljs-keyword">else</span>
+              <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">of</span> arguments[<span class="hljs-number">0</span>]
+                render.apply @, [k, v]
+            <span class="hljs-keyword">return</span>
+          <span class="hljs-attribute">emit</span>:<span class="hljs-function"> -&gt;</span>
+            socket = request_socket req
+            <span class="hljs-keyword">if</span> socket?
+              <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> arguments[<span class="hljs-number">0</span>] <span class="hljs-keyword">isnt</span> <span class="hljs-string">'object'</span>
+                socket.emit.apply socket, arguments
+              <span class="hljs-keyword">else</span>
+                <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">of</span> arguments[<span class="hljs-number">0</span>]
+                  socket.emit.apply socket, [k, v]
+            <span class="hljs-keyword">return</span>
+<span class="hljs-function">
+        <span class="hljs-title">render</span> = <span class="hljs-params">(name,opts = {},fn)</span> -&gt;</span>
 
-          res.render.call res, name, opts, postrender
-
-        apply_helpers ctx
-
-        <span class="keyword">if</span> app.settings[<span class="string">'databag'</span>]
-          ctx.data = {}
-          copy_data_to ctx.data, [req.query, req.params, req.body]
-
-        <span class="keyword">if</span> app.settings[<span class="string">'x-powered-by'</span>]
-          res.setHeader <span class="string">'X-Powered-By'</span>, <span class="string">"Zappa <span class="subst">#{zappa.version}</span>"</span>
-
-        result = r.handler.call ctx, req, res, next
-
-        res.contentType(r.contentType) <span class="keyword">if</span> r.contentType?
-        <span class="keyword">if</span> <span class="keyword">typeof</span> result <span class="keyword">is</span> <span class="string">'string'</span> <span class="keyword">then</span> res.send result
-        <span class="keyword">else</span> <span class="keyword">return</span> result</pre></div></div>
+          report = fn ? <span class="hljs-function"><span class="hljs-params">(err,html)</span> -&gt;</span>
+            <span class="hljs-keyword">if</span> err
+              next err
+            <span class="hljs-keyword">else</span>
+              res.send html</pre></div></div>
             
         </li>
         
@@ -890,71 +867,22 @@ by the caller; do not double-wrap it.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-25">&#182;</a>
               </div>
-              <p>Register socket.io handlers.</p>
+              <p>Make sure the second arg is an object.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  io?.sockets.<span class="literal">on</span> <span class="string">'connection'</span>, (socket) -&gt;
-    c = {}
+            <div class="content"><div class='highlight'><pre>          <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> opts <span class="hljs-keyword">is</span> <span class="hljs-string">'function'</span>
+            fn = opts
+            opts = {}
 
-    <span class="function"><span class="title">build_ctx</span></span> = -&gt;
-      ctx =
-        app: app
-        io: io
-        settings: app.settings
-        locals: app.locals
-        socket: socket
-        id: socket.id
-        client: c
-        join: (room) -&gt;
-          socket.join room
-        leave: (room) -&gt;
-          socket.leave room
-        emit: -&gt;
-          <span class="keyword">if</span> <span class="keyword">typeof</span> arguments[<span class="number">0</span>] <span class="keyword">isnt</span> <span class="string">'object'</span>
-            socket.emit.apply socket, arguments
-          <span class="keyword">else</span>
-            <span class="keyword">for</span> k, v <span class="keyword">of</span> arguments[<span class="number">0</span>]
-              socket.emit.apply socket, [k, v]
-          <span class="keyword">return</span>
-        broadcast: -&gt;
-          broadcast = socket.broadcast
-          <span class="keyword">if</span> <span class="keyword">typeof</span> arguments[<span class="number">0</span>] <span class="keyword">isnt</span> <span class="string">'object'</span>
-            broadcast.emit.apply broadcast, arguments
-          <span class="keyword">else</span>
-            <span class="keyword">for</span> k, v <span class="keyword">of</span> arguments[<span class="number">0</span>]
-              broadcast.emit.apply broadcast, [k, v]
-          <span class="keyword">return</span>
-        broadcast_to: (room, args...) -&gt;
-          room = io.sockets.<span class="keyword">in</span> room
-          <span class="keyword">if</span> <span class="keyword">typeof</span> args[<span class="number">0</span>] <span class="keyword">isnt</span> <span class="string">'object'</span>
-            room.emit.apply room, args
-          <span class="keyword">else</span>
-            <span class="keyword">for</span> k, v <span class="keyword">of</span> args[<span class="number">0</span>]
-              room.emit.apply room, [k, v]
-          <span class="keyword">return</span>
-        session: -&gt; socket_session socket, arguments...
+          <span class="hljs-keyword">if</span> app.settings[<span class="hljs-string">'databag'</span>]
+            opts.params = ctx.data
 
-      apply_helpers ctx
-      ctx
-
-    ctx = build_ctx()
-    ws_handlers.connection.apply(ctx) <span class="keyword">if</span> ws_handlers.connection?
-
-    socket.<span class="literal">on</span> <span class="string">'disconnect'</span>, -&gt;
-      ctx = build_ctx()
-      ws_handlers.disconnect.apply(ctx) <span class="keyword">if</span> ws_handlers.disconnect?
-
-    <span class="keyword">for</span> name, h <span class="keyword">of</span> ws_handlers
-      <span class="keyword">do</span> (name, h) -&gt;
-        <span class="keyword">if</span> name <span class="keyword">isnt</span> <span class="string">'connection'</span> <span class="keyword">and</span> name <span class="keyword">isnt</span> <span class="string">'disconnect'</span>
-          socket.<span class="literal">on</span> name, (data, ack) -&gt;
-            ctx = build_ctx()
-            ctx.data = data
-            ctx.ack = ack
-            h.call ctx, data, ack
-        <span class="keyword">return</span>
-    <span class="keyword">return</span></pre></div></div>
+          <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> opts.postrender?
+            postrender = report
+          <span class="hljs-keyword">else</span>
+<span class="hljs-function">            <span class="hljs-title">postrender</span> = <span class="hljs-params">(err, str)</span> -&gt;</span>
+              <span class="hljs-keyword">if</span> err <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> report err</pre></div></div>
             
         </li>
         
@@ -965,11 +893,36 @@ by the caller; do not double-wrap it.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-26">&#182;</a>
               </div>
-              <p>Go!</p>
+              <p>Apply postrender before sending response.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  func.apply context</pre></div></div>
+            <div class="content"><div class='highlight'><pre>              jsdom.env <span class="hljs-attribute">html</span>: str, <span class="hljs-attribute">src</span>: [jquery], <span class="hljs-attribute">done</span>: <span class="hljs-function"><span class="hljs-params">(err, <span class="hljs-built_in">window</span>)</span> -&gt;</span>
+                <span class="hljs-keyword">if</span> err <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> report err
+                ctx.<span class="hljs-built_in">window</span> = <span class="hljs-built_in">window</span>
+                rendered = postrenders[opts.postrender].apply ctx, [<span class="hljs-built_in">window</span>.$]
+
+                doctype = (<span class="hljs-built_in">window</span>.<span class="hljs-built_in">document</span>.doctype <span class="hljs-keyword">or</span> <span class="hljs-string">''</span>) + <span class="hljs-string">"\n"</span>
+                html = doctype + <span class="hljs-built_in">window</span>.<span class="hljs-built_in">document</span>.documentElement.outerHTML
+                report <span class="hljs-literal">null</span>, html
+              <span class="hljs-keyword">return</span>
+
+          res.render.call res, name, opts, postrender
+
+        apply_helpers ctx
+
+        <span class="hljs-keyword">if</span> app.settings[<span class="hljs-string">'databag'</span>]
+          ctx.data = {}
+          copy_data_to ctx.data, [req.query, req.params, req.body]
+
+        <span class="hljs-keyword">if</span> app.settings[<span class="hljs-string">'x-powered-by'</span>]
+          res.setHeader <span class="hljs-string">'X-Powered-By'</span>, <span class="hljs-string">"Zappa <span class="hljs-subst">#{zappa.version}</span>"</span>
+
+        result = r.handler.call ctx, req, res, next
+
+        res.contentType(r.contentType) <span class="hljs-keyword">if</span> r.contentType?
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> result <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span> <span class="hljs-keyword">then</span> res.send result
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span> result</pre></div></div>
             
         </li>
         
@@ -980,60 +933,71 @@ by the caller; do not double-wrap it.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-27">&#182;</a>
               </div>
-              <p>The stringified zappa client.</p>
+              <p>Register socket.io handlers.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  client = require(<span class="string">'./client'</span>).build(zappa.version, app.settings)
-  client = <span class="string">";<span class="subst">#{coffeescript_helpers}</span>(<span class="subst">#{client}</span>)();"</span>
-  client_bundle_simple =
-    <span class="keyword">if</span> io?
-      jquery + socketjs + client
-    <span class="keyword">else</span>
-      jquery + client
-  client_bundled =
-    <span class="keyword">if</span> io?
-      jquery + socketjs + sammy + client
-    <span class="keyword">else</span>
-      jquery + sammy + client
+            <div class="content"><div class='highlight'><pre>  io?.sockets.<span class="hljs-literal">on</span> <span class="hljs-string">'connection'</span>, <span class="hljs-function"><span class="hljs-params">(socket)</span> -&gt;</span>
+    c = {}
+<span class="hljs-function">
+    <span class="hljs-title">build_ctx</span> = -&gt;</span>
+      ctx =
+        <span class="hljs-attribute">app</span>: app
+        <span class="hljs-attribute">io</span>: io
+        <span class="hljs-attribute">settings</span>: app.settings
+        <span class="hljs-attribute">locals</span>: app.locals
+        <span class="hljs-attribute">socket</span>: socket
+        <span class="hljs-attribute">id</span>: socket.id
+        <span class="hljs-attribute">client</span>: c
+        <span class="hljs-attribute">join</span>: <span class="hljs-function"><span class="hljs-params">(room)</span> -&gt;</span>
+          socket.join room
+        <span class="hljs-attribute">leave</span>: <span class="hljs-function"><span class="hljs-params">(room)</span> -&gt;</span>
+          socket.leave room
+        <span class="hljs-attribute">emit</span>:<span class="hljs-function"> -&gt;</span>
+          <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> arguments[<span class="hljs-number">0</span>] <span class="hljs-keyword">isnt</span> <span class="hljs-string">'object'</span>
+            socket.emit.apply socket, arguments
+          <span class="hljs-keyword">else</span>
+            <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">of</span> arguments[<span class="hljs-number">0</span>]
+              socket.emit.apply socket, [k, v]
+          <span class="hljs-keyword">return</span>
+        <span class="hljs-attribute">broadcast</span>:<span class="hljs-function"> -&gt;</span>
+          broadcast = socket.broadcast
+          <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> arguments[<span class="hljs-number">0</span>] <span class="hljs-keyword">isnt</span> <span class="hljs-string">'object'</span>
+            broadcast.emit.apply broadcast, arguments
+          <span class="hljs-keyword">else</span>
+            <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">of</span> arguments[<span class="hljs-number">0</span>]
+              broadcast.emit.apply broadcast, [k, v]
+          <span class="hljs-keyword">return</span>
+        <span class="hljs-attribute">broadcast_to</span>: <span class="hljs-function"><span class="hljs-params">(room, args...)</span> -&gt;</span>
+          room = io.sockets.<span class="hljs-keyword">in</span> room
+          <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> args[<span class="hljs-number">0</span>] <span class="hljs-keyword">isnt</span> <span class="hljs-string">'object'</span>
+            room.emit.apply room, args
+          <span class="hljs-keyword">else</span>
+            <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">of</span> args[<span class="hljs-number">0</span>]
+              room.emit.apply room, [k, v]
+          <span class="hljs-keyword">return</span>
+        <span class="hljs-attribute">session</span>:<span class="hljs-function"> -&gt;</span> socket_session socket, arguments...
 
-  <span class="keyword">if</span> app.settings[<span class="string">'minify'</span>]
-    client = minify client
-    client_bundle_simple = minify client_bundle_simple
-    client_bundled = minify client_bundled
+      apply_helpers ctx
+      ctx
 
-  <span class="keyword">if</span> app.settings[<span class="string">'default layout'</span>]
-    context.view layout: -&gt;
-      <span class="function"><span class="title">extension</span></span> = (path,ext) -&gt;
-        <span class="keyword">if</span> path.substr(-(ext.length)).toLowerCase() <span class="keyword">is</span> ext.toLowerCase()
-          path
-        <span class="keyword">else</span>
-          path + ext
-      doctype <span class="number">5</span>
-      html -&gt;
-        head -&gt;
-          title <span class="property">@title</span> <span class="keyword">if</span> <span class="property">@title</span>
-          <span class="keyword">if</span> <span class="property">@scripts</span>
-            <span class="keyword">for</span> s <span class="keyword">in</span> <span class="property">@scripts</span>
-              script src: extension s, <span class="string">'.js'</span>
-          script(src: extension <span class="property">@script</span>, <span class="string">'.js'</span>) <span class="keyword">if</span> <span class="property">@script</span>
-          <span class="keyword">if</span> <span class="property">@stylesheets</span>
-            <span class="keyword">for</span> s <span class="keyword">in</span> <span class="property">@stylesheets</span>
-              link rel: <span class="string">'stylesheet'</span>, href: extension s, <span class="string">'.css'</span>
-          link(rel: <span class="string">'stylesheet'</span>, href: extension <span class="property">@stylesheet</span>, <span class="string">'.css'</span>) <span class="keyword">if</span> <span class="property">@stylesheet</span>
-          style <span class="property">@style</span> <span class="keyword">if</span> <span class="property">@style</span>
-        body <span class="property">@body</span>
+    ctx = build_ctx()
+    ws_handlers.connection.apply(ctx) <span class="hljs-keyword">if</span> ws_handlers.connection?
 
-  <span class="keyword">if</span> io?
-    zappa_prefix = app.settings[<span class="string">'zappa_prefix'</span>]
-    context.get zappa_prefix+<span class="string">'/socket/:channel_name/:socket_id'</span>, -&gt;
-      <span class="keyword">if</span> <span class="property">@session</span>?
-        channel_name = <span class="property">@params</span>.channel_name
-        socket_id = <span class="property">@params</span>.socket_id
+    socket.<span class="hljs-literal">on</span> <span class="hljs-string">'disconnect'</span>,<span class="hljs-function"> -&gt;</span>
+      ctx = build_ctx()
+      ws_handlers.disconnect.apply(ctx) <span class="hljs-keyword">if</span> ws_handlers.disconnect?
 
-        <span class="property">@session</span>.__socket ?= {}
-
-        <span class="keyword">if</span> <span class="property">@session</span>.__socket[channel_name]?</pre></div></div>
+    <span class="hljs-keyword">for</span> name, h <span class="hljs-keyword">of</span> ws_handlers
+      <span class="hljs-keyword">do</span> <span class="hljs-function"><span class="hljs-params">(name, h)</span> -&gt;</span>
+        <span class="hljs-keyword">if</span> name <span class="hljs-keyword">isnt</span> <span class="hljs-string">'connection'</span> <span class="hljs-keyword">and</span> name <span class="hljs-keyword">isnt</span> <span class="hljs-string">'disconnect'</span>
+          socket.<span class="hljs-literal">on</span> name, <span class="hljs-function"><span class="hljs-params">(data, ack)</span> -&gt;</span>
+            ctx = build_ctx()
+            ctx.data = data
+            ctx.ack = ack
+            h.call ctx, data, ack
+        <span class="hljs-keyword">return</span>
+    <span class="hljs-keyword">return</span></pre></div></div>
             
         </li>
         
@@ -1044,13 +1008,11 @@ by the caller; do not double-wrap it.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-28">&#182;</a>
               </div>
-              <p>Client (or hijacker) trying to re-key.</p>
+              <p>Go!</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>          <span class="property">@send</span> error:<span class="string">'Channel already assigned'</span>, channel_name: channel_name
-        <span class="keyword">else</span>
-          key = uuid.v4() <span class="comment"># used for socket 'authorization'</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  func.apply context</pre></div></div>
             
         </li>
         
@@ -1061,13 +1023,60 @@ by the caller; do not double-wrap it.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-29">&#182;</a>
               </div>
-              <p>Update the Express session store</p>
+              <p>The stringified zappa client.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>          <span class="property">@session</span>.__socket[channel_name] =
-            id: socket_id
-            key: key</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  client = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./client'</span>).build(zappa.version, app.settings)
+  client = <span class="hljs-string">";<span class="hljs-subst">#{coffeescript_helpers}</span>(<span class="hljs-subst">#{client}</span>)();"</span>
+  client_bundle_simple =
+    <span class="hljs-keyword">if</span> io?
+      jquery + socketjs + client
+    <span class="hljs-keyword">else</span>
+      jquery + client
+  client_bundled =
+    <span class="hljs-keyword">if</span> io?
+      jquery + socketjs + sammy + client
+    <span class="hljs-keyword">else</span>
+      jquery + sammy + client
+
+  <span class="hljs-keyword">if</span> app.settings[<span class="hljs-string">'minify'</span>]
+    client = minify client
+    client_bundle_simple = minify client_bundle_simple
+    client_bundled = minify client_bundled
+
+  <span class="hljs-keyword">if</span> app.settings[<span class="hljs-string">'default layout'</span>]
+    context.view <span class="hljs-attribute">layout</span>:<span class="hljs-function"> -&gt;</span>
+<span class="hljs-function">      <span class="hljs-title">extension</span> = <span class="hljs-params">(path,ext)</span> -&gt;</span>
+        <span class="hljs-keyword">if</span> path.substr(-(ext.length)).toLowerCase() <span class="hljs-keyword">is</span> ext.toLowerCase()
+          path
+        <span class="hljs-keyword">else</span>
+          path + ext
+      doctype <span class="hljs-number">5</span>
+      html <span class="hljs-function">-&gt;</span>
+        head <span class="hljs-function">-&gt;</span>
+          title <span class="hljs-property">@title</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@title</span>
+          <span class="hljs-keyword">if</span> <span class="hljs-property">@scripts</span>
+            <span class="hljs-keyword">for</span> s <span class="hljs-keyword">in</span> <span class="hljs-property">@scripts</span>
+              script <span class="hljs-attribute">src</span>: extension s, <span class="hljs-string">'.js'</span>
+          script(<span class="hljs-attribute">src</span>: extension <span class="hljs-property">@script</span>, <span class="hljs-string">'.js'</span>) <span class="hljs-keyword">if</span> <span class="hljs-property">@script</span>
+          <span class="hljs-keyword">if</span> <span class="hljs-property">@stylesheets</span>
+            <span class="hljs-keyword">for</span> s <span class="hljs-keyword">in</span> <span class="hljs-property">@stylesheets</span>
+              link <span class="hljs-attribute">rel</span>: <span class="hljs-string">'stylesheet'</span>, <span class="hljs-attribute">href</span>: extension s, <span class="hljs-string">'.css'</span>
+          link(<span class="hljs-attribute">rel</span>: <span class="hljs-string">'stylesheet'</span>, <span class="hljs-attribute">href</span>: extension <span class="hljs-property">@stylesheet</span>, <span class="hljs-string">'.css'</span>) <span class="hljs-keyword">if</span> <span class="hljs-property">@stylesheet</span>
+          style <span class="hljs-property">@style</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@style</span>
+        body <span class="hljs-property">@body</span>
+
+  <span class="hljs-keyword">if</span> io?
+    zappa_prefix = app.settings[<span class="hljs-string">'zappa_prefix'</span>]
+    context.get zappa_prefix+<span class="hljs-string">'/socket/:channel_name/:socket_id'</span>,<span class="hljs-function"> -&gt;</span>
+      <span class="hljs-keyword">if</span> <span class="hljs-property">@session</span>?
+        channel_name = <span class="hljs-property">@params</span>.channel_name
+        socket_id = <span class="hljs-property">@params</span>.socket_id
+
+        <span class="hljs-property">@session</span>.__socket ?= {}
+
+        <span class="hljs-keyword">if</span> <span class="hljs-property">@session</span>.__socket[channel_name]?</pre></div></div>
             
         </li>
         
@@ -1078,15 +1087,13 @@ by the caller; do not double-wrap it.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-30">&#182;</a>
               </div>
-              <p>Update the Socket.IO store</p>
+              <p>Client (or hijacker) trying to re-key.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>          io_client = io.sockets.store.client(socket_id)
-          io_data = JSON.stringify
-            id: <span class="property">@req</span>.sessionID
-            key: key
-          io_client.set socketio_key, io_data</pre></div></div>
+            <div class="content"><div class='highlight'><pre>          <span class="hljs-property">@send</span> <span class="hljs-attribute">error</span>:<span class="hljs-string">'Channel already assigned'</span>, <span class="hljs-attribute">channel_name</span>: channel_name
+        <span class="hljs-keyword">else</span>
+          key = uuid.v4() <span class="hljs-comment"># used for socket 'authorization'</span></pre></div></div>
             
         </li>
         
@@ -1097,16 +1104,13 @@ by the caller; do not double-wrap it.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-31">&#182;</a>
               </div>
-              <p>Let the client know which key to use.</p>
+              <p>Update the Express session store</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>          <span class="property">@send</span> channel_name: channel_name, key: key
-      <span class="keyword">else</span>
-        <span class="property">@send</span> error:<span class="string">'No session'</span>
-      <span class="keyword">return</span>
-
-  context</pre></div></div>
+            <div class="content"><div class='highlight'><pre>          <span class="hljs-property">@session</span>.__socket[channel_name] =
+            <span class="hljs-attribute">id</span>: socket_id
+            <span class="hljs-attribute">key</span>: key</pre></div></div>
             
         </li>
         
@@ -1117,49 +1121,15 @@ by the caller; do not double-wrap it.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-32">&#182;</a>
               </div>
-              <p>zappa.run [host,] [port,] [{options},] root_function
-Takes a function and runs it as a zappa app. Optionally accepts a port
-number, and/or a hostname (any order). The hostname must be a string, and
-the port number must be castable as a number.</p>
+              <p>Update the Socket.IO store</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>zappa.<span class="function"><span class="title">run</span></span> = -&gt;
-  host = <span class="literal">null</span>
-  port = <span class="number">3000</span>
-  root_function = <span class="literal">null</span>
-  options =
-    disable_io: <span class="literal">false</span>
-
-  <span class="keyword">for</span> a <span class="keyword">in</span> arguments
-    <span class="keyword">switch</span> <span class="keyword">typeof</span> a
-      <span class="keyword">when</span> <span class="string">'string'</span>
-        <span class="keyword">if</span> isNaN( (Number) a ) <span class="keyword">then</span> host = a
-        <span class="keyword">else</span> port = (Number) a
-      <span class="keyword">when</span> <span class="string">'number'</span> <span class="keyword">then</span> port = a
-      <span class="keyword">when</span> <span class="string">'function'</span> <span class="keyword">then</span> root_function = a
-      <span class="keyword">when</span> <span class="string">'object'</span>
-        <span class="keyword">for</span> k, v <span class="keyword">of</span> a
-          <span class="keyword">switch</span> k
-            <span class="keyword">when</span> <span class="string">'host'</span> <span class="keyword">then</span> host = v
-            <span class="keyword">when</span> <span class="string">'port'</span> <span class="keyword">then</span> port = v
-            <span class="keyword">when</span> <span class="string">'disable_io'</span> <span class="keyword">then</span> options.disable_io = v
-            <span class="keyword">when</span> <span class="string">'https'</span> <span class="keyword">then</span> options.https = v
-
-  zapp = zappa.app(root_function,options)
-  app = zapp.app
-
-  <span class="function"><span class="title">express_ready</span></span> = -&gt;
-    log <span class="string">'Express server listening on port %d in %s mode'</span>,
-      zapp.server.address()?.port, app.settings.env
-    log <span class="string">"Zappa <span class="subst">#{zappa.version}</span> \"<span class="subst">#{codename}</span>\" orchestrating the show"</span>
-
-  <span class="keyword">if</span> host
-    zapp.server.listen port, host, express_ready
-  <span class="keyword">else</span>
-    zapp.server.listen port, express_ready
-
-  zapp</pre></div></div>
+            <div class="content"><div class='highlight'><pre>          io_client = io.sockets.store.client(socket_id)
+          io_data = JSON.stringify
+            <span class="hljs-attribute">id</span>: <span class="hljs-property">@req</span>.sessionID
+            <span class="hljs-attribute">key</span>: key
+          io_client.set socketio_key, io_data</pre></div></div>
             
         </li>
         
@@ -1170,29 +1140,16 @@ the port number must be castable as a number.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-33">&#182;</a>
               </div>
-              <p>Creates a zappa view adapter for templating engine <code>engine</code>. This adapter
-can be used with <code>context.engine</code> or <code>context.use partials:</code>
-and creates params &quot;shortcuts&quot;.</p>
-<p>Zappa, by default, automatically sends all request params to templates,
-but inside the <code>params</code> local.</p>
-<p>This adapter adds a &quot;root local&quot; for each of these params, <em>only</em>
-if a local with the same name doesn&#39;t exist already, <em>and</em> the name is not
-in the optional blacklist.</p>
-<p>The blacklist is useful to prevent request params from triggering unset
-template engine options.</p>
-<p>If <code>engine</code> is a string, the adapter will use <code>require(engine)</code>. Otherwise,
-it will assume the <code>engine</code> param is an object with a <code>compile</code> function.</p>
-<p>Return an Express 2.x as well as an Express 3.x compatible object.
-The Express 2.x object supports both <code>compile</code> and <code>render</code>.</p>
+              <p>Let the client know which key to use.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>zappa.<span class="function"><span class="title">adapter</span></span> = (engine, options = {}) -&gt;
-  options.blacklist ?= []
-  engine = require(engine) <span class="keyword">if</span> <span class="keyword">typeof</span> engine <span class="keyword">is</span> <span class="string">'string'</span>
-  <span class="function"><span class="title">compile</span></span> = (template, data) -&gt;
-    template = engine.compile(template, data)
-    (data) -&gt;</pre></div></div>
+            <div class="content"><div class='highlight'><pre>          <span class="hljs-property">@send</span> <span class="hljs-attribute">channel_name</span>: channel_name, <span class="hljs-attribute">key</span>: key
+      <span class="hljs-keyword">else</span>
+        <span class="hljs-property">@send</span> <span class="hljs-attribute">error</span>:<span class="hljs-string">'No session'</span>
+      <span class="hljs-keyword">return</span>
+
+  context</pre></div></div>
             
         </li>
         
@@ -1203,18 +1160,49 @@ The Express 2.x object supports both <code>compile</code> and <code>render</code
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-34">&#182;</a>
               </div>
-              <p>Merge down <code>@params</code> into <code>@</code>
-Bonus: if <code>databag</code> is enabled, <code>@params</code> will be the complete databag.</p>
+              <p>zappa.run [host,] [port,] [{options},] root_function
+Takes a function and runs it as a zappa app. Optionally accepts a port
+number, and/or a hostname (any order). The hostname must be a string, and
+the port number must be castable as a number.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="keyword">for</span> k, v <span class="keyword">of</span> data.params
-        <span class="keyword">if</span> <span class="keyword">typeof</span> data[k] <span class="keyword">is</span> <span class="string">'undefined'</span> <span class="keyword">and</span> k <span class="keyword">not</span> <span class="keyword">in</span> options.blacklist
-          data[k] = v
-      template(data)
-  <span class="function"><span class="title">render</span></span> = (template,data) -&gt;
-    template = compile template, data
-    template data</pre></div></div>
+            <div class="content"><div class='highlight'><pre>
+zappa.r<span class="hljs-function"><span class="hljs-title">un</span> = -&gt;</span>
+  host = <span class="hljs-literal">null</span>
+  port = <span class="hljs-number">3000</span>
+  root_function = <span class="hljs-literal">null</span>
+  options =
+    <span class="hljs-attribute">disable_io</span>: <span class="hljs-literal">false</span>
+
+  <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> arguments
+    <span class="hljs-keyword">switch</span> <span class="hljs-keyword">typeof</span> a
+      <span class="hljs-keyword">when</span> <span class="hljs-string">'string'</span>
+        <span class="hljs-keyword">if</span> isNaN( (Number) a ) <span class="hljs-keyword">then</span> host = a
+        <span class="hljs-keyword">else</span> port = (Number) a
+      <span class="hljs-keyword">when</span> <span class="hljs-string">'number'</span> <span class="hljs-keyword">then</span> port = a
+      <span class="hljs-keyword">when</span> <span class="hljs-string">'function'</span> <span class="hljs-keyword">then</span> root_function = a
+      <span class="hljs-keyword">when</span> <span class="hljs-string">'object'</span>
+        <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">of</span> a
+          <span class="hljs-keyword">switch</span> k
+            <span class="hljs-keyword">when</span> <span class="hljs-string">'host'</span> <span class="hljs-keyword">then</span> host = v
+            <span class="hljs-keyword">when</span> <span class="hljs-string">'port'</span> <span class="hljs-keyword">then</span> port = v
+            <span class="hljs-keyword">else</span> options[k] = v
+
+  zapp = zappa.app(root_function,options)
+  app = zapp.app
+<span class="hljs-function">
+  <span class="hljs-title">express_ready</span> = -&gt;</span>
+    log <span class="hljs-string">'Express server listening on port %d in %s mode'</span>,
+      zapp.server.address()?.port, app.settings.env
+    log <span class="hljs-string">"Zappa <span class="hljs-subst">#{zappa.version}</span> \"<span class="hljs-subst">#{codename}</span>\" orchestrating the show"</span>
+
+  <span class="hljs-keyword">if</span> host
+    zapp.server.listen port, host, express_ready
+  <span class="hljs-keyword">else</span>
+    zapp.server.listen port, express_ready
+
+  zapp</pre></div></div>
             
         </li>
         
@@ -1225,17 +1213,29 @@ Bonus: if <code>databag</code> is enabled, <code>@params</code> will be the comp
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-35">&#182;</a>
               </div>
-              <p>Express 3.x object:</p>
+              <p>Creates a zappa view adapter for templating engine <code>engine</code>. This adapter
+can be used with <code>context.engine</code> or <code>context.use partials:</code>
+and creates params “shortcuts”.</p>
+<p>Zappa, by default, automatically sends all request params to templates,
+but inside the <code>params</code> local.</p>
+<p>This adapter adds a “root local” for each of these params, <em>only</em>
+if a local with the same name doesn’t exist already, <em>and</em> the name is not
+in the optional blacklist.</p>
+<p>The blacklist is useful to prevent request params from triggering unset
+template engine options.</p>
+<p>If <code>engine</code> is a string, the adapter will use <code>require(engine)</code>. Otherwise,
+it will assume the <code>engine</code> param is an object with a <code>compile</code> function.</p>
+<p>Return an Express 2.x as well as an Express 3.x compatible object.
+The Express 2.x object supports both <code>compile</code> and <code>render</code>.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="function"><span class="title">renderFile</span></span> = (name,data,fn) -&gt;
-    <span class="keyword">try</span>
-      template = fs.readFileSync(name,<span class="string">'utf8'</span>)
-      template = compile template, data
-    <span class="keyword">catch</span> err
-      <span class="keyword">return</span> fn err
-    fn <span class="literal">null</span>, template data</pre></div></div>
+            <div class="content"><div class='highlight'><pre>zappa.a<span class="hljs-function"><span class="hljs-title">dapter</span> = <span class="hljs-params">(engine, options = {})</span> -&gt;</span>
+  options.blacklist ?= []
+  engine = <span class="hljs-built_in">require</span>(engine) <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> engine <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span>
+<span class="hljs-function">  <span class="hljs-title">compile</span> = <span class="hljs-params">(template, data)</span> -&gt;</span>
+    template = engine.compile(template, data)
+<span class="hljs-function">    <span class="hljs-params">(data)</span> -&gt;</span></pre></div></div>
             
         </li>
         
@@ -1246,6 +1246,49 @@ Bonus: if <code>databag</code> is enabled, <code>@params</code> will be the comp
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-36">&#182;</a>
               </div>
+              <p>Merge down <code>@params</code> into <code>@</code>
+Bonus: if <code>databag</code> is enabled, <code>@params</code> will be the complete databag.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">of</span> data.params
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> data[k] <span class="hljs-keyword">is</span> <span class="hljs-string">'undefined'</span> <span class="hljs-keyword">and</span> k <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> options.blacklist
+          data[k] = v
+      template(data)
+<span class="hljs-function">  <span class="hljs-title">render</span> = <span class="hljs-params">(template,data)</span> -&gt;</span>
+    template = compile template, data
+    template data</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-37">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-37">&#182;</a>
+              </div>
+              <p>Express 3.x object:</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function">  <span class="hljs-title">renderFile</span> = <span class="hljs-params">(name,data,fn)</span> -&gt;</span>
+    <span class="hljs-keyword">try</span>
+      template = fs.readFileSync(name,<span class="hljs-string">'utf8'</span>)
+      template = compile template, data
+    <span class="hljs-keyword">catch</span> err
+      <span class="hljs-keyword">return</span> fn err
+    fn <span class="hljs-literal">null</span>, template data</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-38">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-38">&#182;</a>
+              </div>
               <p>Express 2.x extensions:</p>
 
             </div>
@@ -1254,14 +1297,16 @@ Bonus: if <code>databag</code> is enabled, <code>@params</code> will be the comp
   renderFile.render = render
   renderFile
 
-coffeecup_adapter = zappa.adapter <span class="string">'coffeecup'</span>,
-  blacklist: [<span class="string">'format'</span>, <span class="string">'autoescape'</span>, <span class="string">'locals'</span>, <span class="string">'hardcode'</span>, <span class="string">'cache'</span>]
+zappa.install_fs = install_zappa_fs
 
-module.exports = zappa.run
-module.exports.run = zappa.run
-module.exports.app = zappa.app
-module.exports.adapter = zappa.adapter
-module.exports.version = zappa.version</pre></div></div>
+coffeecup_adapter = zappa.adapter <span class="hljs-string">'coffeecup'</span>,
+  <span class="hljs-attribute">blacklist</span>: [<span class="hljs-string">'format'</span>, <span class="hljs-string">'autoescape'</span>, <span class="hljs-string">'locals'</span>, <span class="hljs-string">'hardcode'</span>, <span class="hljs-string">'cache'</span>]
+
+<span class="hljs-built_in">module</span>.exports = zappa.run
+<span class="hljs-built_in">module</span>.exports.run = zappa.run
+<span class="hljs-built_in">module</span>.exports.app = zappa.app
+<span class="hljs-built_in">module</span>.exports.adapter = zappa.adapter
+<span class="hljs-built_in">module</span>.exports.version = zappa.version</pre></div></div>
             
         </li>
         
