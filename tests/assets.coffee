@@ -13,13 +13,13 @@ port = 15200
     c = t.client(zapp.server)
     c.get '/index.js', (err, res) ->
       t.equal 1, res.body, ';zappa.run(function () {\n            return this.get({\n              \'#/\': function() {\n                return alert(\'hi\');\n              }\n            });\n          });'
-      t.equal 2, res.headers['content-type'], 'application/javascript'
+      t.equal 2, res.headers['content-type'], 'application/javascript; charset=utf-8'
     c.get '/zappa/zappa.js', (err, res) ->
-      t.equal 3, res.headers['content-type'], 'application/javascript'
+      t.equal 3, res.headers['content-type'], 'application/javascript; charset=utf-8'
     c.get '/zappa/jquery.js', (err, res) ->
-      t.equal 4, res.headers['content-type'], 'application/javascript'
+      t.equal 4, res.headers['content-type'], 'application/javascript; charset=utf-8'
     c.get '/zappa/sammy.js', (err, res) ->
-      t.equal 5, res.headers['content-type'], 'application/javascript'
+      t.equal 5, res.headers['content-type'], 'application/javascript; charset=utf-8'
 
   coffee: (t) ->
     t.expect 1, 2
@@ -32,7 +32,7 @@ port = 15200
     c = t.client(zapp.server)
     c.get '/coffee.js', (err, res) ->
       t.equal 1, res.body, ';var __slice = Array.prototype.slice;var __hasProp = Object.prototype.hasOwnProperty;var __bind = function(fn, me){  return function(){ return fn.apply(me, arguments); };};var __extends = function(child, parent) {  for (var key in parent) {    if (__hasProp.call(parent, key)) child[key] = parent[key];  }  function ctor() { this.constructor = child; }  ctor.prototype = parent.prototype;  child.prototype = new ctor;  child.__super__ = parent.prototype;  return child;};var __indexOf = Array.prototype.indexOf || function(item) {  for (var i = 0, l = this.length; i < l; i++) {    if (this[i] === item) return i;  } return -1; };(function () {\n            return alert(\'hi\');\n          })();'
-      t.equal 2, res.headers['content-type'], 'application/javascript'
+      t.equal 2, res.headers['content-type'], 'application/javascript; charset=utf-8'
 
   js: (t) ->
     t.expect 1, 2
@@ -46,7 +46,7 @@ port = 15200
     c = t.client(zapp.server)
     c.get '/js.js', (err, res) ->
       t.equal 1, res.body, "alert('hi');"
-      t.equal 2, res.headers['content-type'], 'application/javascript'
+      t.equal 2, res.headers['content-type'], 'application/javascript; charset=utf-8'
 
   css: (t) ->
     t.expect 1, 2
@@ -60,7 +60,7 @@ port = 15200
     c = t.client(zapp.server)
     c.get '/index.css', (err, res) ->
       t.equal 1, res.body, 'body { font-family: sans-serif; }'
-      t.equal 2, res.headers['content-type'], 'text/css'
+      t.equal 2, res.headers['content-type'], 'text/css; charset=utf-8'
 
   coffee_css: (t) ->
     t.expect 1, 2
@@ -91,7 +91,7 @@ port = 15200
             border-radius: 5px;
         }
       '''
-      t.equal 2, res.headers['content-type'], 'text/css'
+      t.equal 2, res.headers['content-type'], 'text/css; charset=utf-8'
 
   stylus: (t) ->
     t.expect 'header', 'body'
@@ -114,7 +114,7 @@ port = 15200
 
     c = t.client(zapp.server)
     c.get '/index.css', (err, res) ->
-      t.equal 'header', res.headers['content-type'], 'text/css'
+      t.equal 'header', res.headers['content-type'], 'text/css; charset=utf-8'
       t.equal 'body', res.body, '''
         body {
           font: 12px Helvetica, Arial, sans-serif;
@@ -151,7 +151,7 @@ port = 15200
 
     c = t.client(zapp.server)
     c.get '/index.css', (err, res) ->
-      t.equal 'header', res.headers['content-type'], 'text/css'
+      t.equal 'header', res.headers['content-type'], 'text/css; charset=utf-8'
       t.equal 'body', res.body, '''
         body {
           font: 12px Helvetica, Arial, sans-serif;
@@ -173,7 +173,7 @@ port = 15200
 
     c = t.client(zapp.server)
     c.get '/zappa/jquery.js', (err, res) ->
-      t.equal 'content-type', res.headers['content-type'], 'application/javascript'
+      t.equal 'content-type', res.headers['content-type'], 'application/javascript; charset=utf-8'
       t.equal 'length', res.headers['content-length'], '96459'
       t.equal 'body-length', res.body.length, 96459
 
@@ -186,7 +186,7 @@ port = 15200
 
     c = t.client(zapp.server)
     c.get '/zappa/sammy.js', (err, res) ->
-      t.equal 'content-type', res.headers['content-type'], 'application/javascript'
+      t.equal 'content-type', res.headers['content-type'], 'application/javascript; charset=utf-8'
       t.equal 'length', res.headers['content-length'], '18941'
       t.equal 'body-length', res.body.length, 18941
 
@@ -210,7 +210,7 @@ port = 15200
 
     c = t.client(zapp.server)
     c.get '/zappa/zappa.js', (err, res) ->
-      t.equal 'content-type', res.headers['content-type'], 'application/javascript'
+      t.equal 'content-type', res.headers['content-type'], 'application/javascript; charset=utf-8'
       t.ok 'snippet', res.body.indexOf('window.zappa = {};') > -1
 
   Zappa: (t) ->
@@ -222,7 +222,7 @@ port = 15200
 
     c = t.client(zapp.server)
     c.get '/zappa/Zappa.js', (err, res) ->
-      t.equal 'content-type', res.headers['content-type'], 'application/javascript'
+      t.equal 'content-type', res.headers['content-type'], 'application/javascript; charset=utf-8'
       t.ok 'snippet', res.body.indexOf('window.zappa = {};') > -1
 
   'zappa (automatic)': (t) ->
@@ -234,7 +234,7 @@ port = 15200
 
     c = t.client(zapp.server)
     c.get '/zappa/zappa.js', (err, res) ->
-      t.equal 'content-type', res.headers['content-type'], 'application/javascript'
+      t.equal 'content-type', res.headers['content-type'], 'application/javascript; charset=utf-8'
       t.ok 'snippet', res.body.indexOf('window.zappa = {};') > -1
 
   minify: (t) ->
@@ -272,13 +272,13 @@ port = 15200
     c = t.client(zapp.server)
     c.get '/myapp/index.js', (err, res) ->
       t.equal 1, res.body, ';zappa.run(function () {\n            return this.get({\n              \'#/\': function() {\n                return alert(\'hi\');\n              }\n            });\n          });'
-      t.equal 2, res.headers['content-type'], 'application/javascript'
+      t.equal 2, res.headers['content-type'], 'application/javascript; charset=utf-8'
     c.get '/myapp/zappa/zappa.js', (err, res) ->
-      t.equal 3, res.headers['content-type'], 'application/javascript'
+      t.equal 3, res.headers['content-type'], 'application/javascript; charset=utf-8'
     c.get '/myapp/zappa/jquery.js', (err, res) ->
-      t.equal 4, res.headers['content-type'], 'application/javascript'
+      t.equal 4, res.headers['content-type'], 'application/javascript; charset=utf-8'
     c.get '/myapp/zappa/sammy.js', (err, res) ->
-      t.equal 5, res.headers['content-type'], 'application/javascript'
+      t.equal 5, res.headers['content-type'], 'application/javascript; charset=utf-8'
 
   'socket.io_path': (t) ->
     t.expect 'content-type', 'length'

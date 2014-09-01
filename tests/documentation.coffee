@@ -39,6 +39,7 @@ port = 16000
     zapp = zappa port++, ->
 
       @get '/foo': 'bar', '/ping': 'pong', '/zig': 'zag'
+      # FIXME bodyParser and methodOverride are outdated.
       @use 'bodyParser', 'methodOverride', @app.router, 'static'
       @set 'view engine': 'jade', views: "#{__dirname}/custom/dir"
 

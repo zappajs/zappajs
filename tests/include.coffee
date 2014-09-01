@@ -12,10 +12,10 @@ port = 15400
     c = t.client(zapp.server)
     c.get '/index.js', (err, res) ->
       t.equal 1, res.body, ';zappa.run(function () {\n        return this.get({\n          \'#/\': function() {\n            return alert(\'hi\');\n          }\n        });\n      });'
-      t.equal 2, res.headers['content-type'], 'application/javascript'
+      t.equal 2, res.headers['content-type'], 'application/javascript; charset=utf-8'
     c.get '/zappa/zappa.js', (err, res) ->
-      t.equal 3, res.headers['content-type'], 'application/javascript'
+      t.equal 3, res.headers['content-type'], 'application/javascript; charset=utf-8'
     c.get '/zappa/jquery.js', (err, res) ->
-      t.equal 4, res.headers['content-type'], 'application/javascript'
+      t.equal 4, res.headers['content-type'], 'application/javascript; charset=utf-8'
     c.get '/zappa/sammy.js', (err, res) ->
-      t.equal 5, res.headers['content-type'], 'application/javascript'
+      t.equal 5, res.headers['content-type'], 'application/javascript; charset=utf-8'

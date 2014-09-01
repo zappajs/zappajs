@@ -262,8 +262,8 @@ port = 15500
     c.get '/bonjour?hello=hi', (err, res) ->
       t.equal '1', res.body, 'bonjour'
     c.get '/bonjour', (err, res) ->
-      t.equal '2', res.body, 'Where is your manners?'
+      t.equal '2', res.body, 'Where is your manners?\n'
     c.get '/hola?hello=hi', (err, res) ->
       t.equal '3', res.body, 'hola!'
     c.get '/hola?hello=boo', (err, res) ->
-      t.equal '4', res.body, 'Where is your manners?'
+      t.equal '4', res.body, 'Where is your manners?\n'
