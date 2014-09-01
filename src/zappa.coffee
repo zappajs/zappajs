@@ -84,40 +84,41 @@ zappa_fs = {}
 native_name = (p) ->
   p.replace /\/\.zappa-[^\/]+/, ''
 
-# Patch Node.js's `fs`.
-native_readFileSync = fs.readFileSync
-native_readFile = fs.readFile
+install_zappa_fs = ->
+  return if install_zappa_fs.done
+  install_zappa_fs.done = true
 
-native_array = (args...) ->
-  args[0] = native_name args[0]
-  args
+  # Patch Node.js's `fs`.
+  native_readFileSync = fs.readFileSync
+  native_readFile = fs.readFile
 
-fs.readFileSync = (p,encoding) ->
-  zappa_fs[p] ? native_readFileSync.apply fs, native_array arguments...
+  native_array = (args...) ->
+    args[0] = native_name args[0]
+    args
 
-fs.readFile = (p,encoding,callback) ->
-  view = zappa_fs[p]
-  if view
-    if typeof encoding is 'function' and not callback?
-      callback = encoding
-    callback null, view
-  else
-    native_readFile.apply fs, native_array arguments...
+  fs.readFileSync = (p,encoding) ->
+    zappa_fs[p] ? native_readFileSync.apply fs, native_array arguments...
 
-native_existsSync = fs.existsSync ? path.existsSync
-native_exists = fs.exists ? path.exists
+  fs.readFile = (p,encoding,callback) ->
+    view = zappa_fs[p]
+    if view
+      if typeof encoding is 'function' and not callback?
+        callback = encoding
+      callback null, view
+    else
+      native_readFile.apply fs, native_array arguments...
 
-path.existsSync = fs.existsSync = (p) ->
-  zappa_fs[p]? or native_existsSync.apply fs, native_array arguments...
+  native_existsSync = fs.existsSync ? path.existsSync
+  native_exists = fs.exists ? path.exists
 
-path.exists = fs.exists = (p,callback) ->
-  if zappa_fs[p]?
-    callback true
-  else
-    native_exists.apply fs, native_array arguments...
+  path.existsSync = fs.existsSync = (p) ->
+    zappa_fs[p]? or native_existsSync.apply fs, native_array arguments...
 
-# Express must first be called after we modify the `fs` module.
-express = require 'express'
+  path.exists = fs.exists = (p,callback) ->
+    if zappa_fs[p]?
+      callback true
+    else
+      native_exists.apply fs, native_array arguments...
 
 # Takes in a function and builds express/socket.io apps based on the rules
 # contained in it.
@@ -130,6 +131,12 @@ zappa.app = ->
         options = a
 
   options ?= {}
+
+  # All ZappaJS instances MUST share the same Express module.
+  install_zappa_fs()
+  # Express must first be called after we modify the `fs` module.
+  # If using a different version of Express, make sure to call zappa.install_fs() first.
+  express = options.express ? require 'express'
 
   context = {id: uuid.v4(), zappa, express}
 
@@ -787,6 +794,8 @@ zappa.adapter = (engine, options = {}) ->
   renderFile.compile = compile
   renderFile.render = render
   renderFile
+
+zappa.install_fs = install_zappa_fs
 
 coffeecup_adapter = zappa.adapter 'coffeecup',
   blacklist: ['format', 'autoescape', 'locals', 'hardcode', 'cache']
