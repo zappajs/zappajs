@@ -8,3 +8,4 @@ tests/*.js
 _site
 vendor
 examples/public/bin
+/.project

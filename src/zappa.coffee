@@ -152,7 +152,8 @@ zappa.app = ->
   if options.disable_io
     io = null
   else
-    io = context.io = socketio.listen context.server, options.io ? {}
+    options.socketio ?= socketio
+    io = context.io = options.socketio.listen context.server, options.io ? {}
 
   # Reference to the zappa client, the value will be set later.
   client = null
@@ -726,6 +727,7 @@ zappa.run = ->
             when 'port' then port = v
             when 'disable_io' then options.disable_io = v
             when 'https' then options.https = v
+            when 'socketio' then options.socketio = v
 
   zapp = zappa.app(root_function,options)
   app = zapp.app

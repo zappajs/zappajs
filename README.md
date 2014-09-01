@@ -5,14 +5,18 @@ Zappa is a [CoffeeScript](http://coffeescript.org)-optimized interface to [Expre
 ## Synopsis
 
 ```coffee
-require('zappajs') ->
+socketio = require 'socket.io'
+
+port = process.env.PORT || 3000
+
+require('zappajs') {port: port, socketio: socketio}, ->
 
   # Server-side
 
   @get '/': ->
     @render 'index',
       title: 'Zappa!'
-      scripts: '/zappa/Zappa-simple.js /index.js /client.js'
+      scripts: '/zappa/jquery.js /socket.io/socket.io.js /zappa/sammy.js /zappa/zappa.js /index.js /client.js'
       stylesheet: '/index.css'
 
   @view index: ->
