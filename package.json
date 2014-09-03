@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "express": "~4.4.0",
-    "coffeecup": "~0.3.21",
     "coffee-css": "0.0.5",
     "node-uuid": "~1.4.1",
     "uglify-js": "~2.4.15",
@@ -21,7 +20,8 @@
     "method-override": "^2.0.0",
     "express-session": "^1.2.1",
     "serve-static": "^1.2.0",
-    "serve-index": "^1.1.0"
+    "serve-index": "^1.1.0",
+    "teacup": "^0.4.2"
   },
   "devDependencies": {
     "coffee-script": "~1.8.0",
@@ -34,10 +34,6 @@
     "jade": "1.5.0",
     "stylus": "0.48.1",
     "less": "1.7.4",
-    "zappajs-partials": "0.0.7",
-    "connect-assets": "~4.3.0",
-    "redis": "~0.12.1",
-    "connect-redis": "~2.0.0"
   },
   "keywords": [
     "framework",
