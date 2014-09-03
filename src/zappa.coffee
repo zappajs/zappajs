@@ -169,7 +169,6 @@ zappa.app = ->
 
   # Zappa's default settings.
   app.set 'view engine', 'coffee'
-  app.engine 'coffee', coffeecup_adapter
 
   # Sets default view dir to @root
   app.set 'views', path.join(root, '/views')
@@ -735,58 +734,6 @@ zappa.run = ->
     zapp.server.listen port, express_ready
 
   zapp
-
-# Creates a zappa view adapter for templating engine `engine`. This adapter
-# can be used with `context.engine` or `context.use partials:`
-# and creates params "shortcuts".
-#
-# Zappa, by default, automatically sends all request params to templates,
-# but inside the `params` local.
-#
-# This adapter adds a "root local" for each of these params, *only*
-# if a local with the same name doesn't exist already, *and* the name is not
-# in the optional blacklist.
-#
-# The blacklist is useful to prevent request params from triggering unset
-# template engine options.
-#
-# If `engine` is a string, the adapter will use `require(engine)`. Otherwise,
-# it will assume the `engine` param is an object with a `compile` function.
-#
-# Return an Express 2.x as well as an Express 3.x compatible object.
-# The Express 2.x object supports both `compile` and `render`.
-zappa.adapter = (engine, options = {}) ->
-  options.blacklist ?= []
-  engine = require(engine) if typeof engine is 'string'
-  compile = (template, data) ->
-    template = engine.compile(template, data)
-    (data) ->
-      # Merge down `@params` into `@`
-      # Bonus: if `databag` is enabled, `@params` will be the complete databag.
-      for k, v of data.params
-        if typeof data[k] is 'undefined' and k not in options.blacklist
-          data[k] = v
-      template(data)
-  render = (template,data) ->
-    template = compile template, data
-    template data
-  # Express 3.x object:
-  renderFile = (name,data,fn) ->
-    try
-      template = fs.readFileSync(name,'utf8')
-      template = compile template, data
-    catch err
-      return fn err
-    fn null, template data
-  # Express 2.x extensions:
-  renderFile.compile = compile
-  renderFile.render = render
-  renderFile
-
-zappa.install_fs = install_zappa_fs
-
-coffeecup_adapter = zappa.adapter 'coffeecup',
-  blacklist: ['format', 'autoescape', 'locals', 'hardcode', 'cache']
 
 module.exports = zappa.run
 module.exports.run = zappa.run
