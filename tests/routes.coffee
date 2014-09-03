@@ -136,7 +136,7 @@ port = 15000
     c = t.client zapp.server
     c.get '/', (err, res) ->
         t.equal 1, res.headers['content-type'], 'application/json; charset=utf-8'
-        t.equal 2, res.body, '{\n  "attr1": "attr1",\n  "attr2": "attr2"\n}'
+        t.equal 2, res.body, '{"attr1":"attr1","attr2":"attr2"}'
 
   jsonp: (t) ->
     t.expect 2
@@ -149,7 +149,7 @@ port = 15000
     c = t.client zapp.server
     c.get '/?callback=foo', (err, res) ->
         t.equal 1, res.headers['content-type'], 'text/javascript; charset=utf-8'
-        t.equal 2, res.body, 'typeof foo === \'function\' && foo({\n  "attr1": "attr1",\n  "attr2": "attr2"\n});'
+        t.equal 2, res.body, 'typeof foo === \'function\' && foo({"attr1":"attr1","attr2":"attr2"});'
 
   'jsonp + custom callback': (t) ->
     t.expect 2
@@ -163,4 +163,4 @@ port = 15000
     c = t.client zapp.server
     c.get '/?cb=foo', (err, res) ->
         t.equal 1, res.headers['content-type'], 'text/javascript; charset=utf-8'
-        t.equal 2, res.body, 'typeof foo === \'function\' && foo({\n  "attr1": "attr1",\n  "attr2": "attr2"\n});'
+        t.equal 2, res.body, 'typeof foo === \'function\' && foo({"attr1":"attr1","attr2":"attr2"});'
