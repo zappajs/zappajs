@@ -70,14 +70,6 @@ minify = (js) ->
   result = uglify.minify js, fromString:true
   result.code
 
-# Shallow copy attributes from `sources` (array of objects) to `recipient`.
-# Does NOT overwrite attributes already present in `recipient`.
-copy_data_to = (recipient, sources) ->
-  for obj in sources
-    for k, v of obj
-      recipient[k] = v unless recipient[k]
-  return
-
 # Flatten array recursively (copied from Express's utils.js)
 flatten = (arr, ret) ->
   ret ?= []
@@ -327,10 +319,6 @@ zappa.app = ->
 
       apply_helpers ctx
 
-      if app.settings['databag']
-        ctx.data = {}
-        copy_data_to ctx.data, [req.query, req.params, req.body]
-
       f.call ctx, req, res, next
 
   context.middleware = (f) ->
@@ -566,10 +554,6 @@ zappa.app = ->
           res.render.call res, name, opts, postrender
 
         apply_helpers ctx
-
-        if app.settings['databag']
-          ctx.data = {}
-          copy_data_to ctx.data, [req.query, req.params, req.body]
 
         if app.settings['x-powered-by']
           res.setHeader 'X-Powered-By', "Zappa #{zappa.version}"
