@@ -12,6 +12,7 @@ port = 15600
       @get '/foobar': ->
         @render 'index', foo: 'foobar', layout: no
 
+      {h2} = @teacup
       @view index: -> h2 "CoffeeKup inline template: #{@foo}"
 
     c = t.client(zapp.server)
@@ -27,6 +28,8 @@ port = 15600
     zapp = zappa port++, ->
       @use 'partials'
       @enable 'default layout'
+
+      {h2} = @teacup
 
       @get '/': ->
         # @render 'index', foo: 'bar'
@@ -50,6 +53,8 @@ port = 15600
       @get '/': ->
         @render 'index', foo: 'bar'
 
+      {h2,doctype,html,head,title,body} = @teacup
+
       @view index: -> h2 "CoffeeKup inline template: #{@foo}"
 
       @view layout: ->
@@ -72,6 +77,8 @@ port = 15600
       @get '/': ->
         @render 'index', foo: 'bar', layout: 'layout'
 
+      {h2,doctype,html,head,title,body} = @teacup
+
       @view index: -> h2 "CoffeeCup inline template: #{@foo}"
 
       @view 'layout': ->
@@ -93,6 +100,8 @@ port = 15600
       @use 'partials'
       @get '/': ->
         @render 'index', foo: 'bar', layout: 'bart'
+
+      {h2,doctype,html,head,title,body} = @teacup
 
       @view index: -> h2 "CoffeeCup inline template: #{@foo}"
 

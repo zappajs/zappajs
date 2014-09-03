@@ -1,3 +1,4 @@
+{doctype,html,head,title,body} = require 'teacup'
 doctype 5
 html ->
   head ->

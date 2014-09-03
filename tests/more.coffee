@@ -28,6 +28,7 @@ port = 15900
             @json client
           'html': =>
             @render 'index', client
+      {div} = @teacup
       @view index: ->
         div id:@_id, -> @name
 
