@@ -93,11 +93,9 @@ zappa.app = ->
 
   context = {id: uuid.v4(), zappa, express}
 
-  real_root = path.dirname(module.parent.filename)
-  root =  path.join real_root, ".zappa-#{context.id}"
+  root = path.dirname module.parent.filename
 
   # Storage for user-provided stuff.
-  # Views are kept at the module level.
   ws_handlers = {}
   helpers = {}
   postrenders = {}
@@ -232,7 +230,6 @@ zappa.app = ->
       p = path.join app.get('views'), k
       if not ext
         p += '.' + app.get('view engine')
-      console.log "Creating view at #{p}"
       views[p] = v
     return
 
@@ -361,7 +358,7 @@ zappa.app = ->
     return
 
   context.include = (p) ->
-    sub = if typeof p is 'string' then require path.join(real_root, p) else p
+    sub = if typeof p is 'string' then require path.join(root, p) else p
     sub.include.apply context
 
   apply_helpers = (ctx) ->
@@ -695,5 +692,4 @@ zappa.run = ->
 module.exports = zappa.run
 module.exports.run = zappa.run
 module.exports.app = zappa.app
-module.exports.adapter = zappa.adapter
 module.exports.version = zappa.version
