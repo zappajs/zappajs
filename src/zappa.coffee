@@ -5,7 +5,6 @@
 
 zappa = version: '0.4.22'
 
-codename = 'You can\'t do that on stage anymore'
 
 log = console.log
 fs = require 'fs'
@@ -738,7 +737,7 @@ zappa.run = ->
   express_ready = ->
     log 'Express server listening on port %d in %s mode',
       zapp.server.address()?.port, app.settings.env
-    log "Zappa #{zappa.version} \"#{codename}\" orchestrating the show"
+    log "Zappa #{zappa.version} orchestrating the show"
 
   if host
     zapp.server.listen port, host, express_ready
