@@ -107,9 +107,12 @@ zappa.app = ->
     context.server = require('https').createServer options.https, app
   else
     context.server = require('http').createServer app
-  if options.disable_io
-    io = null
-  else
+
+  # Set options.io to false to disable socket.io.
+  # Set options.io to socket.io's parameters otherwise (optional).
+  # Set options.socketio if you need to use a different version of socket.io.
+  io = null
+  if options.io isnt false
     socketio = options.socketio ? require 'socket.io'
     io = context.io = socketio.listen context.server, options.io ? {}
 
@@ -658,8 +661,7 @@ zappa.run = ->
   host = null
   port = 3000
   root_function = null
-  options =
-    disable_io: false
+  options = {}
 
   for a in arguments
     switch typeof a
