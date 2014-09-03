@@ -24,9 +24,9 @@
     "serve-index": "^1.1.0"
   },
   "devDependencies": {
-    "coffee-script": "1.7.1",
-    "jsdom": "~0.10.6",
-    "underscore": "1.6.0",
+    "coffee-script": "~1.8.0",
+    "jsdom": "~0.11.1",
+    "underscore": "~1.7.0",
     "request": "~2.36.0",
     "consolidate": "~0.10.0",
     "socket.io-client": "1.0.6",
@@ -35,8 +35,8 @@
     "stylus": "0.48.1",
     "less": "1.7.4",
     "zappajs-partials": "0.0.7",
-    "connect-assets": "3.0.1",
-    "redis": "~0.10.3",
+    "connect-assets": "~4.3.0",
+    "redis": "~0.12.1",
     "connect-redis": "~2.0.0"
   },
   "keywords": [
