@@ -124,10 +124,59 @@ zappa.app = ->
 
   views = context.views = {}
 
+  # This is our own version of Express' original `lib/view.js`.
+  class ZappaView
+    constructor: (name,options = {}) ->
+      @root = options.root ? ''
+      engines = options.engines
+      defaultEngine = options.defaultEngine
+      @ext = path.extname name
+      if not @ext and not defaultEngine
+        throw new Error 'No default engine was specified and no extensions was provided.'
+      if not @ext
+        @ext = if defaultEngine[0] isnt '.' then ".#{defaultEngine}" else defaultEngine
+        name += @ext
+      [@path,@proto] = @lookup name
+      if @proto?
+        if @proto
+          @engine = engines["#{@ext} zappa"] ?= require(@ext.slice 1).render
+        else
+          @engine = engines[@ext] ?= require(@ext.slice 1).__express
+      @path
+
+    lookup: (p) ->
+      exists = (p) ->
+        if views[p]?
+          return [p,true]
+        if fs.existsSync p
+          return [p,false]
+        null
+
+      exists( path.resolve @root, p ) ? exists( path.join path.dirname(p), path.basename(p,@ext), "index.#{@ext}" ) ? [null,null]
+
+    render: (options,fn) ->
+      if @proto
+        e = null
+        try
+          # FIXME: pass parameters as per Express2
+          r = @engine views[@path], options
+        catch error
+          e = "Engine .render for #{@ext} failed: #{error}"
+        fn e, r
+      else
+        @engine @path, options, fn
+
   # Zappa's default settings.
+  app.set 'view', ZappaView
   app.set 'view engine', 'coffee'
 
-  # Sets default view dir to @root
+  teacup = require 'teacup'
+  teacup_express = require 'teacup/lib/express'
+
+  app.engine 'coffee', teacup_express.renderFile
+  app.engine 'coffee zappa', teacup.render
+  context.teacup = teacup
+
   app.set 'views', path.join(root, '/views')
 
   # Location of zappa-specific URIs.
@@ -599,20 +648,22 @@ zappa.app = ->
           path
         else
           path + ext
-      doctype 5
-      html ->
-        head ->
-          title @title if @title
-          if @scripts
-            for s in @scripts
-              script src: extension s, '.js'
-          script(src: extension @script, '.js') if @script
-          if @stylesheets
-            for s in @stylesheets
-              link rel: 'stylesheet', href: extension s, '.css'
-          link(rel: 'stylesheet', href: extension @stylesheet, '.css') if @stylesheet
-          style @style if @style
-        body @body
+      {doctype,html,head,title,script,link,style,body} = teacup
+      ->
+        doctype 5
+        html ->
+          head ->
+            title @title if @title
+            if @scripts
+              for s in @scripts
+                script src: extension s, '.js'
+            script(src: extension @script, '.js') if @script
+            if @stylesheets
+              for s in @stylesheets
+                link rel: 'stylesheet', href: extension s, '.css'
+            link(rel: 'stylesheet', href: extension @stylesheet, '.css') if @stylesheet
+            style @style if @style
+          body @body
 
   if io?
     zappa_prefix = app.settings['zappa_prefix']
