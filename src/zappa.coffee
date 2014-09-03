@@ -33,7 +33,6 @@ socketio_key = '__session'
 
 # Soft dependencies:
 jsdom = null
-express_partials = null
 coffee_css = null
 
 # CoffeeScript-generated JavaScript may contain anyone of these; when we
@@ -148,7 +147,6 @@ zappa.app = ->
   ws_handlers = {}
   helpers = {}
   postrenders = {}
-  partials = {}
 
   app = context.app = express()
   if options.https?
@@ -360,13 +358,6 @@ zappa.app = ->
               when zappa_prefix+'/sammy.js' then send sammy_minified
               else next()
           return
-      partials: (maps = {}) ->
-        express_partials ?= require 'zappajs-partials'
-        partials = express_partials()
-        partials.register 'coffee', coffeecup_adapter.render
-        for k,v of maps
-          partials.register k, v
-        partials
       session: (options) ->
         context.session_store = options.store
         session options
