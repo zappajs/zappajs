@@ -42,9 +42,10 @@ coffee_css = null
 # "rewrite" a function (see below) though, it loses access to its parent scope,
 # and consequently to any helpers it might need. So we need to reintroduce
 # these helpers manually inside any "rewritten" function.
+# This list is taken from coffeescript's `src/nodes.coffee` UTILITIES.
 coffeescript_helpers = """
-  var __slice = Array.prototype.slice;
-  var __hasProp = Object.prototype.hasOwnProperty;
+  var __slice = [].slice;
+  var __hasProp = {}.hasOwnProperty;
   var __bind = function(fn, me){
     return function(){ return fn.apply(me, arguments); };
   };
@@ -54,14 +55,15 @@ coffeescript_helpers = """
     }
     function ctor() { this.constructor = child; }
     ctor.prototype = parent.prototype;
-    child.prototype = new ctor;
+    child.prototype = new ctor();
     child.__super__ = parent.prototype;
     return child;
   };
-  var __indexOf = Array.prototype.indexOf || function(item) {
+  var __indexOf = [].indexOf || function(item) {
     for (var i = 0, l = this.length; i < l; i++) {
-      if (this[i] === item) return i;
+      if (i in this && this[i] === item) return i;
     } return -1; };
+  var __modulo = function(a, b) { return (+a % (b = +b) + b) % b; };
 """.replace /\n/g, ''
 
 minify = (js) ->
