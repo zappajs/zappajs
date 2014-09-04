@@ -497,9 +497,6 @@ zappa.app = ->
             fn = opts
             opts = {}
 
-          if app.settings['databag']
-            opts.params = ctx.data
-
           if not opts.postrender?
             postrender = report
           else
