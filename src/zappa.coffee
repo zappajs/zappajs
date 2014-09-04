@@ -347,7 +347,7 @@ zappa.app = ->
             res.send code
           if req.method.toUpperCase() isnt 'GET' then next()
           else
-            zappa_prefix = app.settings['zappa_prefix']
+            zappa_prefix = app.settings.zappa_prefix
             switch req.url
               when zappa_prefix+'/Zappa.js' then send client_bundled
               when zappa_prefix+'/Zappa-simple.js' then send client_bundle_simple
@@ -656,7 +656,7 @@ zappa.app = ->
           body @body
 
   if io?
-    zappa_prefix = app.settings['zappa_prefix']
+    zappa_prefix = app.settings.zappa_prefix
     context.get zappa_prefix+'/socket/:channel_name/:socket_id', ->
       if @session?
         channel_name = @params.channel_name
