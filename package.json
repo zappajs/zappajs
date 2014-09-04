@@ -33,7 +33,7 @@
     "eco": "1.1.0-rc-3",
     "jade": "1.5.0",
     "stylus": "0.48.1",
-    "less": "1.7.4",
+    "less": "1.7.4"
   },
   "keywords": [
     "framework",
