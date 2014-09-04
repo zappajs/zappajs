@@ -311,9 +311,12 @@ zappa.app = ->
         response: res
         res: res
         next: next
-
+        send: -> res.send.apply res, arguments
+        json: -> res.json.apply res, arguments
+        jsonp: -> res.jsonp.apply res, arguments
+        redirect: -> res.redirect.apply res, arguments
+        format: -> res.format.apply res, arguments
       apply_helpers ctx
-
       f.call ctx, req, res, next
 
   context.use = ->
