@@ -296,7 +296,7 @@ zappa.app = ->
     app.disable i for i in arguments
     return
 
-  wrap_middleware = (f) ->
+  context.wrap = (f) ->
     (req,res,next) ->
       ctx =
         app: app
@@ -315,20 +315,6 @@ zappa.app = ->
       apply_helpers ctx
 
       f.call ctx, req, res, next
-
-  context.middleware = (f) ->
-    # If magic middleware is enabled the function will get wrapped
-    # by the caller; do not double-wrap it.
-    if app.settings['magic middleware']
-      f
-    else
-      wrap_middleware f
-
-  use_middleware = (f) ->
-    if app.settings['magic middleware']
-      wrap_middleware f
-    else
-      f
 
   context.use = ->
     zappa_middleware =
@@ -364,13 +350,13 @@ zappa.app = ->
       if zappa_middleware[name]
         app.use zappa_middleware[name](arg)
       else if typeof express[name] is 'function'
-        app.use use_middleware express[name](arg)
+        app.use express[name](arg)
       else
         throw "Unknown middleware #{name}"
 
     for a in arguments
       switch typeof a
-        when 'function' then app.use use_middleware a
+        when 'function' then app.use a
         when 'string' then use a
         when 'object'
           if a.stack? or a.route? or a.handle?
@@ -455,9 +441,6 @@ zappa.app = ->
   # Register a route with express.
   route = (r) ->
     r.middleware ?= []
-
-    # Rewrite middleware
-    r.middleware = r.middleware.map wrap_middleware
 
     if typeof r.handler is 'string'
       app[r.verb] r.path, r.middleware, (req, res) ->
