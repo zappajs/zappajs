@@ -12,13 +12,8 @@ uuid = require 'node-uuid'
 uglify = require 'uglify-js'
 methods = require 'methods'
 
-bodyParser = require 'body-parser'
-responseTime = require 'response-time'
-cookieParser = require 'cookie-parser'
-methodOverride = require 'method-override'
 session = require 'express-session'
 serveStatic = require 'serve-static'
-serveIndex = require 'serve-index'
 
 vendor = (name) ->
   fs.readFileSync(path.join(__dirname,'..','vendor',name)).toString()
@@ -336,12 +331,11 @@ zappa.app = ->
 
   context.use = ->
     zappa_middleware =
-      # Connect `static` middlewate uses fs.stat().
       static: (options) ->
         if typeof options is 'string'
           options = path: options
         options ?= {}
-        p = options.path ? path.join(real_root, '/public')
+        p = options.path ? path.join(root, '/public')
         delete options.path
         serveStatic(p,options)
       zappa: ->
@@ -364,11 +358,6 @@ zappa.app = ->
       session: (options) ->
         context.session_store = options.store
         session options
-      bodyParser: bodyParser
-      responseTime: responseTime
-      cookieParser: cookieParser
-      methodOverride: methodOverride
-      directory: serveIndex
 
     use = (name, arg = null) ->
       if zappa_middleware[name]
