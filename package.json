@@ -14,13 +14,8 @@
     "node-uuid": "~1.4.1",
     "uglify-js": "~2.4.15",
     "methods": "~1.1.0",
-    "body-parser": "^1.3.0",
-    "response-time": "^2.0.0",
-    "cookie-parser": "^1.1.0",
-    "method-override": "^2.0.0",
     "express-session": "^1.2.1",
     "serve-static": "^1.2.0",
-    "serve-index": "^1.1.0",
     "teacup": "^0.4.2"
   },
   "devDependencies": {
