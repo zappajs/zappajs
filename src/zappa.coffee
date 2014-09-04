@@ -176,6 +176,7 @@ zappa.app = ->
 
   # Location of zappa-specific URIs.
   app.set 'zappa_prefix', '/zappa'
+  app.set 'zappa_channel', '__local'
 
   for verb in [methods...,'del','all']
     do (verb) ->
@@ -412,7 +413,7 @@ zappa.app = ->
 
   # Local socket
   request_socket = (req) ->
-    socket_id = req.session?.__socket?['__local']?.id
+    socket_id = req.session?.__socket?[app.settings.zappa_channel]?.id
     socket_id and io?.sockets.socket socket_id, true
 
   # The callback will receive (err,session).

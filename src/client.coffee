@@ -83,7 +83,7 @@ skeleton = ->
     # Implements the websockets client with socket.io.
     if context.socket?
       context.socket.on 'connect', ->
-        context.share '__local', context.socket, (data) ->
+        context.share settings.zappa_channel, context.socket, (data) ->
           context.key = data.key
 
     $(-> app.run '#/') if app?
