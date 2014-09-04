@@ -178,7 +178,7 @@ zappa.app = ->
   app.set 'zappa_prefix', '/zappa'
   app.set 'zappa_channel', '__local'
 
-  for verb in [methods...,'del','all']
+  for verb in [methods...,'all']
     do (verb) ->
       context[verb] = (args...) ->
         arity = args.length
