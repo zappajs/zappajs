@@ -649,7 +649,7 @@ zappa.app = ->
 
         if @session.__socket[channel_name]?
           # Client (or hijacker) trying to re-key.
-          @send error:'Channel already assigned', channel_name: channel_name
+          @json error:'Channel already assigned', channel_name: channel_name
         else
           key = uuid.v4() # used for socket 'authorization'
 
@@ -666,9 +666,9 @@ zappa.app = ->
           io_client.set socketio_key, io_data
 
           # Let the client know which key to use.
-          @send channel_name: channel_name, key: key
+          @json channel_name: channel_name, key: key
       else
-        @send error:'No session'
+        @json error:'No session'
       return
 
   context
