@@ -6,30 +6,9 @@
 
 require('./zappajs') 3000, ->
 
-  @use 'logger',
-    'cookieParser',
-    'partials',
+  @use morgan:'combined', 'cookie-parser'
 
-  express_store = do =>
-    ExpressRedisStore = require('connect-redis') @express
-    new ExpressRedisStore()
-
-  @use session:
-    store: express_store
-    secret: 'rock zappa rock'
-
-  socketio_store = do ->
-    SocketIORedisStore = require 'socket.io/lib/stores/redis'
-    redis = require 'redis'
-    pub = redis.createClient()
-    sub = redis.createClient()
-    client = redis.createClient()
-    new SocketIORedisStore
-      redisPub: pub
-      redisSub: sub
-      redisClient: client
-
-  @io.set 'store', socketio_store
+  @include './redis_setup'
 
   @get '/': ->
     @render 'default',
@@ -42,8 +21,14 @@ require('./zappajs') 3000, ->
   @get '/verify': ->
     @send foo:@session.foo
 
+  {doctype,html,head,script,body,div} = @teacup
   @view default: ->
-    div id:'log'
+    doctype 5
+    html =>
+      head =>
+        script src:"#{s}.js" for s in @scripts
+      body ->
+        div id:'log'
 
   @client '/index.js': ->
 

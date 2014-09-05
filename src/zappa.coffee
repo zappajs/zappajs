@@ -86,7 +86,7 @@ zappa.app = ->
 
   express = options.express ? require 'express'
 
-  context = {id: uuid.v4(), zappa, express}
+  context = {id: uuid.v4(), zappa, express, session}
 
   root = path.dirname module.parent.filename
 
