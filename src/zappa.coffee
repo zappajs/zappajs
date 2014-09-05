@@ -594,7 +594,7 @@ zappa.app = ->
     if io?
       jquery() + socketjs() + client
     else
-      jquery + client
+      jquery() + client
   client_bundled = -> client_bundled.content ?=
     if io?
       jquery() + socketjs() + sammy() + client
