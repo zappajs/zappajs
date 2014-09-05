@@ -354,7 +354,7 @@ zappa.app = ->
       else if typeof express[name] is 'function'
         app.use express[name](arg)
       else
-        throw "Unknown middleware #{name}"
+        app.use (require name)(arg)
 
     for a in arguments
       switch typeof a
