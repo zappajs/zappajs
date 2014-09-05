@@ -65,6 +65,10 @@ require('zappajs') ->
 
     npm install zappajs socket.io
 
+If you also intend to `@use 'zappa'` or reference ZappaJS's client Javascript (which is the case for most of the examples):
+
+    npm install socket.io-client jquery git+https://github.com/quirkey/sammy.git
+
 ## Other resources
 
 - The source code [repository](http://github.com/zappajs/zappajs) at github

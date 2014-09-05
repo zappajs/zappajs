@@ -15,20 +15,20 @@ methods = require 'methods'
 session = require 'express-session'
 serveStatic = require 'serve-static'
 
-vendor = (name) ->
-  fs.readFileSync(path.join(__dirname,'..','vendor',name)).toString()
-
-jquery = vendor 'jquery.js'
-jquery_minified = vendor 'jquery.min.js'
-sammy = vendor 'sammy.js'
-sammy_minified = vendor 'sammy.min.js'
-socketjs = vendor 'socket.io.js'
+vendor_module = (module,args...) ->
+  fs.readFileSync path.join (path.dirname require.resolve module), args...
 
 socketio_key = '__session'
 
 # Soft dependencies:
 jsdom = null
 coffee_css = null
+
+jquery = -> jquery.content ?= vendor_module 'jquery', 'jquery.js'
+jquery_minified = -> jquery_minified.content ?= vendor_module 'jquery', 'jquery.min.js'
+sammy = -> sammy.content ?= vendor_module 'sammy', 'sammy.js'
+sammy_minified = -> sammy_minified.content ?= vendor 'sammy.min.js'
+socketjs = -> socketjs.content ?= vendor_module 'socket.io-client', 'socket.io.js'
 
 # CoffeeScript-generated JavaScript may contain anyone of these; when we
 # "rewrite" a function (see below) though, it loses access to its parent scope,
@@ -110,8 +110,6 @@ zappa.app = ->
 
   # Reference to the zappa client, the value will be set later.
   client = null
-  client_bundled = null
-  client_bundle_simple = null
 
   # Tracks if the zappa middleware is already mounted (`@use 'zappa'`).
   zappa_used = no
@@ -337,11 +335,11 @@ zappa.app = ->
           else
             zappa_prefix = app.settings.zappa_prefix
             switch req.url
-              when zappa_prefix+'/Zappa.js' then send client_bundled
-              when zappa_prefix+'/Zappa-simple.js' then send client_bundle_simple
+              when zappa_prefix+'/Zappa.js' then send client_bundled()
+              when zappa_prefix+'/Zappa-simple.js' then send client_bundle_simple()
               when zappa_prefix+'/zappa.js' then send client
-              when zappa_prefix+'/jquery.js' then send jquery_minified
-              when zappa_prefix+'/sammy.js' then send sammy_minified
+              when zappa_prefix+'/jquery.js' then send jquery_minified()
+              when zappa_prefix+'/sammy.js' then send sammy_minified()
               else next()
           return
       session: (options) ->
@@ -592,21 +590,21 @@ zappa.app = ->
   # The stringified zappa client.
   client = require('./client').build(zappa.version, app.settings)
   client = ";#{coffeescript_helpers}(#{client})();"
-  client_bundle_simple =
+  client_bundle_simple = -> client_bundle_simple.content ?=
     if io?
-      jquery + socketjs + client
+      jquery() + socketjs() + client
     else
       jquery + client
-  client_bundled =
+  client_bundled = -> client_bundled.content ?=
     if io?
-      jquery + socketjs + sammy + client
+      jquery() + socketjs() + sammy() + client
     else
-      jquery + sammy + client
+      jquery() + sammy() + client
 
   if app.settings['minify']
     client = minify client
-    client_bundle_simple = minify client_bundle_simple
-    client_bundled = minify client_bundled
+    client_bundle_simple.content = minify client_bundle_simple()
+    client_bundled.content = minify client_bundled()
 
   if app.settings['default layout']
     context.view layout: ->

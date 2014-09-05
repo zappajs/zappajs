@@ -14,22 +14,8 @@ task 'bench', ->
 task 'docs', ->
   run 'docco src/*.coffee'
 
-task 'vendor', ->
-  uglify = require 'uglify-js'
-  fs = require 'fs'
-  run 'mkdir -p vendor && cd vendor && curl -o jquery.js -L http://code.jquery.com/jquery-1.11.1.js', ->
-    run 'cd vendor && curl -OL https://raw.github.com/quirkey/sammy/v0.7.4/lib/sammy.js', ->
-      run 'cd vendor && curl -L https://cdn.socket.io/socket.io-1.0.6.js > socket.io.js', ->
-        run 'head -n 2 vendor/jquery.js', ->
-          run 'head -n 2 vendor/sammy.js', ->
-            run 'head -n 1 vendor/socket.io.js', ->
-              fs.writeFile 'vendor/jquery.min.js', uglify.minify('vendor/jquery.js').code, ->
-                fs.writeFile 'vendor/sammy.min.js', uglify.minify('vendor/sammy.js').code, ->
-                  fs.writeFile 'vendor/socket.io.min.js', uglify.minify('vendor/socket.io.js').code, ->
-
-task 'setup', 'build + vendor', ->
+task 'setup', 'build', ->
   invoke 'build'
-  invoke 'vendor'
 
 task 'clean', ->
   run 'rm -r vendor node_modules lib/*.js benchmarks/out/*.dat benchmarks/out/*.out tests/*.js _site', ->
