@@ -367,11 +367,6 @@ zappa.app = ->
             use k, v for k, v of a
     return
 
-  context.configure = (p) ->
-    if typeof p is 'function' then app.configure p
-    else app.configure k, v for k, v of p
-    return
-
   context.settings = app.settings
   context.locals = app.locals
 
