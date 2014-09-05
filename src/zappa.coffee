@@ -606,30 +606,6 @@ zappa.app = ->
     client_bundle_simple.content = minify client_bundle_simple()
     client_bundled.content = minify client_bundled()
 
-  if app.settings['default layout']
-    context.view layout: ->
-      extension = (path,ext) ->
-        if path.substr(-(ext.length)).toLowerCase() is ext.toLowerCase()
-          path
-        else
-          path + ext
-      {doctype,html,head,title,script,link,style,body} = teacup
-      ->
-        doctype 5
-        html ->
-          head ->
-            title @title if @title
-            if @scripts
-              for s in @scripts
-                script src: extension s, '.js'
-            script(src: extension @script, '.js') if @script
-            if @stylesheets
-              for s in @stylesheets
-                link rel: 'stylesheet', href: extension s, '.css'
-            link(rel: 'stylesheet', href: extension @stylesheet, '.css') if @stylesheet
-            style @style if @style
-          body @body
-
   if io?
     zappa_prefix = app.settings.zappa_prefix
     context.get zappa_prefix+'/socket/:channel_name/:socket_id', ->

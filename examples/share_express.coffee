@@ -9,7 +9,6 @@ require('./zappajs') 3000, ->
   @use 'logger',
     'cookieParser',
     'partials',
-  @enable 'default layout'
 
   express_store = do =>
     ExpressRedisStore = require('connect-redis') @express

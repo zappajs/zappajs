@@ -53,7 +53,7 @@ require('./zappajs') 3000, ->
     minifyBuilds: false
 
   @get '/', ->
-    @render 'assets', layout:no
+    @render 'assets'
 
 # Second example
 # --------------

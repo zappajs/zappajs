@@ -1,5 +1,4 @@
 require('./zappajs') ->
-  @enable 'default layout'
 
   @locals.title = 'Post-rendering'
   @locals.style = '''
