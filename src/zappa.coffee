@@ -166,7 +166,7 @@ zappa.app = ->
   teacup_express = require 'teacup/lib/express'
 
   app.engine 'coffee', teacup_express.renderFile
-  app.engine 'coffee zappa', teacup.render
+  app.engine 'coffee zappa', (template,options) -> (teacup.renderable template).call options, options
   context.teacup = teacup
 
   app.set 'views', path.join(root, '/views')
