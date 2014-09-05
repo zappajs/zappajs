@@ -41,6 +41,7 @@ require('./zappajs') ->
         $('#box').val('').focus()
         e.preventDefault()
 
+  {doctype,html,head,title,script,body,div,form,input,button} = @teacup
   @view index: ->
     doctype 5
     html ->
