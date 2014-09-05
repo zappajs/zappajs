@@ -103,10 +103,9 @@ zappa.app = ->
 
   # Set options.io to false to disable socket.io.
   # Set options.io to socket.io's parameters otherwise (optional).
-  # Set options.socketio if you need to use a different version of socket.io.
   io = null
   if options.io isnt false
-    socketio = options.socketio ? require 'socket.io'
+    socketio = require 'socket.io'
     io = context.io = socketio.listen context.server, options.io ? {}
 
   # Reference to the zappa client, the value will be set later.

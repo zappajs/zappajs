@@ -60,7 +60,7 @@ require('zappajs') ->
 
 ## Install
 
-    npm install zappajs
+    npm install zappajs socket.io
 
 ## Learn More
 
