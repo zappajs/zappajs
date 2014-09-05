@@ -20,8 +20,8 @@ require('zappajs') ->
   {doctype,html,head,title,script,link,body,h1,div} = @teacup
   @view index: ->
     doctype 5
-    html ->
-      head ->
+    html =>
+      head =>
         title @title if @title
         for s in @scripts.split ' '
           script src: s
