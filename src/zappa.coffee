@@ -498,8 +498,8 @@ zappa.app = ->
             postrender = (err, str) ->
               if err then return report err
               # Apply postrender before sending response.
-              jsdom.env html: str, src: [jquery], done: (err, window) ->
-                if err then return report err
+              jsdom.env html: str, src: [jquery()], done: (errors, window) ->
+                if err then return report errors.join ' '
                 ctx.window = window
                 rendered = postrenders[opts.postrender].apply ctx, [window.$]
 
