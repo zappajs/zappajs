@@ -115,15 +115,24 @@ port = 15500
     zapp = zappa port++, ->
       auth = -> (user,pass) ->
         user is 'hello' and pass is 'world'
+
+      authenticator = @wrap ->
+        credentials = (require 'basic-auth') @req
+        if not credentials or not auth credentials.name, credentials.pass
+          @res.writeHead 401, 'WWW-Authenticate': 'Basic realm="example"'
+          @res.end()
+        else
+          @next()
+
       @get '/', -> 'welcome'
-      @get '/auth', @express.basicAuth(auth), -> 'authenticated'
+      @get '/auth', authenticator, -> 'authenticated'
 
     c = t.client(zapp.server)
     c.get '/', (err, res) ->
       t.equal 1, res.body, 'welcome'
 
     c.get '/auth', (err, res) ->
-      t.equal 2, res.body, 'Unauthorized'
+      t.equal 2, res.statusCode, 401
 
     a = new Buffer('hello:world').toString('base64')
     c.get '/auth', headers: {Authorization:'Basic '+a}, (err, res) ->
