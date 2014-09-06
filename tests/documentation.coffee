@@ -131,7 +131,6 @@ port = 16000
     t.wait 3000
 
     zapp = zappa port++, ->
-      @use 'partials'
       @app.engine 'eco', require('consolidate').eco
       @set 'view engine': 'eco'
 
@@ -139,29 +138,23 @@ port = 16000
       @get '/jade': -> @render 'index.jade': {foo: 'bar', title: 'Jade template'}
 
       @view index: '''
-        <h1><%= @title %></h1>
-        <p><%= @foo %></p>
-      '''
-
-      @view layout: '''
         <!DOCTYPE html>
         <html>
           <head><title><%= @title %></title></head>
-          <body><%- @body %></body>
+          <body>
+            <h1><%= @title %></h1>
+            <p><%= @foo %></p>
+          </body>
         </html>
       '''
-
       @view 'index.jade': '''
-        h1= title
-        p= foo
-      '''
-
-      @view 'layout.jade': '''
         doctype html
         html
           head
             title= title
-          body!= body
+          body
+            h1= title
+            p= foo
       '''
 
     c = t.client(zapp.server)
@@ -170,7 +163,9 @@ port = 16000
         <!DOCTYPE html>
         <html>
           <head><title>Eco template</title></head>
-          <body><h1>Eco template</h1>
-        <p>bar</p></body>
+          <body>
+            <h1>Eco template</h1>
+            <p>bar</p>
+          </body>
         </html>
       '''
