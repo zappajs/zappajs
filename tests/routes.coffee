@@ -53,7 +53,7 @@ port = 15000
     t.wait 3000
 
     zapp = zappa port++, ->
-      @use 'bodyParser'
+      @use (require 'body-parser').urlencoded extended:false
       @get '/:foo': -> @params.foo + @query.ping
       @post '/:foo': -> @params.foo + @query.ping + @body.zig
 

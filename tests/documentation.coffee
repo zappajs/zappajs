@@ -39,7 +39,7 @@ port = 16000
     zapp = zappa port++, ->
 
       @get '/foo': 'bar', '/ping': 'pong', '/zig': 'zag'
-      @use 'bodyParser', 'methodOverride', 'static'
+      @use (require 'body-parser').urlencoded(extended:false), 'method-override', 'static'
       @set 'view engine': 'jade', views: "#{__dirname}/custom/dir"
 
     c = t.client(zapp.server)

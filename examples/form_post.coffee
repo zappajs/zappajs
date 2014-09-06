@@ -2,7 +2,7 @@
 # a form and retrieve data from its submission.
 
 require('./zappajs') ->
-  @use (require 'body-parser').urlencoded()
+  @use (require 'body-parser').urlencoded extended:false
 
   @locals.title = 'My App'
 
