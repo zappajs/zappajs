@@ -77,6 +77,9 @@ port = 15500
     c.get '/', (err, res) ->
       t.ok 'response time', res.headers['x-response-time'].match /\d+ms/
 
+  ###
+  # This test is broken in Express 4
+  #
   precedence: (t) ->
     t.expect 'static'
     t.wait 3000
@@ -88,6 +91,21 @@ port = 15500
     c = t.client(zapp.server)
     c.get '/foo.txt', (err, res) ->
       t.equal 'static', res.body, 'intercepted!'
+  #
+  ###
+
+  precedence_2: (t) ->
+    t.expect 'static'
+    t.wait 3000
+
+    zapp = zappa port++, ->
+      @get '/foo.txt': 'intercepted!'
+      @use 'static'
+
+    c = t.client(zapp.server)
+    c.get '/foo.txt', (err, res) ->
+      t.equal 'static', res.body, 'intercepted!'
+
 
 
   compatible: (t) ->
