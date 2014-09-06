@@ -52,13 +52,13 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="function"><span class="title">skeleton</span></span> = -&gt;
-  zappa = window.zappa = {}
-  zappa.version = <span class="literal">null</span>
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-title">skeleton</span> = -&gt;</span>
+  zappa = <span class="hljs-built_in">window</span>.zappa = {}
+  zappa.version = <span class="hljs-literal">null</span>
 
-  settings = <span class="literal">null</span>
+  settings = <span class="hljs-literal">null</span>
 
-  zappa.<span class="function"><span class="title">run</span></span> = (func) -&gt;
+  zappa.r<span class="hljs-function"><span class="hljs-title">un</span> = <span class="hljs-params">(func)</span> -&gt;</span>
     context = {}</pre></div></div>
             
         </li>
@@ -75,69 +75,71 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>    helpers = {}
-
-    <span class="function"><span class="title">apply_helpers</span></span> = (ctx) -&gt;
-      <span class="keyword">for</span> name, helper <span class="keyword">of</span> helpers
-        <span class="keyword">do</span> (name, helper) -&gt;
-          <span class="keyword">if</span> <span class="keyword">typeof</span> helper <span class="keyword">is</span> <span class="string">'function'</span>
-            ctx[name] = -&gt;
+<span class="hljs-function">
+    <span class="hljs-title">apply_helpers</span> = <span class="hljs-params">(ctx)</span> -&gt;</span>
+      <span class="hljs-keyword">for</span> name, helper <span class="hljs-keyword">of</span> helpers
+        <span class="hljs-keyword">do</span> <span class="hljs-function"><span class="hljs-params">(name, helper)</span> -&gt;</span>
+          <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> helper <span class="hljs-keyword">is</span> <span class="hljs-string">'function'</span>
+            ctx[name] =<span class="hljs-function"> -&gt;</span>
               helper.apply ctx, arguments
-          <span class="keyword">else</span>
+          <span class="hljs-keyword">else</span>
             ctx[name] = helper
       ctx
 
-    app = context.app = Sammy() <span class="keyword">if</span> Sammy?
+    app = context.app = Sammy() <span class="hljs-keyword">if</span> Sammy?
 
-    context.<span class="function"><span class="title">get</span></span> = -&gt;
-      <span class="keyword">if</span> <span class="keyword">typeof</span> arguments[<span class="number">0</span>] <span class="keyword">isnt</span> <span class="string">'object'</span>
-        route path: arguments[<span class="number">0</span>], handler: arguments[<span class="number">1</span>]
-      <span class="keyword">else</span>
-        <span class="keyword">for</span> k, v <span class="keyword">of</span> arguments[<span class="number">0</span>]
-          route path: k, handler: v
+    context.g<span class="hljs-function"><span class="hljs-title">et</span> = -&gt;</span>
+      <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> arguments[<span class="hljs-number">0</span>] <span class="hljs-keyword">isnt</span> <span class="hljs-string">'object'</span>
+        route <span class="hljs-attribute">path</span>: arguments[<span class="hljs-number">0</span>], <span class="hljs-attribute">handler</span>: arguments[<span class="hljs-number">1</span>]
+      <span class="hljs-keyword">else</span>
+        <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">of</span> arguments[<span class="hljs-number">0</span>]
+          route <span class="hljs-attribute">path</span>: k, <span class="hljs-attribute">handler</span>: v
 
-    context.<span class="function"><span class="title">helper</span></span> = (obj) -&gt;
-      <span class="keyword">for</span> k, v <span class="keyword">of</span> obj
+    context.h<span class="hljs-function"><span class="hljs-title">elper</span> = <span class="hljs-params">(obj)</span> -&gt;</span>
+      <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">of</span> obj
         helpers[k] = v
 
-    context.<span class="function"><span class="title">on</span></span> = (obj) -&gt;
-      <span class="keyword">for</span> message, action <span class="keyword">of</span> obj
-        context.socket.<span class="literal">on</span> message, (data) -&gt;
+    context.o<span class="hljs-function"><span class="hljs-title">n</span> = <span class="hljs-params">(obj)</span> -&gt;</span>
+      <span class="hljs-keyword">for</span> message, action <span class="hljs-keyword">of</span> obj
+        context.socket.<span class="hljs-literal">on</span> message, <span class="hljs-function"><span class="hljs-params">(data)</span> -&gt;</span>
           ctx =
-            app: app
-            socket: context.socket
-            id: context.socket.id
-            data: data
-            emit: context.emit
-            share: context.share
+            <span class="hljs-attribute">app</span>: app
+            <span class="hljs-attribute">socket</span>: context.socket
+            <span class="hljs-attribute">id</span>: context.socket.id
+            <span class="hljs-attribute">data</span>: data
+            <span class="hljs-attribute">emit</span>: context.emit
+            <span class="hljs-attribute">share</span>: context.share
 
           apply_helpers ctx
 
           action.apply ctx
 
-    context.<span class="function"><span class="title">connect</span></span> = -&gt;
+    context.c<span class="hljs-function"><span class="hljs-title">onnect</span> = -&gt;</span>
       context.socket = io.connect.apply io, arguments
 
-    context.<span class="function"><span class="title">emit</span></span> = -&gt;
-      <span class="keyword">if</span> <span class="keyword">typeof</span> arguments[<span class="number">0</span>] <span class="keyword">isnt</span> <span class="string">'object'</span>
+    context.e<span class="hljs-function"><span class="hljs-title">mit</span> = -&gt;</span>
+      <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> arguments[<span class="hljs-number">0</span>] <span class="hljs-keyword">isnt</span> <span class="hljs-string">'object'</span>
         context.socket.emit.apply context.socket, arguments
-      <span class="keyword">else</span>
-        <span class="keyword">for</span> k, v <span class="keyword">of</span> arguments[<span class="number">0</span>]
+      <span class="hljs-keyword">else</span>
+        <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">of</span> arguments[<span class="hljs-number">0</span>]
           context.socket.emit.apply context.socket, [k, v]
 
-    context.<span class="function"><span class="title">share</span></span> = (channel,socket,cb) -&gt;
-      zappa_prefix = settings.zappa_prefix
-      $.getJSON zappa_prefix+<span class="string">"/socket/<span class="subst">#{channel}</span>/<span class="subst">#{socket.socket.sessionid}</span>"</span>, cb
-
-    <span class="function"><span class="title">route</span></span> = (r) -&gt;
+    context.s<span class="hljs-function"><span class="hljs-title">hare</span> = <span class="hljs-params">(channel,socket,cb)</span> -&gt;</span>
+      zappa_prefix = settings.zappa_prefix ? <span class="hljs-string">""</span>
+      sessionid = socket.io?.engine.id ? socket.socket?.sessionid
+      <span class="hljs-keyword">if</span> sessionid?
+        $.getJSON <span class="hljs-string">"<span class="hljs-subst">#{zappa_prefix}</span>/socket/<span class="hljs-subst">#{channel}</span>/<span class="hljs-subst">#{sessionid}</span>"</span>, cb
+<span class="hljs-function">
+    <span class="hljs-title">route</span> = <span class="hljs-params">(r)</span> -&gt;</span>
       ctx = {app}
 
       apply_helpers ctx
 
-      app.get r.path, (sammy_context) -&gt;
+      app.get r.path, <span class="hljs-function"><span class="hljs-params">(sammy_context)</span> -&gt;</span>
         ctx.params = sammy_context.params
         ctx.sammy_context = sammy_context
-        ctx.<span class="function"><span class="title">render</span></span> = -&gt; sammy_context.render.apply sammy_context, arguments
-        ctx.<span class="function"><span class="title">redirect</span></span> = -&gt; sammy_context.redirect.apply sammy_context, arguments
+        ctx.r<span class="hljs-function"><span class="hljs-title">ender</span> = -&gt;</span> sammy_context.render.apply sammy_context, arguments
+        ctx.r<span class="hljs-function"><span class="hljs-title">edirect</span> = -&gt;</span> sammy_context.redirect.apply sammy_context, arguments
         r.handler.apply ctx</pre></div></div>
             
         </li>
@@ -168,17 +170,17 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="keyword">if</span> context.socket?
-      context.socket.<span class="literal">on</span> <span class="string">'connect'</span>, -&gt;
-        context.share <span class="string">'__local'</span>, context.socket, (data) -&gt;
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> context.socket?
+      context.socket.<span class="hljs-literal">on</span> <span class="hljs-string">'connect'</span>,<span class="hljs-function"> -&gt;</span>
+        context.share settings.zappa_channel, context.socket, <span class="hljs-function"><span class="hljs-params">(data)</span> -&gt;</span>
           context.key = data.key
 
-    $(-&gt; app.run <span class="string">'#/'</span>) <span class="keyword">if</span> app?
+    $(<span class="hljs-function">-&gt;</span> app.run <span class="hljs-string">'#/'</span>) <span class="hljs-keyword">if</span> app?
 
-<span class="property">@build</span> = (version, settings) -&gt;
+<span class="hljs-property">@build</span> = <span class="hljs-function"><span class="hljs-params">(version, settings)</span> -&gt;</span>
   String(skeleton)
-    .replace(<span class="string">'version = null;'</span>, <span class="string">"version = '<span class="subst">#{version}</span>';"</span>)
-    .replace(<span class="string">'settings = null;'</span>, <span class="string">"settings = <span class="subst">#{JSON.stringify settings}</span>;"</span>)</pre></div></div>
+    .replace(<span class="hljs-string">'version = null;'</span>, <span class="hljs-string">"version = '<span class="hljs-subst">#{version}</span>';"</span>)
+    .replace(<span class="hljs-string">'settings = null;'</span>, <span class="hljs-string">"settings = <span class="hljs-subst">#{JSON.stringify settings}</span>;"</span>)</pre></div></div>
             
         </li>
         
