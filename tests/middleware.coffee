@@ -54,7 +54,7 @@ port = 15500
     t.wait 3000
 
     zapp = zappa port++, ->
-      @use static: __dirname + '/public', 'responseTime'
+      @use static: __dirname + '/public', 'response-time'
 
     c = t.client(zapp.server)
     c.get '/foo.txt', (err, res) ->
@@ -68,7 +68,7 @@ port = 15500
     t.wait 3000
 
     zapp = zappa port++, ->
-      @use 'static', 'responseTime'
+      @use 'static', 'response-time'
 
     c = t.client(zapp.server)
     c.get '/foo.txt', (err, res) ->
