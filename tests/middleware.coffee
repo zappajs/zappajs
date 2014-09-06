@@ -24,7 +24,7 @@ port = 15500
     zapp = zappa port++, ->
       foo = bar = baz = ->
         @next()
-      common = [foo, bar, baz]
+      common = [foo, bar, baz].map @wrap
 
       @get '/something', common..., -> 'ok'
       @get '/something2', common, -> 'ok'
@@ -168,58 +168,8 @@ port = 15500
       mw = ->
         @locals.foo = 'bar'
         @next()
-      @use @middleware mw
+      @use @wrap mw
       @get '/', ->
-          @send @locals.foo
-
-    c = t.client(zapp.server)
-    c.get '/', (err, res) ->
-      t.equal 1, res.body, 'bar'
-
-  'magic middleware': (t) ->
-    t.expect 1
-    t.wait 3000
-
-    zapp = zappa port++, ->
-      @enable 'magic middleware'
-      mw = ->
-        @locals.foo = 'bar'
-        @next()
-      @use mw
-      @get '/', ->
-          @send @locals.foo
-
-    c = t.client(zapp.server)
-    c.get '/', (err, res) ->
-      t.equal 1, res.body, 'bar'
-
-  'magic middleware, wrapped middleware': (t) ->
-    t.expect 1
-    t.wait 3000
-
-    zapp = zappa port++, ->
-      @enable 'magic middleware'
-      mw = ->
-        @locals.foo = 'bar'
-        @next()
-      @use @middleware mw
-      @get '/', ->
-          @send @locals.foo
-
-    c = t.client(zapp.server)
-    c.get '/', (err, res) ->
-      t.equal 1, res.body, 'bar'
-
-  'magic middleware, inline not wrapped': (t) ->
-    t.expect 1
-    t.wait 3000
-
-    zapp = zappa port++, ->
-      @enable 'magic middleware'
-      mw = ->
-        @locals.foo = 'bar'
-        @next()
-      @get '/', mw, ->
           @send @locals.foo
 
     c = t.client(zapp.server)
@@ -231,7 +181,7 @@ port = 15500
     t.wait 3000
 
     zapp = zappa port++, ->
-      mw = @middleware ->
+      mw = @wrap ->
         @locals.foo = 'bar'
         @next()
       @get '/', mw, ->
