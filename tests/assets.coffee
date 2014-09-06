@@ -177,7 +177,7 @@ CSS_TYPE = 'text/css; charset=utf-8'
     c = t.client(zapp.server)
     c.get '/zappa/jquery.js', (err, res) ->
       t.equal 'content-type', res.headers['content-type'], JS_TYPE
-      t.equal 'length', res.headers['content-length'], '96459'
+      t.equal 'length', res.headers['content-length'], '84280'
 
   sammy: (t) ->
     t.expect 'content-type', 'length'
@@ -189,7 +189,7 @@ CSS_TYPE = 'text/css; charset=utf-8'
     c = t.client(zapp.server)
     c.get '/zappa/sammy.js', (err, res) ->
       t.equal 'content-type', res.headers['content-type'], JS_TYPE
-      t.equal 'length', res.headers['content-length'], '18941'
+      t.equal 'length', res.headers['content-length'], '27206'
 
   'socket.io': (t) ->
     t.expect 'content-type', 'body-length'
@@ -200,7 +200,7 @@ CSS_TYPE = 'text/css; charset=utf-8'
     c = t.client(zapp.server)
     c.get '/socket.io/socket.io.js', (err, res) ->
       t.equal 'content-type', res.headers['content-type'], 'application/javascript'
-      t.equal 'body-length', res.body.length, 155212
+      t.equal 'body-length', res.body.length, 156378
 
   zappa: (t) ->
     t.expect 'content-type', 'snippet'
@@ -290,4 +290,4 @@ CSS_TYPE = 'text/css; charset=utf-8'
     c = t.client(zapp.server)
     c.get '/myapp/socket.io/socket.io.js', (err, res) ->
       t.equal 'content-type', res.headers['content-type'], 'application/javascript'
-      t.equal 'body-length', res.body.length, 155212
+      t.equal 'body-length', res.body.length, 156378
