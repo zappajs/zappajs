@@ -9,16 +9,16 @@
     "url": "git://github.com/zappajs/zappajs.git"
   },
   "dependencies": {
-    "express": "^4",
     "coffee-css": "0.0.5",
     "node-uuid": "~1.4.1",
     "uglify-js": "~2.4.15",
     "methods": "~1.1.0",
-    "express-session": "^1",
-    "serve-static": "^1",
-    "teacup": "^0.4.2"
+    "teacup": "~0.4.2"
   },
   "devDependencies": {
+    "express": "~4.8.8",
+    "express-session": "~1.7.6",
+    "serve-static": "~1.5.4",
     "jquery": "^2.1.1",
     "sammy": "git+https://github.com/quirkey/sammy.git",
     "coffee-script": "~1.8.0",

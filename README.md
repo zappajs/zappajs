@@ -63,7 +63,7 @@ require('zappajs') ->
 
 ## Install
 
-    npm install zappajs socket.io
+    npm install zappajs express express-session serve-static socket.io
 
 If you also intend to `@use 'zappa'` or reference ZappaJS's client Javascript (which is the case for most of the examples):
 
