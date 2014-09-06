@@ -16,7 +16,7 @@ session = require 'express-session'
 serveStatic = require 'serve-static'
 
 vendor_module = (module,args...) ->
-  fs.readFileSync path.join (path.dirname require.resolve module), args...
+  fs.readFileSync (path.join (path.dirname require.resolve module), args...), 'utf-8'
 
 socketio_key = '__session'
 
@@ -27,7 +27,7 @@ coffee_css = null
 jquery = -> jquery.content ?= vendor_module 'jquery', 'jquery.js'
 jquery_minified = -> jquery_minified.content ?= vendor_module 'jquery', 'jquery.min.js'
 sammy = -> sammy.content ?= vendor_module 'sammy', 'sammy.js'
-sammy_minified = -> sammy_minified.content ?= vendor 'sammy.min.js'
+sammy_minified = -> sammy_minified.content ?= vendor_module 'sammy', 'min', 'sammy-latest.min.js'
 socketjs = -> socketjs.content ?= vendor_module 'socket.io-client', 'socket.io.js'
 
 # CoffeeScript-generated JavaScript may contain anyone of these; when we
@@ -151,7 +151,7 @@ zappa.app = ->
         e = null
         try
           # FIXME: pass parameters as per Express2
-          r = @engine views[@path], options
+          r = @engine views[@path], options, @path
         catch error
           e = "Engine .render for #{@ext} failed: #{error}"
         fn e, r
@@ -204,21 +204,21 @@ zappa.app = ->
     for k, v of obj
       js = ";zappa.run(#{v});"
       js = minify(js) if app.settings['minify']
-      route verb: 'get', path: k, handler: js, contentType: 'js'
+      route verb: 'get', path: k, handler: js, type: 'js'
     return
 
   context.coffee = (obj) ->
     for k, v of obj
       js = ";#{coffeescript_helpers}(#{v})();"
       js = minify(js) if app.settings['minify']
-      route verb: 'get', path: k, handler: js, contentType: 'js'
+      route verb: 'get', path: k, handler: js, type: 'js'
     return
 
   context.js = (obj) ->
     for k, v of obj
       js = String(v)
       js = minify(js) if app.settings['minify']
-      route verb: 'get', path: k, handler: js, contentType: 'js'
+      route verb: 'get', path: k, handler: js, type: 'js'
     return
 
   context.css = (obj) ->
@@ -228,7 +228,7 @@ zappa.app = ->
         css = coffee_css.compile v
       else
         css = String(v)
-      route verb: 'get', path: k, handler: css, contentType: 'css'
+      route verb: 'get', path: k, handler: css, type: 'css'
     return
 
   context.with = (obj) ->
@@ -242,7 +242,7 @@ zappa.app = ->
             for k, v of obj
               module.render v, filename: k, (err, css) ->
                 throw err if err
-                route verb: 'get', path: k, handler: css, contentType: 'css'
+                route verb: 'get', path: k, handler: css, type: 'css'
             return
         return
 
@@ -329,7 +329,7 @@ zappa.app = ->
         zappa_used = yes
         (req, res, next) ->
           send = (code) ->
-            res.contentType 'js'
+            res.type 'js'
             res.send code
           if req.method.toUpperCase() isnt 'GET' then next()
           else
@@ -373,7 +373,7 @@ zappa.app = ->
     for k, v of obj
       js = ";zappa.run(#{v});"
       js = minify(js) if app.settings['minify']
-      route verb: 'get', path: k, handler: js, contentType: 'js'
+      route verb: 'get', path: k, handler: js, type: 'js'
       v.apply context
     return
 
@@ -439,7 +439,7 @@ zappa.app = ->
 
     if typeof r.handler is 'string'
       app[r.verb] r.path, r.middleware, (req, res) ->
-        res.contentType r.contentType if r.contentType?
+        res.type r.type if r.type?
         res.send r.handler
         return
     else
@@ -517,7 +517,7 @@ zappa.app = ->
 
         result = r.handler.call ctx, req, res, next
 
-        res.contentType(r.contentType) if r.contentType?
+        res.type(r.type) if r.type?
         if typeof result is 'string' then res.send result
         else return result
 
