@@ -3,7 +3,7 @@
 # integrating [express](http://expressjs.com), [socket.io](http://socket.io)
 # and other best-of-breed libraries.
 
-zappa = version: '1.0.2'
+zappa = version: '1.0.3'
 
 log = console.log
 fs = require 'fs'
