@@ -1,2 +1,3 @@
-{h2} = require 'teacup'
-h2 "CoffeeKup file template: #{@foo}"
+{renderable,h2} = require 'teacup'
+module.exports = renderable ({foo})->
+  h2 "teacup file template: #{foo}"

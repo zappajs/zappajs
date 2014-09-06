@@ -30,7 +30,7 @@ port = 15900
             @render 'index', client
       {div} = @teacup
       @view index: ->
-        div id:@_id, -> @name
+        div id:@_id, => @name
 
     c = t.client(zapp.server)
 
