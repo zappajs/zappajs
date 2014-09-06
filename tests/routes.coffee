@@ -94,12 +94,12 @@ port = 15000
     c.get '/string/bob', (err, res) -> t.equal 1, res.body, 'string'
     c.get '/return/bob', (err, res) -> t.equal 2, res.body, 'return'
     c.get '/send/bob', (err, res) -> t.equal 3, res.body, 'send'
-    c.get '/send/bar', (err, res) -> t.equal 3, res.body, 'Failed to load user bar'
+    c.get '/send/bar', (err, res) -> t.equal 3, res.body, 'Failed to load user bar\n'
 
     c.get '/string1/bob', (err, res) -> t.equal 1, res.body, 'string'
     c.get '/return1/bob', (err, res) -> t.equal 2, res.body, 'return'
     c.get '/send1/bob', (err, res) -> t.equal 3, res.body, 'send'
-    c.get '/send1/bar', (err, res) -> t.equal 3, res.body, 'Failed to load user bar'
+    c.get '/send1/bar', (err, res) -> t.equal 3, res.body, 'Failed to load user bar\n'
 
   methods: (t) ->
     t.expect [1..6]...
@@ -147,7 +147,7 @@ port = 15000
     c = t.client zapp.server
     c.get '/?callback=foo', (err, res) ->
         t.equal 1, res.headers['content-type'], 'text/javascript; charset=utf-8'
-        t.equal 2, res.body, 'typeof foo === \'function\' && foo({"attr1":"attr1","attr2":"attr2"});'
+        t.equal 2, res.body, '/**/ typeof foo === \'function\' && foo({"attr1":"attr1","attr2":"attr2"});'
 
   'jsonp + custom callback': (t) ->
     t.expect 2
@@ -161,4 +161,4 @@ port = 15000
     c = t.client zapp.server
     c.get '/?cb=foo', (err, res) ->
         t.equal 1, res.headers['content-type'], 'text/javascript; charset=utf-8'
-        t.equal 2, res.body, 'typeof foo === \'function\' && foo({"attr1":"attr1","attr2":"attr2"});'
+        t.equal 2, res.body, '/**/ typeof foo === \'function\' && foo({"attr1":"attr1","attr2":"attr2"});'
