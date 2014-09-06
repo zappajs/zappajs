@@ -9,13 +9,13 @@
     "url": "git://github.com/zappajs/zappajs.git"
   },
   "dependencies": {
-    "express": "~4.4.0",
+    "express": "^4",
     "coffee-css": "0.0.5",
     "node-uuid": "~1.4.1",
     "uglify-js": "~2.4.15",
     "methods": "~1.1.0",
-    "express-session": "^1.2.1",
-    "serve-static": "^1.2.0",
+    "express-session": "^1",
+    "serve-static": "^1",
     "teacup": "^0.4.2"
   },
   "devDependencies": {
