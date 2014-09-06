@@ -61,8 +61,8 @@ port = 15000
       t.equal 1, res.body, 'barpong'
 
     headers = 'Content-Type': 'application/x-www-form-urlencoded'
-    json = {zig: 'zag'}
-    c.post '/bar?ping=pong', {headers, json}, (err, res) ->
+    form = {zig: 'zag'}
+    c.post '/bar?ping=pong', {headers, form}, (err, res) ->
       t.equal 2, res.body, 'barpongzag'
 
   middleware: (t) ->
