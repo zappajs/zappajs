@@ -335,8 +335,8 @@ zappa.app = ->
           else
             zappa_prefix = app.settings.zappa_prefix
             switch req.url
-              when zappa_prefix+'/Zappa.js' then send client_bundled()
-              when zappa_prefix+'/Zappa-simple.js' then send client_bundle_simple()
+              when zappa_prefix+'/full.js' then send client_bundled()
+              when zappa_prefix+'/simple.js' then send client_bundle_simple()
               when zappa_prefix+'/zappa.js' then send client
               when zappa_prefix+'/jquery.js' then send jquery_minified()
               when zappa_prefix+'/sammy.js' then send sammy_minified()

@@ -47,7 +47,7 @@ require('./zappajs') ->
     html ->
       head ->
         title 'PicoRoomChat!'
-        script src: '/zappa/Zappa-simple.js'
+        script src: '/zappa/simple.js'
         script src: '/index.js'
       body ->
         div id: 'panel'

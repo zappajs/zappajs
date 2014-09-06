@@ -214,7 +214,7 @@ CSS_TYPE = 'text/css; charset=utf-8'
       t.equal 'content-type', res.headers['content-type'], JS_TYPE
       t.ok 'snippet', res.body.indexOf('window.zappa = {};') > -1
 
-  Zappa: (t) ->
+  full: (t) ->
     t.expect 'content-type', 'snippet'
     t.wait 3000
 
@@ -222,7 +222,7 @@ CSS_TYPE = 'text/css; charset=utf-8'
       @use 'zappa'
 
     c = t.client(zapp.server)
-    c.get '/zappa/Zappa.js', (err, res) ->
+    c.get '/zappa/full.js', (err, res) ->
       t.equal 'content-type', res.headers['content-type'], JS_TYPE
       t.ok 'snippet', res.body.indexOf('window.zappa = {};') > -1
 

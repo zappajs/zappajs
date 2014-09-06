@@ -475,10 +475,10 @@ Same as `@express.static(root + '/public')`, where `root` is the directory of th
 
 #### zappa
 
-Serves `/zappa/Zappa-simple.js`, `/zappa/Zappa.js`, `/zappa/zappa.js`, `/zappa/jquery.js` and `/zappa/sammy.js`. Automatically added by `@client` and `@shared` if not added before.
+Serves `/zappa/simple.js`, `/zappa/full.js`, `/zappa/zappa.js`, `/zappa/jquery.js` and `/zappa/sammy.js`. Automatically added by `@client` and `@shared` if not added before.
 
-To minimize page download delay on the client, use `/zappa/Zappa.js`, which combines Zappa, jQuery, Sammy.js, and Socket.IO client-side scripts into a single download.
-If your client-side code doesn't require Sammy, use `/zappa/Zappa-simple.js` which combines Zappa, jQuery, and Socket.IO.
+To minimize page download delay on the client, use `/zappa/full.js`, which combines Zappa, jQuery, Sammy.js, and Socket.IO client-side scripts into a single download.
+If your client-side code doesn't require Sammy, use `/zappa/simple.js` which combines Zappa, jQuery, and Socket.IO.
 
 If the `minify` setting is enabled, the contents will be minified using `uglify-js`.
 
@@ -924,7 +924,7 @@ Any of Express' options are available as well.
 
 ### 'minify'
 
-Uses uglify-js to minify the outputs of `/zappa/Zappa.js`, `/zappa/Zappa-simple.js`, `/zappa/zappa.js`, `@client`, `@shared`, `@coffee`, `@js`.
+Uses uglify-js to minify the outputs of `/zappa/full.js`, `/zappa/simple.js`, `/zappa/zappa.js`, `@client`, `@shared`, `@coffee`, `@js`.
 
 ### 'default layout'
 
