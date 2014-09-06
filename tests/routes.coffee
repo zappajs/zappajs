@@ -110,7 +110,7 @@ port = 15000
       @get '/', -> @send 'got'
       @post '/', -> @send 'posted'
       @put '/', -> @send 'put'
-      @del '/', -> @send 'deleted'
+      @delete '/', -> @send 'deleted'
       @head '/', -> @send 'head'
       @patch '/', -> @send 'patched'
 
