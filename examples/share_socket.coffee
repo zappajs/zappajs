@@ -12,4 +12,4 @@ require('./zappajs') 3001, ->
   @on 'express done, your turn': ->
     @session (err,session) =>
       # Let the client confirm that we received the session data OK.
-      @emit 'all set', foo: session.foo
+      @emit 'all set', foo: session?.foo
