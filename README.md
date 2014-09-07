@@ -63,7 +63,7 @@ require('zappajs') ->
 
 ## Install
 
-    npm install zappajs
+    npm install zappajs@1.x
 
 ## Other resources
 
