@@ -38,7 +38,9 @@
     "response-time": "^2.0.1",
     "body-parser": "^1.8.0",
     "method-override": "^2.2.0",
-    "basic-auth": "^1.0.0"
+    "basic-auth": "^1.0.0",
+    "docco": "^0.6.3",
+    "jsdom": "^1.0.0-pre.6"
   },
   "keywords": [
     "framework",
