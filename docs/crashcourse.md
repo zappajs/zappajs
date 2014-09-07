@@ -19,25 +19,12 @@ And give your foot a push:
     $ npm install zappajs
     $ coffee cuppa.coffee
        info  - socket.io started
-    Express server listening on port 3000 in development mode
-    Zappa 0.3.1 "The Gumbo Variations" orchestrating the show
+    Express server listening on 0.0.0.0:3000 in development mode
+    Zappa 1.0.5 orchestrating the show
 
 (hat tip to [sinatra](http://sinatrarb.com))
 
-If your thing is the bleeding edge, replace `npm install zappajs` with:
-
-    $ git clone git@github.com:zappajs/zappajs.git && cd zappajs
-    $ cake setup
-    $ cd /path/to/project
-    $ npm install /path/to/zappajs
-
 ## OK, what did just happen?
-
-CoffeeScript is relatively new on the scene, so it might be worth it to compare that first example with the equivalent JavaScript:
-
-    require('zappajs')(function(){
-      this.get({'/': 'hi'});
-    });
 
 `require 'zappajs'` returns a function you can use to run your apps. We're calling it right away and passing an anonymous function as the parameter.
 
@@ -55,7 +42,7 @@ On top of that, you also have some handy shortcuts such as the `@get` you alread
 
     require('zappajs') ->
       @get '/foo': 'bar', '/ping': 'pong', '/zig': 'zag'
-      @use 'bodyParser', 'methodOverride', 'static'
+      @use (require 'body-parser').urlencoded(), 'method-override', 'static'
       @set 'view engine': 'jade', views: "#{__dirname}/custom/dir"
 
 After running your function, zappa automatically starts the whole thing and spits out a message with some useful info.
@@ -98,7 +85,7 @@ As you can see, the value of `this` is modified in the handler function too, giv
 If you return a string, it will automatically be sent as the response. But most of the time you'll be doing something asynchronous, and in this case you have to call `@send`:
 
     @get '/ponchos/:id': ->
-      Poncho.findById @params.id, (err, poncho) =>
+      Poncho.findById @params.id, (error, poncho) =>
         # Is that a real poncho, or is that a sears poncho?
         @send poncho.type
 
@@ -116,7 +103,7 @@ One difference is that it also works with the "key: value syntax":
     @get '/': ->
       @render index: {foo: 'bar'}
 
-Another is that you can define inline views that `@render` "sees" as if they were in the filesystem:
+Another is that you can define inline views:
 
     @get '/': ->
       @render index:
@@ -134,7 +121,7 @@ Another is that you can define inline views that `@render` "sees" as if they wer
 
 Note that zappa comes with a default templating engine, [teacup](https://goodeggs.github.io/teacup), and you don't have to setup anything to use it. You can also easily use other engines by specifying the file extension or the `'view engine'` setting; it's just express. Well, express + inline views support:
 
-    @app.engine 'eco', require('consolidate').eco
+    @engine 'eco', require('consolidate').eco
     @set 'view engine': 'eco'
 
     @get '/': -> @render index: {foo: 'bar', title: 'Eco template'}
@@ -201,8 +188,6 @@ With `@coffee`, you can define client-side code inline, and serve it in JS form 
 
 On a step further, you have `@client`, which gives you access to a matching client-side zappa API:
 
-    @enable 'zappa'
-
     @get '/': ->
       @render 'index'
 
@@ -235,9 +220,11 @@ Finally, there's `@shared`. This block of code is not only served to the client,
       root.sum = (x, y) ->
         String(Number(x) + Number(y))
 
+    # This uses global.sum (on the server).
     @get '/sum/:x/:y': ->
       @send sum(@params.x, @params.y)
 
+    # This uses window.sum (on the client).
     @coffee '/index.js': ->
       $ =>
         $('button').click =>
@@ -251,11 +238,15 @@ Zappa helpers are functions with automatic access to the same context (`this`/`@
       map = maps[name]
       format = if @request? then @query.format else @data.format
 
-      if format is 'xml' then map = map.toXML()
-      else map = map.toJSON()
+      if format is 'xml'
+        map = map.toXML()
+      else
+        map = map.toJSON()
 
-      if @request? then @send map
-      else @emit map: {map}
+      if @request?
+        @send map
+      else
+        @emit map: {map}
 
     @get '/maps/dungeon': ->
       @map 'dungeon'
@@ -291,15 +282,15 @@ You can specify your middleware through the standard `@app.use`, or zappa's shor
 
 It accepts many params in a row. Ex.:
 
-    @use (require 'body-parser')(), (require 'cookie-parser')()
+    @use (require 'body-parser').urlencoded, (require 'cookie-parser')()
 
 It accepts strings as parameters. This is syntactic sugar to the equivalent express middleware with no arguments. Ex.:
 
-    @use 'bodyParser', 'cookieParser'
+    @use 'cookie-parser'
 
 You can also specify parameters by using objects. Ex.:
 
-    @use 'bodyParser', static: __dirname + '/public', session: {secret: 'fnord'}, 'cookieParser'
+    @use static: __dirname + '/public', session: {secret: 'fnord'}, 'cookie-parser'
 
 Finally, when using strings and objects, zappa will intercept some specific middleware and add behaviour, usually default parameters. Ex.:
 
@@ -308,7 +299,7 @@ Finally, when using strings and objects, zappa will intercept some specific midd
     # Syntactic sugar for:
     @app.use @express.static(__dirname + '/public')
 
-Note: only `static` is available as an `@express` middleware; see [the Express 3.x to 4.x migration guide](https://github.com/visionmedia/express/wiki/Migrating-from-3.x-to-4.x#overview).
+Note: `static` is a ZappaJS wrapper for `server-static`, `session` a wrapper for `express-session`. You should use those instead of the original modules for full Zappa effect.
 
 ## Aaaaaand that's it for tonight.
 
