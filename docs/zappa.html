@@ -86,14 +86,7 @@ socketio_key = <span class="hljs-string">'__session'</span></pre></div></div>
             </div>
             
             <div class="content"><div class='highlight'><pre>uglify = <span class="hljs-literal">null</span>
-jsdom = <span class="hljs-literal">null</span>
-coffee_css = <span class="hljs-literal">null</span>
-<span class="hljs-function">
-<span class="hljs-title">jquery</span> = -&gt;</span> jquery.content ?= vendor_module <span class="hljs-string">'jquery'</span>, <span class="hljs-string">'jquery.js'</span>
-<span class="hljs-function"><span class="hljs-title">jquery_minified</span> = -&gt;</span> jquery_minified.content ?= vendor_module <span class="hljs-string">'jquery'</span>, <span class="hljs-string">'jquery.min.js'</span>
-<span class="hljs-function"><span class="hljs-title">sammy</span> = -&gt;</span> sammy.content ?= vendor_module <span class="hljs-string">'sammy'</span>, <span class="hljs-string">'sammy.js'</span>
-<span class="hljs-function"><span class="hljs-title">sammy_minified</span> = -&gt;</span> sammy_minified.content ?= vendor_module <span class="hljs-string">'sammy'</span>, <span class="hljs-string">'min'</span>, <span class="hljs-string">'sammy-latest.min.js'</span>
-<span class="hljs-function"><span class="hljs-title">socketjs</span> = -&gt;</span> socketjs.content ?= vendor_module <span class="hljs-string">'socket.io-client'</span>, <span class="hljs-string">'socket.io.js'</span></pre></div></div>
+coffee_css = <span class="hljs-literal">null</span></pre></div></div>
             
         </li>
         
@@ -230,7 +223,7 @@ Set options.io to socket.io’s parameters otherwise (optional).</p>
             
             <div class="content"><div class='highlight'><pre>  io = <span class="hljs-literal">null</span>
   <span class="hljs-keyword">if</span> options.io <span class="hljs-keyword">isnt</span> <span class="hljs-literal">false</span>
-    socketio = <span class="hljs-built_in">require</span> <span class="hljs-string">'socket.io'</span>
+    socketio = options.socketio ? <span class="hljs-built_in">require</span> <span class="hljs-string">'socket.io'</span>
     io = context.io = socketio.listen context.server, options.io ? {}</pre></div></div>
             
         </li>
@@ -846,7 +839,13 @@ Set options.io to socket.io’s parameters otherwise (optional).</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  func.apply context</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  func.apply context
+<span class="hljs-function">
+  <span class="hljs-title">jquery</span> = -&gt;</span> jquery.content ?= app.settings.jquery_js ? vendor_module <span class="hljs-string">'jquery'</span>, <span class="hljs-string">'jquery.js'</span>
+<span class="hljs-function">  <span class="hljs-title">jquery_minified</span> = -&gt;</span> jquery_minified.content ?= app.settings.jquery_min_js ? vendor_module <span class="hljs-string">'jquery'</span>, <span class="hljs-string">'jquery.min.js'</span>
+<span class="hljs-function">  <span class="hljs-title">sammy</span> = -&gt;</span> sammy.content ?= app.settings.sammy_js ? vendor_module <span class="hljs-string">'sammy'</span>, <span class="hljs-string">'sammy.js'</span>
+<span class="hljs-function">  <span class="hljs-title">sammy_minified</span> = -&gt;</span> sammy_minified.content ?= app.settings.sammy_min_js ? vendor_module <span class="hljs-string">'sammy'</span>, <span class="hljs-string">'min'</span>, <span class="hljs-string">'sammy-latest.min.js'</span>
+<span class="hljs-function">  <span class="hljs-title">socketjs</span> = -&gt;</span> socketjs.content ?= app.settings.socketio_js ? vendor_module <span class="hljs-string">'socket.io-client'</span>, <span class="hljs-string">'socket.io.js'</span></pre></div></div>
             
         </li>
         
