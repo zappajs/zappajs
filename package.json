@@ -9,6 +9,13 @@
     "url": "git://github.com/zappajs/zappajs.git"
   },
   "dependencies": {
+    "express": "4.8.x",
+    "socket.io": "^1.1.0",
+    "socket.io-client": "^1.1.0",
+    "express-session": "~1.7.6",
+    "serve-static": "~1.5.4",
+    "jquery": "^2.1.1",
+    "sammy": "git+https://github.com/quirkey/sammy.git",
     "coffee-css": "0.0.5",
     "node-uuid": "~1.4.1",
     "uglify-js": "~2.4.15",
@@ -16,17 +23,10 @@
     "teacup": "~0.4.2"
   },
   "devDependencies": {
-    "express": "~4.8.8",
-    "express-session": "~1.7.6",
-    "serve-static": "~1.5.4",
-    "jquery": "^2.1.1",
-    "sammy": "git+https://github.com/quirkey/sammy.git",
     "coffee-script": "~1.8.0",
     "underscore": "~1.7.0",
     "request": "~2.36.0",
     "consolidate": "~0.10.0",
-    "socket.io": "^1.1.0",
-    "socket.io-client": "^1.1.0",
     "eco": "1.1.0-rc-3",
     "jade": "1.5.0",
     "stylus": "0.48.1",

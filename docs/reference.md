@@ -71,7 +71,10 @@ You can also pass the parameters in the `options` object. The following options 
         require('zappajs') 3443, https:{ key: ... , cert: ... }, ->
           @get '/': 'hi'
 
+The following options are available, but using them will void your warranty:
 
+* `express`: override the default express module with this one.
+* `socketio`: override the default Socket.io module with this one.
 
 ## ROOT SCOPE
 
@@ -847,12 +850,6 @@ Any of Express' options are available as well.
 
 Uses uglify-js to minify the outputs of `/zappa/full.js`, `/zappa/simple.js`, `/zappa/zappa.js`, `@client`, `@shared`, `@coffee`, `@js`.
 
-
-
-
-
-
-
 ### 'x-powered-by'
 
 Unless disabled, ZappaJS adds a `X-Powered-By` header in HTTP responses.
@@ -860,3 +857,15 @@ Unless disabled, ZappaJS adds a `X-Powered-By` header in HTTP responses.
 ### 'zappa_prefix'
 
 Normally a prefix of `/zappa` is used for all Zappa-specific URIs. This settings allows you to specify a different path.
+
+### 'jquery_min_js'
+
+Replaces `/zappa/jquery.js`. If unspecified, ZappaJS' default version is used.
+
+### 'sammy_min_js'
+
+Replaces `/zappa/sammy.js`. If unspecified, ZappaJS' default version is used.
+
+### 'jquery_js', 'sammy_js', 'socketio_js'
+
+Used to build `/zappa/full.js` and `/zappa/simple.js`. If unspecified ZappaJS' default versions are used.

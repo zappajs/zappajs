@@ -24,12 +24,6 @@ uglify = null
 jsdom = null
 coffee_css = null
 
-jquery = -> jquery.content ?= vendor_module 'jquery', 'jquery.js'
-jquery_minified = -> jquery_minified.content ?= vendor_module 'jquery', 'jquery.min.js'
-sammy = -> sammy.content ?= vendor_module 'sammy', 'sammy.js'
-sammy_minified = -> sammy_minified.content ?= vendor_module 'sammy', 'min', 'sammy-latest.min.js'
-socketjs = -> socketjs.content ?= vendor_module 'socket.io-client', 'socket.io.js'
-
 # CoffeeScript-generated JavaScript may contain anyone of these; when we
 # "rewrite" a function (see below) though, it loses access to its parent scope,
 # and consequently to any helpers it might need. So we need to reintroduce
@@ -105,7 +99,7 @@ zappa.app = ->
   # Set options.io to socket.io's parameters otherwise (optional).
   io = null
   if options.io isnt false
-    socketio = require 'socket.io'
+    socketio = options.socketio ? require 'socket.io'
     io = context.io = socketio.listen context.server, options.io ? {}
 
   # Reference to the zappa client, the value will be set later.
@@ -564,6 +558,12 @@ zappa.app = ->
 
   # Go!
   func.apply context
+
+  jquery = -> jquery.content ?= app.settings.jquery_js ? vendor_module 'jquery', 'jquery.js'
+  jquery_minified = -> jquery_minified.content ?= app.settings.jquery_min_js ? vendor_module 'jquery', 'jquery.min.js'
+  sammy = -> sammy.content ?= app.settings.sammy_js ? vendor_module 'sammy', 'sammy.js'
+  sammy_minified = -> sammy_minified.content ?= app.settings.sammy_min_js ? vendor_module 'sammy', 'min', 'sammy-latest.min.js'
+  socketjs = -> socketjs.content ?= app.settings.socketio_js ? vendor_module 'socket.io-client', 'socket.io.js'
 
   # The stringified zappa client.
   client = require('./client').build(zappa.version, app.settings)
