@@ -68,9 +68,7 @@ session = <span class="hljs-built_in">require</span> <span class="hljs-string">'
 serveStatic = <span class="hljs-built_in">require</span> <span class="hljs-string">'serve-static'</span>
 <span class="hljs-function">
 <span class="hljs-title">vendor_module</span> = <span class="hljs-params">(<span class="hljs-built_in">module</span>,args...)</span> -&gt;</span>
-  fs.readFileSync (path.join (path.dirname <span class="hljs-built_in">require</span>.resolve <span class="hljs-built_in">module</span>), args...), <span class="hljs-string">'utf-8'</span>
-
-socketio_key = <span class="hljs-string">'__session'</span></pre></div></div>
+  fs.readFileSync (path.join (path.dirname <span class="hljs-built_in">require</span>.resolve <span class="hljs-built_in">module</span>), args...), <span class="hljs-string">'utf-8'</span></pre></div></div>
             
         </li>
         
@@ -224,7 +222,7 @@ Set options.io to socket.io’s parameters otherwise (optional).</p>
             <div class="content"><div class='highlight'><pre>  io = <span class="hljs-literal">null</span>
   <span class="hljs-keyword">if</span> options.io <span class="hljs-keyword">isnt</span> <span class="hljs-literal">false</span>
     socketio = options.socketio ? <span class="hljs-built_in">require</span> <span class="hljs-string">'socket.io'</span>
-    io = context.io = socketio.listen context.server, options.io ? {}</pre></div></div>
+    io = context.io = socketio context.server, options.io ? {}</pre></div></div>
             
         </li>
         
@@ -538,6 +536,7 @@ Set options.io to socket.io’s parameters otherwise (optional).</p>
               <span class="hljs-keyword">when</span> zappa_prefix+<span class="hljs-string">'/zappa.js'</span> <span class="hljs-keyword">then</span> send client
               <span class="hljs-keyword">when</span> zappa_prefix+<span class="hljs-string">'/jquery.js'</span> <span class="hljs-keyword">then</span> send jquery_minified()
               <span class="hljs-keyword">when</span> zappa_prefix+<span class="hljs-string">'/sammy.js'</span> <span class="hljs-keyword">then</span> send sammy_minified()
+              <span class="hljs-keyword">when</span> zappa_prefix+<span class="hljs-string">'/socket.io.js'</span> <span class="hljs-keyword">then</span> send socketjs()
               <span class="hljs-keyword">else</span> next()
           <span class="hljs-keyword">return</span>
       <span class="hljs-attribute">session</span>: <span class="hljs-function"><span class="hljs-params">(options)</span> -&gt;</span>
@@ -605,7 +604,7 @@ Set options.io to socket.io’s parameters otherwise (optional).</p>
             
             <div class="content"><div class='highlight'><pre><span class="hljs-function">  <span class="hljs-title">request_socket</span> = <span class="hljs-params">(req)</span> -&gt;</span>
     socket_id = req.session?.__socket?[app.settings.zappa_channel]?.id
-    socket_id <span class="hljs-keyword">and</span> io?.sockets.socket socket_id, <span class="hljs-literal">true</span></pre></div></div>
+    <span class="hljs-keyword">if</span> socket_id</pre></div></div>
             
         </li>
         
@@ -616,19 +615,64 @@ Set options.io to socket.io’s parameters otherwise (optional).</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-16">&#182;</a>
               </div>
+              <p>io.sockets is the default namespace (=== io.of(‘/‘)).
+io.sockets.sockets is the list of sockets in that namespace.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">for</span> socket <span class="hljs-keyword">in</span> io.sockets.sockets
+        <span class="hljs-keyword">return</span> socket <span class="hljs-keyword">if</span> socket.id <span class="hljs-keyword">is</span> socket_id
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
               <p>The callback will receive (err,session).</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="hljs-function">  <span class="hljs-title">socket_session</span> = <span class="hljs-params">(socket,cb)</span> -&gt;</span>
-    socket.get socketio_key, <span class="hljs-function"><span class="hljs-params">(err,data)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre><span class="hljs-function">  <span class="hljs-title">socket_session</span> = <span class="hljs-params">(socket,cb)</span> -&gt;</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>First retrieve the data record associated with the socket.id</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    context.session_store.get socket.id, <span class="hljs-function"><span class="hljs-params">(err,data)</span> -&gt;</span>
       <span class="hljs-keyword">if</span> err
-        <span class="hljs-keyword">return</span> cb err
-      data = JSON.parse data
-      <span class="hljs-keyword">if</span> data.id?
-        context.session_store.get data.id, cb
+        <span class="hljs-keyword">return</span> cb err.toString(), <span class="hljs-literal">null</span>
+      <span class="hljs-keyword">if</span> data?.id?</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>Then retrieve the session data stored by Express</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        context.session_store.get data.id, cb
       <span class="hljs-keyword">else</span>
-        cb err
+        cb <span class="hljs-string">'Invalid data record'</span>, <span class="hljs-literal">null</span>
 
   context.p<span class="hljs-function"><span class="hljs-title">aram</span> = <span class="hljs-params">(obj)</span> -&gt;</span>
 <span class="hljs-function">    <span class="hljs-title">build</span> = <span class="hljs-params">(callback)</span> -&gt;</span>
@@ -658,11 +702,11 @@ Set options.io to socket.io’s parameters otherwise (optional).</p>
         </li>
         
         
-        <li id="section-17">
+        <li id="section-20">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-17">&#182;</a>
+                <a class="pilcrow" href="#section-20">&#182;</a>
               </div>
               <p>Register a route with express.</p>
 
@@ -724,11 +768,11 @@ Set options.io to socket.io’s parameters otherwise (optional).</p>
         </li>
         
         
-        <li id="section-18">
+        <li id="section-21">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-18">&#182;</a>
+                <a class="pilcrow" href="#section-21">&#182;</a>
               </div>
               <p>Make sure the second arg is an object.</p>
 
@@ -754,11 +798,11 @@ Set options.io to socket.io’s parameters otherwise (optional).</p>
         </li>
         
         
-        <li id="section-19">
+        <li id="section-22">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-19">&#182;</a>
+                <a class="pilcrow" href="#section-22">&#182;</a>
               </div>
               <p>Register socket.io handlers.</p>
 
@@ -829,11 +873,11 @@ Set options.io to socket.io’s parameters otherwise (optional).</p>
         </li>
         
         
-        <li id="section-20">
+        <li id="section-23">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-20">&#182;</a>
+                <a class="pilcrow" href="#section-23">&#182;</a>
               </div>
               <p>Go!</p>
 
@@ -850,11 +894,11 @@ Set options.io to socket.io’s parameters otherwise (optional).</p>
         </li>
         
         
-        <li id="section-21">
+        <li id="section-24">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-21">&#182;</a>
+                <a class="pilcrow" href="#section-24">&#182;</a>
               </div>
               <p>The stringified zappa client.</p>
 
@@ -877,8 +921,9 @@ Set options.io to socket.io’s parameters otherwise (optional).</p>
     client = minify client
     client_bundle_simple.content = minify client_bundle_simple()
     client_bundled.content = minify client_bundled()
+    socketjs.content = minify socketjs()
 
-  <span class="hljs-keyword">if</span> io?
+  <span class="hljs-keyword">do</span> <span class="hljs-function">-&gt;</span>
     zappa_prefix = app.settings.zappa_prefix
     context.get zappa_prefix+<span class="hljs-string">'/socket/:channel_name/:socket_id'</span>,<span class="hljs-function"> -&gt;</span>
       <span class="hljs-keyword">if</span> <span class="hljs-property">@session</span>?
@@ -892,11 +937,11 @@ Set options.io to socket.io’s parameters otherwise (optional).</p>
         </li>
         
         
-        <li id="section-22">
+        <li id="section-25">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-22">&#182;</a>
+                <a class="pilcrow" href="#section-25">&#182;</a>
               </div>
               <p>Client (or hijacker) trying to re-key.</p>
 
@@ -909,11 +954,11 @@ Set options.io to socket.io’s parameters otherwise (optional).</p>
         </li>
         
         
-        <li id="section-23">
+        <li id="section-26">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-23">&#182;</a>
+                <a class="pilcrow" href="#section-26">&#182;</a>
               </div>
               <p>Update the Express session store</p>
 
@@ -926,36 +971,39 @@ Set options.io to socket.io’s parameters otherwise (optional).</p>
         </li>
         
         
-        <li id="section-24">
+        <li id="section-27">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-24">&#182;</a>
+                <a class="pilcrow" href="#section-27">&#182;</a>
               </div>
-              <p>Update the Socket.IO store</p>
+              <p>Update the store.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>          io_client = io.sockets.store.client(socket_id)
-          io_data = JSON.stringify
-            <span class="hljs-attribute">id</span>: <span class="hljs-property">@req</span>.sessionID
+            <div class="content"><div class='highlight'><pre>          data =
+            <span class="hljs-attribute">id</span>: <span class="hljs-property">@req</span>.sessionID   <span class="hljs-comment"># local Express Session ID</span>
             <span class="hljs-attribute">key</span>: key
-          io_client.set socketio_key, io_data</pre></div></div>
+            <span class="hljs-attribute">cookie</span>: {}
+          context.session_store.set socket_id, data, <span class="hljs-function"><span class="hljs-params">(err)</span> =&gt;</span>
+            <span class="hljs-keyword">if</span> err
+              <span class="hljs-property">@json</span> <span class="hljs-attribute">error</span>: err.toString()
+              <span class="hljs-keyword">return</span></pre></div></div>
             
         </li>
         
         
-        <li id="section-25">
+        <li id="section-28">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-25">&#182;</a>
+                <a class="pilcrow" href="#section-28">&#182;</a>
               </div>
               <p>Let the client know which key to use.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>          <span class="hljs-property">@json</span> <span class="hljs-attribute">channel_name</span>: channel_name, <span class="hljs-attribute">key</span>: key
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-property">@json</span> <span class="hljs-attribute">channel_name</span>: channel_name, <span class="hljs-attribute">key</span>: key
       <span class="hljs-keyword">else</span>
         <span class="hljs-property">@json</span> <span class="hljs-attribute">error</span>:<span class="hljs-string">'No session'</span>
       <span class="hljs-keyword">return</span>
@@ -965,11 +1013,11 @@ Set options.io to socket.io’s parameters otherwise (optional).</p>
         </li>
         
         
-        <li id="section-26">
+        <li id="section-29">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-26">&#182;</a>
+                <a class="pilcrow" href="#section-29">&#182;</a>
               </div>
               <p>zappa.run [host,] [port,] [{options},] root_function
 Takes a function and runs it as a zappa app. Optionally accepts a port

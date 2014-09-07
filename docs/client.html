@@ -112,10 +112,26 @@
 
           apply_helpers ctx
 
-          action.apply ctx
+          action.apply ctx, data
 
-    context.c<span class="hljs-function"><span class="hljs-title">onnect</span> = -&gt;</span>
-      context.socket = io.connect.apply io, arguments
+    context.c<span class="hljs-function"><span class="hljs-title">onnect</span> = -&gt;</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Socket.IO 1.1 would say: socket = io arguments…
+io() locates or create a manager and returns manager.socket(..).
+Manager.socket() locates or create a socket and returns it.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      context.socket = io.connect.apply io, arguments
 
     context.e<span class="hljs-function"><span class="hljs-title">mit</span> = -&gt;</span>
       <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> arguments[<span class="hljs-number">0</span>] <span class="hljs-keyword">isnt</span> <span class="hljs-string">'object'</span>
@@ -125,8 +141,24 @@
           context.socket.emit.apply context.socket, [k, v]
 
     context.s<span class="hljs-function"><span class="hljs-title">hare</span> = <span class="hljs-params">(channel,socket,cb)</span> -&gt;</span>
-      zappa_prefix = settings.zappa_prefix ? <span class="hljs-string">""</span>
-      sessionid = socket.io?.engine.id ? socket.socket?.sessionid
+      zappa_prefix = settings.zappa_prefix ? <span class="hljs-string">""</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>socket.io points to the Manager for the socket.
+socket.io.engine is the engine.io-client; engine.id is set to the engine.io handshake sid (session id).
+socket.socket.sessionid is the old (0.9) Socket.IO sessionid.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      sessionid = socket.io?.engine.id ? socket.socket?.sessionid
       <span class="hljs-keyword">if</span> sessionid?
         $.getJSON <span class="hljs-string">"<span class="hljs-subst">#{zappa_prefix}</span>/socket/<span class="hljs-subst">#{channel}</span>/<span class="hljs-subst">#{sessionid}</span>"</span>, cb
 <span class="hljs-function">
@@ -145,11 +177,11 @@
         </li>
         
         
-        <li id="section-3">
+        <li id="section-5">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-3">&#182;</a>
+                <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
               <p>GO!!!</p>
 
@@ -160,11 +192,11 @@
         </li>
         
         
-        <li id="section-4">
+        <li id="section-6">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-4">&#182;</a>
+                <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
               <p>Implements the websockets client with socket.io.</p>
 
