@@ -2,7 +2,7 @@ Zappa is a [CoffeeScript](http://coffeescript.org)-optimized interface to [Expre
 
 Note: this README documents the new version 1.0 of ZappaJS which relies on Express 4.x.
 
-[![Build Status](https://secure.travis-ci.org/zappajs/zappajs.png?branch=express-4)](http://travis-ci.org/zappajs/zappajs) [![Dependency Status](https://gemnasium.com/zappajs/zappajs.png)](https://gemnasium.com/zappajs/zappajs)
+[![Build Status](https://secure.travis-ci.org/zappajs/zappajs.png?branch=1.x)](http://travis-ci.org/zappajs/zappajs) [![Dependency Status](https://gemnasium.com/zappajs/zappajs.png)](https://gemnasium.com/zappajs/zappajs)
 
 ## Synopsis
 
@@ -63,11 +63,7 @@ require('zappajs') ->
 
 ## Install
 
-    npm install zappajs express express-session serve-static socket.io
-
-If you also intend to `@use 'zappa'` or reference ZappaJS's client Javascript (which is the case for most of the examples):
-
-    npm install socket.io-client jquery git+https://github.com/quirkey/sammy.git
+    npm install zappajs
 
 ## Other resources
 
