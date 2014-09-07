@@ -383,7 +383,12 @@ zappa.app = ->
   # Local socket
   request_socket = (req) ->
     socket_id = req.session?.__socket?[app.settings.zappa_channel]?.id
-    socket_id and io?.sockets.socket socket_id, true
+    if socket_id
+      # io.sockets is the default namespace (=== io.of('/')).
+      # io.sockets.sockets is the list of sockets in that namespace.
+      for socket in io.sockets.sockets
+        return socket if socket.id is socket_id
+    return null
 
   # The callback will receive (err,session).
   socket_session = (socket,cb) ->
