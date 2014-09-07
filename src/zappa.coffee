@@ -17,8 +17,6 @@ serveStatic = require 'serve-static'
 vendor_module = (module,args...) ->
   fs.readFileSync (path.join (path.dirname require.resolve module), args...), 'utf-8'
 
-socketio_key = '__session'
-
 # Soft dependencies:
 uglify = null
 coffee_css = null
@@ -392,14 +390,15 @@ zappa.app = ->
 
   # The callback will receive (err,session).
   socket_session = (socket,cb) ->
-    socket.get socketio_key, (err,data) ->
+    # First retrieve the data record associated with the socket.id
+    context.session_store.get socket.id, (err,data) ->
       if err
-        return cb err
-      data = JSON.parse data
-      if data.id?
+        return cb err.toString(), null
+      if data?.id?
+        # Then retrieve the session data stored by Express
         context.session_store.get data.id, cb
       else
-        cb err
+        cb 'Invalid data record', null
 
   context.param = (obj) ->
     build = (callback) ->
@@ -590,7 +589,7 @@ zappa.app = ->
     client_bundled.content = minify client_bundled()
     socketjs.content = minify socketjs()
 
-  if io?
+  do ->
     zappa_prefix = app.settings.zappa_prefix
     context.get zappa_prefix+'/socket/:channel_name/:socket_id', ->
       if @session?
@@ -610,15 +609,17 @@ zappa.app = ->
             id: socket_id
             key: key
 
-          # Update the Socket.IO store
-          io_client = io.sockets.store.client(socket_id)
-          io_data = JSON.stringify
-            id: @req.sessionID
+          # Update the store.
+          data =
+            id: @req.sessionID   # local Express Session ID
             key: key
-          io_client.set socketio_key, io_data
-
-          # Let the client know which key to use.
-          @json channel_name: channel_name, key: key
+            cookie: {}
+          context.session_store.set socket_id, data, (err) =>
+            if err
+              @json error: err.toString()
+              return
+            # Let the client know which key to use.
+            @json channel_name: channel_name, key: key
       else
         @json error:'No session'
       return
