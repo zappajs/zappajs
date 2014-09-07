@@ -50,6 +50,9 @@ skeleton = ->
           action.apply ctx, data
 
     context.connect = ->
+      # Socket.IO 1.1 would say: socket = io arguments...
+      # io() locates or create a manager and returns manager.socket(..).
+      # Manager.socket() locates or create a socket and returns it.
       context.socket = io.connect.apply io, arguments
 
     context.emit = ->
@@ -61,6 +64,9 @@ skeleton = ->
 
     context.share = (channel,socket,cb) ->
       zappa_prefix = settings.zappa_prefix ? ""
+      # socket.io points to the Manager for the socket.
+      # socket.io.engine is the engine.io-client; engine.id is set to the engine.io handshake sid (session id).
+      # socket.socket.sessionid is the old (0.9) Socket.IO sessionid.
       sessionid = socket.io?.engine.id ? socket.socket?.sessionid
       if sessionid?
         $.getJSON "#{zappa_prefix}/socket/#{channel}/#{sessionid}", cb
