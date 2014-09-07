@@ -99,7 +99,7 @@ zappa.app = ->
   io = null
   if options.io isnt false
     socketio = options.socketio ? require 'socket.io'
-    io = context.io = socketio.listen context.server, options.io ? {}
+    io = context.io = socketio context.server, options.io ? {}
 
   # Reference to the zappa client, the value will be set later.
   client = null
