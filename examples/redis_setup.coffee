@@ -6,6 +6,8 @@
   @use session:
     store: new ExpressRedisStore redis_config
     secret: 'rock zappa rock'
+    resave: true
+    saveUninitialized: true
 
   ###
   # Optional: use this to allow broadcast across multiple Socket.IO instances.
