@@ -21,7 +21,6 @@ socketio_key = '__session'
 
 # Soft dependencies:
 uglify = null
-jsdom = null
 coffee_css = null
 
 # CoffeeScript-generated JavaScript may contain anyone of these; when we
