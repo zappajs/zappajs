@@ -56,13 +56,12 @@ and other best-of-breed libraries.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>
-zappa = <span class="hljs-attribute">version</span>: <span class="hljs-string">'1.0.2'</span>
+zappa = <span class="hljs-attribute">version</span>: (<span class="hljs-built_in">require</span> <span class="hljs-string">'../package.json'</span>).version
 
 log = <span class="hljs-built_in">console</span>.log
 fs = <span class="hljs-built_in">require</span> <span class="hljs-string">'fs'</span>
 path = <span class="hljs-built_in">require</span> <span class="hljs-string">'path'</span>
 uuid = <span class="hljs-built_in">require</span> <span class="hljs-string">'node-uuid'</span>
-uglify = <span class="hljs-built_in">require</span> <span class="hljs-string">'uglify-js'</span>
 methods = <span class="hljs-built_in">require</span> <span class="hljs-string">'methods'</span>
 
 session = <span class="hljs-built_in">require</span> <span class="hljs-string">'express-session'</span>
@@ -86,7 +85,8 @@ socketio_key = <span class="hljs-string">'__session'</span></pre></div></div>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>jsdom = <span class="hljs-literal">null</span>
+            <div class="content"><div class='highlight'><pre>uglify = <span class="hljs-literal">null</span>
+jsdom = <span class="hljs-literal">null</span>
 coffee_css = <span class="hljs-literal">null</span>
 <span class="hljs-function">
 <span class="hljs-title">jquery</span> = -&gt;</span> jquery.content ?= vendor_module <span class="hljs-string">'jquery'</span>, <span class="hljs-string">'jquery.js'</span>
@@ -136,6 +136,7 @@ This list is taken from coffeescript’s <code>src/nodes.coffee</code> UTILITIES
 """</span>.replace <span class="hljs-regexp">/\n/g</span>, <span class="hljs-string">''</span>
 <span class="hljs-function">
 <span class="hljs-title">minify</span> = <span class="hljs-params">(js)</span> -&gt;</span>
+  uglify ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'uglify-js'</span>
   result = uglify.minify js, <span class="hljs-attribute">fromString</span>:<span class="hljs-literal">true</span>
   result.code</pre></div></div>
             
@@ -206,7 +207,6 @@ contained in it.</p>
             
             <div class="content"><div class='highlight'><pre>  ws_handlers = {}
   helpers = {}
-  postrenders = {}
 
   app = context.app = express()
   <span class="hljs-keyword">if</span> options.https?
@@ -464,12 +464,6 @@ Set options.io to socket.io’s parameters otherwise (optional).</p>
   context.h<span class="hljs-function"><span class="hljs-title">elper</span> = <span class="hljs-params">(obj)</span> -&gt;</span>
     <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">of</span> obj
       helpers[k] = v
-    <span class="hljs-keyword">return</span>
-
-  context.p<span class="hljs-function"><span class="hljs-title">ostrender</span> = <span class="hljs-params">(obj)</span> -&gt;</span>
-    jsdom = <span class="hljs-built_in">require</span> <span class="hljs-string">'jsdom'</span>
-    <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">of</span> obj
-      postrenders[k] = v
     <span class="hljs-keyword">return</span>
 
   context.o<span class="hljs-function"><span class="hljs-title">n</span> = <span class="hljs-params">(obj)</span> -&gt;</span>
@@ -751,36 +745,7 @@ Set options.io to socket.io’s parameters otherwise (optional).</p>
             fn = opts
             opts = {}
 
-          <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> opts.postrender?
-            postrender = report
-          <span class="hljs-keyword">else</span>
-<span class="hljs-function">            <span class="hljs-title">postrender</span> = <span class="hljs-params">(err, str)</span> -&gt;</span>
-              <span class="hljs-keyword">if</span> err <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> report err</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-19">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-19">&#182;</a>
-              </div>
-              <p>Apply postrender before sending response.</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>              jsdom.env <span class="hljs-attribute">html</span>: str, <span class="hljs-attribute">src</span>: [jquery()], <span class="hljs-attribute">done</span>: <span class="hljs-function"><span class="hljs-params">(errors, <span class="hljs-built_in">window</span>)</span> -&gt;</span>
-                <span class="hljs-keyword">if</span> err <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> report errors.join <span class="hljs-string">' '</span>
-                ctx.<span class="hljs-built_in">window</span> = <span class="hljs-built_in">window</span>
-                rendered = postrenders[opts.postrender].apply ctx, [<span class="hljs-built_in">window</span>.$]
-
-                doctype = (<span class="hljs-built_in">window</span>.<span class="hljs-built_in">document</span>.doctype <span class="hljs-keyword">or</span> <span class="hljs-string">''</span>) + <span class="hljs-string">"\n"</span>
-                html = doctype + <span class="hljs-built_in">window</span>.<span class="hljs-built_in">document</span>.documentElement.outerHTML
-                report <span class="hljs-literal">null</span>, html
-              <span class="hljs-keyword">return</span>
-
-          res.render.call res, name, opts, postrender
+          res.render.call res, name, opts, report
 
         apply_helpers ctx
 
@@ -796,11 +761,11 @@ Set options.io to socket.io’s parameters otherwise (optional).</p>
         </li>
         
         
-        <li id="section-20">
+        <li id="section-19">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-20">&#182;</a>
+                <a class="pilcrow" href="#section-19">&#182;</a>
               </div>
               <p>Register socket.io handlers.</p>
 
@@ -871,11 +836,11 @@ Set options.io to socket.io’s parameters otherwise (optional).</p>
         </li>
         
         
-        <li id="section-21">
+        <li id="section-20">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-21">&#182;</a>
+                <a class="pilcrow" href="#section-20">&#182;</a>
               </div>
               <p>Go!</p>
 
@@ -886,11 +851,11 @@ Set options.io to socket.io’s parameters otherwise (optional).</p>
         </li>
         
         
-        <li id="section-22">
+        <li id="section-21">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-22">&#182;</a>
+                <a class="pilcrow" href="#section-21">&#182;</a>
               </div>
               <p>The stringified zappa client.</p>
 
@@ -928,11 +893,11 @@ Set options.io to socket.io’s parameters otherwise (optional).</p>
         </li>
         
         
-        <li id="section-23">
+        <li id="section-22">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-23">&#182;</a>
+                <a class="pilcrow" href="#section-22">&#182;</a>
               </div>
               <p>Client (or hijacker) trying to re-key.</p>
 
@@ -945,11 +910,11 @@ Set options.io to socket.io’s parameters otherwise (optional).</p>
         </li>
         
         
-        <li id="section-24">
+        <li id="section-23">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-24">&#182;</a>
+                <a class="pilcrow" href="#section-23">&#182;</a>
               </div>
               <p>Update the Express session store</p>
 
@@ -962,11 +927,11 @@ Set options.io to socket.io’s parameters otherwise (optional).</p>
         </li>
         
         
-        <li id="section-25">
+        <li id="section-24">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-25">&#182;</a>
+                <a class="pilcrow" href="#section-24">&#182;</a>
               </div>
               <p>Update the Socket.IO store</p>
 
@@ -981,11 +946,11 @@ Set options.io to socket.io’s parameters otherwise (optional).</p>
         </li>
         
         
-        <li id="section-26">
+        <li id="section-25">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-26">&#182;</a>
+                <a class="pilcrow" href="#section-25">&#182;</a>
               </div>
               <p>Let the client know which key to use.</p>
 
@@ -1001,11 +966,11 @@ Set options.io to socket.io’s parameters otherwise (optional).</p>
         </li>
         
         
-        <li id="section-27">
+        <li id="section-26">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-27">&#182;</a>
+                <a class="pilcrow" href="#section-26">&#182;</a>
               </div>
               <p>zappa.run [host,] [port,] [{options},] root_function
 Takes a function and runs it as a zappa app. Optionally accepts a port

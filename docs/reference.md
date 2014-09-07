@@ -234,22 +234,6 @@ To disable it on default zappa:
 
     @use partials: { coffee: require('coffeecup').render }
 
-### @postrender
-
-    @postrender name: function
-
-DOM rendering with server-side jQuery. Defines a function that can be applied after `@render` .
-
-To use this feature, `npm install jsdom` first.
-
-    @postrender plans: ($) ->
-      $('.staff').remove() if @user.plan isnt 'staff'
-      $('div.' + @user.plan).addClass 'highlighted'
-
-    @get '/postrender': ->
-      @locals.user = plan: 'staff'
-      @render index: {postrender: 'plans'}
-
 ### @include (file)
 
     @include "file"
@@ -682,8 +666,6 @@ Adds the following features:
   - You can use the syntax: `@render name: {foo: 'bar'}`.
 
   - You can use inline views (see `@view`).
-
-  - You can use post-rendering (see `@postrender`): `render 'index', postrender: 'foo'`.
 
   - If the setting `databag` is on, the databag will be automatically available to templates as `params`.
 

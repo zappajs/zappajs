@@ -94,7 +94,6 @@ zappa.app = ->
   # Storage for user-provided stuff.
   ws_handlers = {}
   helpers = {}
-  postrenders = {}
 
   app = context.app = express()
   if options.https?
@@ -254,12 +253,6 @@ zappa.app = ->
   context.helper = (obj) ->
     for k, v of obj
       helpers[k] = v
-    return
-
-  context.postrender = (obj) ->
-    jsdom = require 'jsdom'
-    for k, v of obj
-      postrenders[k] = v
     return
 
   context.on = (obj) ->
@@ -493,23 +486,7 @@ zappa.app = ->
             fn = opts
             opts = {}
 
-          if not opts.postrender?
-            postrender = report
-          else
-            postrender = (err, str) ->
-              if err then return report err
-              # Apply postrender before sending response.
-              jsdom.env html: str, src: [jquery()], done: (errors, window) ->
-                if err then return report errors.join ' '
-                ctx.window = window
-                rendered = postrenders[opts.postrender].apply ctx, [window.$]
-
-                doctype = (window.document.doctype or '') + "\n"
-                html = doctype + window.document.documentElement.outerHTML
-                report null, html
-              return
-
-          res.render.call res, name, opts, postrender
+          res.render.call res, name, opts, report
 
         apply_helpers ctx
 

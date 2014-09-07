@@ -307,20 +307,6 @@ Zappa helpers are functions with automatic access to the same context (`this`/`@
     @on 'enter dungeon': ->
       @map 'dungeon'
 
-## Post-rendering with server-side jQuery
-
-Rendering things linearly is often the approach that makes more sense, but sometimes DOM manipulation can avoid loads of repetition. The best DOM libraries in the land are in JavaScript, and thanks to [jsdom](http://jsdom.org/), you can use them on the server-side too.
-
-Zappa makes it trivial to post-process your rendered templates by manipulating them with jQuery:
-
-    @postrender plans: ($) ->
-      $('.staff').remove() if @user.plan isnt 'staff'
-      $('div.' + @user.plan).addClass 'highlighted'
-
-    @get '/postrender': ->
-      @user = plan: 'staff'
-      @render index: {postrender: 'plans'}
-
 ## Including modules
 
 Besides good ol' `require`, zappa also provides `@include`, which not only requires a file, but also calls an exported function named `include`, setting the value of `this` to the same context:

@@ -22,7 +22,6 @@
     "jquery": "^2.1.1",
     "sammy": "git+https://github.com/quirkey/sammy.git",
     "coffee-script": "~1.8.0",
-    "jsdom": "~0.11.1",
     "underscore": "~1.7.0",
     "request": "~2.36.0",
     "consolidate": "~0.10.0",
