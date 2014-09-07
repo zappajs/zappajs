@@ -53,13 +53,7 @@
   "main": "lib/zappa.js",
   "files": [
     "lib/zappa.js",
-    "lib/client.js",
-    "vendor/jquery.js",
-    "vendor/jquery.min.js",
-    "vendor/sammy.js",
-    "vendor/sammy.min.js",
-    "vendor/socket.io.js",
-    "vendor/socket.io.min.js"
+    "lib/client.js"
   ],
   "scripts": {
     "pretest": "npm install -d && cake setup",
