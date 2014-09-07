@@ -47,7 +47,7 @@ skeleton = ->
 
           apply_helpers ctx
 
-          action.apply ctx
+          action.apply ctx, data
 
     context.connect = ->
       context.socket = io.connect.apply io, arguments
