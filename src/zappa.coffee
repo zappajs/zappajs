@@ -9,7 +9,6 @@ log = console.log
 fs = require 'fs'
 path = require 'path'
 uuid = require 'node-uuid'
-uglify = require 'uglify-js'
 methods = require 'methods'
 
 session = require 'express-session'
@@ -21,6 +20,7 @@ vendor_module = (module,args...) ->
 socketio_key = '__session'
 
 # Soft dependencies:
+uglify = null
 jsdom = null
 coffee_css = null
 
@@ -59,6 +59,7 @@ coffeescript_helpers = """
 """.replace /\n/g, ''
 
 minify = (js) ->
+  uglify ?= require 'uglify-js'
   result = uglify.minify js, fromString:true
   result.code
 
