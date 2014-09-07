@@ -4,7 +4,8 @@
 # You must run share_socketio.coffee in parallel to this script.
 #
 
-require('./zappajs') 3000, ->
+# No cheating: we start ZappaJS without Socket.IO!
+require('./zappajs') 3000, io:false, ->
 
   @use morgan:'combined', 'cookie-parser'
 
@@ -12,7 +13,7 @@ require('./zappajs') 3000, ->
 
   @get '/': ->
     @render 'default',
-      scripts: '/socket.io/socket.io /zappa/jquery /zappa/zappa /index'.split ' '
+      scripts: '/zappa/socket.io /zappa/simple /index'.split ' '
 
   @get '/touch': ->
     @session.foo = 'bar'

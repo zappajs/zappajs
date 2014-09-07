@@ -327,6 +327,7 @@ zappa.app = ->
               when zappa_prefix+'/zappa.js' then send client
               when zappa_prefix+'/jquery.js' then send jquery_minified()
               when zappa_prefix+'/sammy.js' then send sammy_minified()
+              when zappa_prefix+'/socket.io.js' then send socketjs()
               else next()
           return
       session: (options) ->
@@ -582,6 +583,7 @@ zappa.app = ->
     client = minify client
     client_bundle_simple.content = minify client_bundle_simple()
     client_bundled.content = minify client_bundled()
+    socketjs.content = minify socketjs()
 
   if io?
     zappa_prefix = app.settings.zappa_prefix
