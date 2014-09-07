@@ -118,29 +118,22 @@ One difference is that it also works with the "key: value syntax":
 
 Another is that you can define inline views that `@render` "sees" as if they were in the filesystem:
 
-    @use 'partials'
-
     @get '/': ->
       @render index:
         foo: 'bar'
         title: 'Inline template'
-        layout: 'layout'
 
+    {doctype,html,head,body,h1,p} = @teacup
     @view index: ->
-      h1 @title
-      p @foo
-
-    @view layout: ->
       doctype 5
-      html ->
-        head -> title @title
-        body @body
+      html =>
+        head => title @title
+        body =>
+          h1 @title
+          p @foo
 
-(You'll need to `npm install zappajs-partials` for the layout to work. Express 3.0 no longer provides layout on its own.)
+Note that zappa comes with a default templating engine, [teacup](https://goodeggs.github.io/teacup), and you don't have to setup anything to use it. You can also easily use other engines by specifying the file extension or the `'view engine'` setting; it's just express. Well, express + inline views support:
 
-Note that zappa comes with a default templating engine, [CoffeeCup](https://github.com/gradus/coffeecup), and you don't have to setup anything to use it. You can also easily use other engines by specifying the file extension or the `'view engine'` setting; it's just express. Well, express + inline views support:
-
-    @use 'partials'
     @app.engine 'eco', require('consolidate').eco
     @set 'view engine': 'eco'
 
@@ -148,61 +141,24 @@ Note that zappa comes with a default templating engine, [CoffeeCup](https://gith
     @get '/jade': -> @render 'index.jade': {foo: 'bar', title: 'Jade template'}
 
     @view index: '''
-      <h1><%= @title %></h1>
-      <p><%= @foo %></p>
-    '''
-
-    @view layout: '''
       <!DOCTYPE html>
       <html>
         <head><title><%= @title %></title></head>
-        <body><%- @body %></body>
-      </html>
+        <body>
+          <h1><%= @title %></h1>
+          <p><%= @foo %></p>
+        </body>
     '''
 
     @view 'index.jade': '''
-      h1= title
-      p= foo
-    '''
-
-    @view 'layout.jade': '''
       doctype html
       html
         head
           title= title
-        body!= body
+        body
+          h1= title
+          p= foo
     '''
-
-If you don't feel like writing brain-dead HTML boilerplate, you can use a configurable template zappa provides:
-
-    require('zappajs') ->
-      @use 'partials'
-      @enable 'default layout'
-
-      @get '/': ->
-        @render index: {foo: 'bar', title:'Inline template'}
-
-      @view index: ->
-        h1 @title
-        p @foo
-
-The following template will be added automatically:
-
-    doctype 5
-    html ->
-      head ->
-        title @title if @title
-        if @scripts
-          for s in @scripts
-            script src: s + '.js'
-        script(src: @script + '.js') if @script
-        if @stylesheets
-          for s in @stylesheets
-            link rel: 'stylesheet', href: s + '.css'
-        if @stylesheet
-          link(rel: 'stylesheet', href: @stylesheet + '.css')
-        style @style if @style
-      body @body
 
 ## Knock your sockets off
 
@@ -229,27 +185,26 @@ On the client-side, you can use the vanilla socket.io API if you like, but that 
 With `@coffee`, you can define client-side code inline, and serve it in JS form with the correct content-type set. No compilation involved, since we already have its string representation from the runtime:
 
     @get '/': ->
-      @render 'index', layout:'layout'
+      @render 'index'
 
     @coffee '/index.js': ->
       alert 'hullo'
 
+    {doctype,html,head,script,body,h1} = @teacup
     @view index: ->
-      h1 'Inline client example'
-
-    @view layout: ->
       doctype 5
       html ->
         head -> title 'bla'
         script src: '/index.js'
-      body @body
+      body ->
+        h1 'Inline client example'
 
 On a step further, you have `@client`, which gives you access to a matching client-side zappa API:
 
     @enable 'zappa'
 
     @get '/': ->
-      @render index: {layout: no}
+      @render 'index'
 
     @on connection: ->
       @emit time: {time: new Date()}
@@ -263,6 +218,7 @@ On a step further, you have `@client`, which gives you access to a matching clie
 
       @connect()
 
+    {doctype,html,head,title,script,body} = @teacup
     @view index: ->
       doctype 5
       html ->

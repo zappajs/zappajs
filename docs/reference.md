@@ -7,11 +7,9 @@ title: API Reference (v0.4.21)
 
 ## References
 
-For a list of standard middleware, see [the Connect documentation](http://www.senchalabs.org/connect/).
+For a list of standard middleware, see [the Connect documentation](https://github.com/senchalabs/connect#middleware).
 
-A lot of Zappa methods are shortcuts or extensions of the [Express API](http://expressjs.com/api.html).
-
-Only some of the [Socket.IO events](https://github.com/LearnBoost/socket.io/wiki/Exposed-events) are documented here.
+A lot of Zappa methods are shortcuts or extensions of the [Express API](http://expressjs.com/4x/api.html).
 
 ## EXPORTS
 
@@ -49,7 +47,7 @@ Same as `zappa.app`, but calls `server.listen` for you.
 
 It will automatically print the equivalent to the following to stdout:
 
-    Express server listening on port xxxx in [development/production] mode
+    Express server listening on <ip>:<port> in [development/production] mode
     Zappa x.x.x orchestrating the show
 
 The base export is actually a reference to this same function, so these are equivalent:
@@ -66,28 +64,14 @@ You can also pass the parameters in the `options` object. The following options 
 
 * `port`
 * `host`
-* `disable_io`: if true, the Socket.IO interface will be disabled.
-* `io`: options for the Socket.IO server.
+* `io`: options for the Socket.IO server. Set to `false` to disable Socket.IO.
 * `https`: object containing [options for HTTPS](http://nodejs.org/api/tls.html#tls_tls_createserver_options_secureconnectionlistener). Generally `key` and `cert` are all you need:
 
         # Start a HTTPS server on port 3443
         require('zappajs') 3443, https:{ key: ... , cert: ... }, ->
           @get '/': 'hi'
 
-### zappa.adapter
 
-    zappa.adapter engine[, options]
-
-Creates a zappa view adapter that can be provided to `@engine` or `@use partials:`.
-This view adapter complies with both Express 2.x (`render`,`compile`) and Express 3.x specifications.
-
-The `engine` might be a string (in which case it is passed to `require` first) or an engine object (in which case it must provide a `compile` method).
-
-The view adapter provides the content of `params` at the root of the template's dataset, except for those whose name is listed in `options.blacklist`. For example, the default zappa adapter is:
-
-    zappa.adapter 'coffeecup', blacklist: ['format', 'autoescape', 'locals', 'hardcode', 'cache']
-
-See `@view` for more details.
 
 ## ROOT SCOPE
 
@@ -132,7 +116,7 @@ Ex.:
         @next "Failed to load user #{@params.id}"
 
     @get '/', load_user, -> 'hi'
-    
+
     # Or using alternate syntax
     @get '/': [load_user, -> 'hi']
 
@@ -147,7 +131,7 @@ Or as plain arrays, as Express allows:
     common = [auth, load_user, apply_policy]
 
     @get '/', common, -> 'hi'
-    
+
     # Or using alternate syntax
     @get '/': [common, -> 'hi']
 
@@ -200,7 +184,7 @@ Since the parameter is actually an object, you can define any number of helpers 
 
     @view path: contents
 
-Define an inline template. It's like you had a file on disk at `path` inside Express' `views` directory. It will have precedence over a template on disk.
+Define an inline template.
 
 Ex.:
 
@@ -211,28 +195,13 @@ Ex.:
       <h1><%= @foo %></h1>
     '''
 
-By default, the templating engine is CoffeeCup with extension `.coffee`. To use other engines, just use express' mechanisms:
+By default, the templating engine is teacup with extension `.coffee`. To use other engines, just use express' mechanisms:
 
     @render 'index.jade'
 
 Or:
 
     @set 'view engine': 'jade'
-
-All variables at `@`/`params` (request params + those you created) are automatically made available to templates as `params.foo` (in CoffeeCup, `@params.foo`).
-
-In addition, if you're using the *zappa view adapter* (as is the case by default, with CoffeeCup), they're also made available at the template's "root namespace" (`foo` or CoffeeCup's `@foo`).
-
-Since in express templating data is usually mixed up with framework locals and template options, the adapter will only put variables in the template root if there isn't a variable there with the same name already, *and* the name is not blacklisted.
-
-To use this feature with other templating engines:
-
-    blacklist = 'scope self locals filename debug compiler compileDebug inline'.split ' '
-    @engine jade: @zappa.adapter 'jade', blacklist
-
-To disable it on default zappa:
-
-    @use partials: { coffee: require('coffeecup').render }
 
 ### @include (file)
 
@@ -466,18 +435,6 @@ If your client-side code doesn't require Sammy, use `/zappa/simple.js` which com
 
 If the `minify` setting is enabled, the contents will be minified using `uglify-js`.
 
-#### partials
-
-Uses `zappajs-partials` (aka `express-partials`) to bring back layout and partials support to Express 3.x.
-
-Since Express 3.x requires asynchronous template engines, but partials require synchronous template engines, if you provided any non-standard mappings to express via `@engine` you will need to provide these as well to partials:
-
-    # Our '.html' files are actually jade files.
-    @use partials:
-      html: @zappa.adapter 'jade'
-
-As with `@engine`, this is not required if the file extension matches the template engine name, and the `.coffee` extension is already mapped to CoffeeCup.
-
 ### @middleware
 
 Wraps a middleware function so that it supports both the Express API and the Zappa API:
@@ -666,24 +623,6 @@ Adds the following features:
   - You can use the syntax: `@render name: {foo: 'bar'}`.
 
   - You can use inline views (see `@view`).
-
-  - If the setting `databag` is on, the databag will be automatically available to templates as `params`.
-
-  - You can use layouts and partials (even though Express 3.x no longer provides them):
-
-        @use 'partials'
-        @get '/': ->
-          @render 'index', layout:'layout'
-
-    You may `@enable 'default layout' to activate the default layout; or provide your own:
-
-        @view layout: ->
-          html ->
-            body: @body
-
-    To disable layout processing: `@render 'index', layout: no`.
-
-    See the documentation for `partials` for more information.
 
 ### @redirect
 
@@ -908,37 +847,11 @@ Any of Express' options are available as well.
 
 Uses uglify-js to minify the outputs of `/zappa/full.js`, `/zappa/simple.js`, `/zappa/zappa.js`, `@client`, `@shared`, `@coffee`, `@js`.
 
-### 'default layout'
 
-If enabled, zappa adds the following template with the name `layout`:
 
-    doctype 5
-    html ->
-      head ->
-        title @title if @title
-        if @scripts
-          for s in @scripts
-            script src: extension s, '.js'
-        script(src: extension @script, '.js') if @script
-        if @stylesheets
-          for s in @stylesheets
-            link rel: 'stylesheet', href: extension s, '.css'
-        link(rel: 'stylesheet', href: extension @stylesheet, '.css') if @stylesheet
-        style @style if @style
-      body @body
 
-where `extension` accepts `path` with or without the given extension.
 
-### 'magic middleware'
 
-If enabled, all middleware functions are wrapped using `@middleware` so that they may support the Zappa API.
-
-If disabled, middleware functions that use the Zappa API must be wrapped individually using `@middleware`.
-
-### 'databag'
-
-If enabled, views will receive an object containing the merge of `@query`, `@params`, and `@body`.
-This object will be called `params` (or `@params` in coffeecup views).
 
 ### 'x-powered-by'
 
