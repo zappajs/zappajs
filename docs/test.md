@@ -7,7 +7,7 @@ title: How to Test Zappa(JS) Apps
 
 ## Introduction
 
-In this document we describe how to modify the following, typical Zappa(JS) code in order to make it easier to test.
+In this document we describe how to refactor the following, typical Zappa(JS) code in order to make it easier to test.
 
     require('zappajs') 2222, ->
 
@@ -19,9 +19,9 @@ In this document we describe how to modify the following, typical Zappa(JS) code
 
 ### Use `@include`
 
-You can break down a large Zappa application into smaller bits by using `@include`. This allows you to build large Zappa applications by combining reusable, smaller, domain-specific applications.
+You can break down a large Zappa application into smaller bits by using `@include`. This allows you to build large Zappa applications by combining reusable, smaller, domain-specific applications. These might turn into reusable components that could be shared and combined into new projects.
 
-Moreover, `@include` can be used to split the code that starts the application (the web server) and the application logic itself, as follows.
+More importantly for our goal here, `@include` can be used to split the code that starts the application (the web server) and the application logic itself, as follows.
 
 ### A Simple Server
 
@@ -51,7 +51,7 @@ The application itself is written in a separate file.
 You can now test the application without actually starting a web server. For example using `mocha`:
 
     # test.coffee for mocha
-    server  = require('zappajs').app ->
+    server = require('zappajs').app ->
       @include './app.coffee'
     express = server.app
 
@@ -65,20 +65,23 @@ You can now test the application without actually starting a web server. For exa
         .expect 'Content-Type', /json/
         .expect 200, done
 
-Note how the application is started using `zappajs.app`, which creates a Node.js server but does not bind it to a specific port.
+Note how the application is created using `zappajs.app`, which creates a Node.js server but does not bind it to a specific port.
 
-Run `coffee -c test.coffee` then `mocha test.coffee` to confirm the application works as expected.
+Run `mocha --compilers coffee:coffee-script/register test.coffee` to confirm the application works as expected.
 
 If you need to make sure the test uses a brand new server each time, move the server creation code inside the tests:
 
     # test.coffee for mocha
     supertest = require 'supertest'
 
+    new_app = ->
+      server = require('zappajs').app ->
+        @include './app.coffee'
+      server.app
+
     describe 'GET /health', ->
 
-      server    = require('zappajs').app ->
-        @include './app.coffee'
-      express = server.app
+      express = new_app()
 
       it 'returns a 200 OK', (done) ->
         supertest(express)

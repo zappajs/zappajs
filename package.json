@@ -40,7 +40,9 @@
     "method-override": "^2.2.0",
     "basic-auth": "^1.0.0",
     "docco": "^0.6.3",
-    "jsdom": "^1.0.0-pre.6"
+    "jsdom": "^1.0.0-pre.6",
+    "mocha": "^1.21.4",
+    "supertest": "^0.13.0"
   },
   "keywords": [
     "framework",
@@ -59,7 +61,7 @@
   ],
   "scripts": {
     "pretest": "npm install -d && cake setup",
-    "test": "cake test",
+    "test": "cake test && mocha --compilers coffee:coffee-script/register mocha/tests/",
     "prepublish": "cake setup"
   },
   "contributors": [
