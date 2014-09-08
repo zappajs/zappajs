@@ -1,11 +1,10 @@
 app = require('express')()
 fs = require 'fs'
 
-compile = require('coffeecup').adapters.express.compile
 cache = {}
 
 app.engine '.coffee', (path,options,next) ->
-  cache[path] ?= compile fs.readFileSync( path, 'utf8' ), options
+  cache[path] ?= require path
   next null, cache[path] options
 
 app.get '/', (req, res) ->
