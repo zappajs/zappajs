@@ -50,21 +50,20 @@ The application itself is written in a separate file.
 
 You can now test the application without actually starting a web server. For example using `mocha`:
 
-    # test.coffee
+    # test.coffee for mocha
     server  = require('zappajs').app ->
       @include './app.coffee'
     express = server.app
 
     supertest = require 'supertest'
-    mocha = require 'mocha'
 
     describe 'GET /health', ->
 
       it 'returns a 200 OK', (done) ->
         supertest(express)
-          .get('/health')
-          .expect('Content-Type', /json/)
-          .expect(200,done)
+        .get '/health'
+        .expect 'Content-Type', /json/
+        .expect 200, done
 
 Note how the application is started using `zappajs.app`, which creates a Node.js server but does not bind it to a specific port.
 
@@ -72,9 +71,8 @@ Run `coffee -c test.coffee` then `mocha test.coffee` to confirm the application 
 
 If you need to make sure the test uses a brand new server each time, move the server creation code inside the tests:
 
-    # test.coffee
+    # test.coffee for mocha
     supertest = require 'supertest'
-    mocha = require 'mocha'
 
     describe 'GET /health', ->
 
@@ -84,6 +82,6 @@ If you need to make sure the test uses a brand new server each time, move the se
 
       it 'returns a 200 OK', (done) ->
         supertest(express)
-          .get('/health')
-          .expect('Content-Type', /json/)
-          .expect(200,done)
+        .get '/health'
+        .expect 'Content-Type', /json/
+        .expect 200, done
