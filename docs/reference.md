@@ -442,7 +442,9 @@ Same as `@express.static(root + '/public')`, where `root` is the directory of th
 
 #### session
 
-This zappa middleware is a wrapper for `express-session`. Use it instead of `express-session` if you need `@session` inside your Socket.io code in order to retrieve the Express session data.
+This zappa middleware is a wrapper for `express-session`. Use it instead of `express-session` to enable `@session` inside your Socket.io code.
+
+The Express session store saved by this middleware is available in ZappaJS' root scope as `@session_store`.
 
 #### zappa
 
@@ -723,7 +725,7 @@ Broadcast to a room.
 
     @session (error,session) ->
 
-Gets the associated Express session.
+Retrieves the associated Express session.
 
 The session object is only available if the Express session was previously linked to the socket using client-side `@share`. This is done automatically for the default, local Express session and local Socket.IO server.
 You must also use Zappa's `@use session:....` instead of directly calling `@use 'express-session'`.
