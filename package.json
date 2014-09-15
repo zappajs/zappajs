@@ -9,10 +9,10 @@
     "url": "git://github.com/zappajs/zappajs.git"
   },
   "dependencies": {
-    "express": "4.8.x",
+    "express": "^4.9.0",
     "socket.io": "^1.1.0",
     "socket.io-client": "^1.1.0",
-    "express-session": "~1.7.6",
+    "express-session": "^1.8.1",
     "serve-static": "~1.5.4",
     "jquery": "^2.1.1",
     "sammy": "git+https://github.com/quirkey/sammy.git",
