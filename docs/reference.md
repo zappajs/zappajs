@@ -1,6 +1,6 @@
 ---
 layout: default
-title: API Reference (v1.1.0)
+title: API Reference (v1.3.0)
 ---
 
 # {{page.title}}
@@ -87,6 +87,8 @@ Shortcuts to express' `app[verb]`. Params will just be passed forward unmodified
 The handler functions will have access to all variables described in the **request handlers scope** section. The middleware functions can also get access to those variables, but for performance reasons this is not enabled by default, use `@wrap` to give them access.
 
 If a handler returns a string, `res.send(string)` will be called automatically.
+
+Handlers which are neither functions nor strings will generate an exception.
 
 Ex.:
 
