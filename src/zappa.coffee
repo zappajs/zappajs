@@ -8,6 +8,7 @@ zappa = version: (require '../package.json').version
 log = console.log
 fs = require 'fs'
 path = require 'path'
+util = require 'util'
 uuid = require 'node-uuid'
 methods = require 'methods'
 
@@ -434,7 +435,7 @@ zappa.app = ->
         res.type r.type if r.type?
         res.send r.handler
         return
-    else
+    else if r.handler.call?
       app[r.verb] r.path, r.middleware, (req, res, next) ->
         ctx =
           app: app
@@ -496,6 +497,9 @@ zappa.app = ->
         res.type(r.type) if r.type?
         if typeof result is 'string' then res.send result
         else return result
+
+    else
+      throw new Error "ZappaJS invalid handler of type #{typeof r.handler}: #{util.inspect r.handler}"
 
   # Register socket.io handlers.
   io?.sockets.on 'connection', (socket) ->
