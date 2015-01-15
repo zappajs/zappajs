@@ -234,6 +234,7 @@ zappa.app = ->
             for k, v of obj
               module.render v, filename: k, (err, css) ->
                 throw err if err
+                css = css.css if css.css? and typeof css.css is 'string' # less
                 route verb: 'get', path: k, handler: css, type: 'css'
             return
         return
