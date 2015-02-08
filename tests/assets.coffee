@@ -200,7 +200,7 @@ CSS_TYPE = 'text/css; charset=utf-8'
     c = t.client(zapp.server)
     c.get '/socket.io/socket.io.js', (err, res) ->
       t.equal 'content-type', res.headers['content-type'], 'application/javascript'
-      t.equal 'body-length', res.body.length, 167391
+      t.equal 'body-length', res.body.length, 174603
 
   zappa: (t) ->
     t.expect 'content-type', 'snippet'
@@ -290,4 +290,4 @@ CSS_TYPE = 'text/css; charset=utf-8'
     c = t.client(zapp.server)
     c.get '/myapp/socket.io/socket.io.js', (err, res) ->
       t.equal 'content-type', res.headers['content-type'], 'application/javascript'
-      t.equal 'body-length', res.body.length, 167391
+      t.equal 'body-length', res.body.length, 174603
