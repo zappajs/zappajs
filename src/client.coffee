@@ -5,6 +5,14 @@ skeleton = ->
 
   settings = null
 
+  invariate = (f) ->
+    ->
+      if typeof arguments[0] is 'object'
+        for k,v of arguments[0]
+          f.apply this, [k, v]
+      else
+        f.apply this, arguments
+
   zappa.run = (func) ->
     context = {}
 
@@ -23,53 +31,44 @@ skeleton = ->
 
     app = context.app = Sammy() if Sammy?
 
-    context.get = ->
-      if typeof arguments[0] isnt 'object'
-        route path: arguments[0], handler: arguments[1]
-      else
-        for k, v of arguments[0]
-          route path: k, handler: v
+    context.get = invariate (k,v) ->
+      route path: k, handler: v
 
-    context.helper = (obj) ->
-      for k, v of obj
-        helpers[k] = v
+    context.helper = invariate (k,v) ->
+      helpers[k] = v
 
-    context.on = (obj) ->
-      for message, action of obj
-        context.socket.on message, (data) ->
-          ctx =
-            app: app
-            socket: context.socket
-            id: context.socket.id
-            data: data
-            emit: context.emit
-            share: context.share
-
-          apply_helpers ctx
-
-          action.apply ctx, data
+    context.on = invariate (message,action) ->
+      context.socket.on message, (data) ->
+        ctx =
+          app: app
+          socket: context.socket
+          id: context.socket.id
+          data: data
+          emit: context.emit
+          share: context.share
+        apply_helpers ctx
+        action.apply ctx, data
 
     context.connect = ->
-      # Socket.IO 1.1 would say: socket = io arguments...
-      # io() locates or create a manager and returns manager.socket(..).
-      # Manager.socket() locates or create a socket and returns it.
-      context.socket = io.connect.apply io, arguments
+      context.socket = io.apply io, arguments
 
-    context.emit = ->
-      if typeof arguments[0] isnt 'object'
-        context.socket.emit.apply context.socket, arguments
-      else
-        for k, v of arguments[0]
-          context.socket.emit.apply context.socket, [k, v]
+    context.emit = invariate (message,data) ->
+      context.socket.emit.apply context.socket, [message, data]
 
-    context.share = (channel,socket,cb) ->
+    context.share = (channel_name,socket,next) ->
       zappa_prefix = settings.zappa_prefix ? ""
-      # socket.io points to the Manager for the socket.
-      # socket.io.engine is the engine.io-client; engine.id is set to the engine.io handshake sid (session id).
-      # socket.socket.sessionid is the old (0.9) Socket.IO sessionid.
-      sessionid = socket.io?.engine.id ? socket.socket?.sessionid
-      if sessionid?
-        $.getJSON "#{zappa_prefix}/socket/#{channel}/#{sessionid}", cb
+      socket_id = socket.id
+      if not socket_id?
+        next? false
+        return
+      $.getJSON "#{zappa_prefix}/socket/#{channel_name}/#{socket_id}"
+        .done ({key}) ->
+          if key?
+            socket.emit '__zappa_key', {key}, next
+          else
+            next? false
+        .fail ->
+          next? false
 
     route = (r) ->
       ctx = {app}
@@ -89,8 +88,7 @@ skeleton = ->
     # Implements the websockets client with socket.io.
     if context.socket?
       context.socket.on 'connect', ->
-        context.share settings.zappa_channel, context.socket, (data) ->
-          context.key = data.key
+        context.share settings.zappa_channel, context.socket
 
     $(-> app.run '#/') if app?
 

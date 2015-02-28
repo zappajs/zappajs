@@ -65,6 +65,14 @@ flatten = (arr, ret) ->
       ret.push o
   ret
 
+invariate = (f) ->
+  ->
+    if typeof arguments[0] is 'object'
+      for k,v of arguments[0]
+        f.apply this, [k, v]
+    else
+      f.apply this, arguments
+
 # Takes in a function and builds express/socket.io apps based on the rules
 # contained in it.
 zappa.app = ->
@@ -165,7 +173,6 @@ zappa.app = ->
 
   # Location of zappa-specific URIs.
   app.set 'zappa_prefix', '/zappa'
-  app.set 'zappa_channel', '__local'
 
   for verb in [methods...,'all']
     do (verb) ->
@@ -191,85 +198,74 @@ zappa.app = ->
               route verb: verb, path: k, handler: v
         return
 
-  context.client = (obj) ->
+  context.client = invariate (k,v) ->
     context.use 'zappa' unless zappa_used
-    for k, v of obj
-      js = ";zappa.run(#{v});"
-      js = minify(js) if app.settings['minify']
-      route verb: 'get', path: k, handler: js, type: 'js'
+    js = ";zappa.run(#{v});"
+    js = minify(js) if app.settings['minify']
+    route verb: 'get', path: k, handler: js, type: 'js'
     return
 
-  context.coffee = (obj) ->
-    for k, v of obj
-      js = ";#{coffeescript_helpers}(#{v})();"
-      js = minify(js) if app.settings['minify']
-      route verb: 'get', path: k, handler: js, type: 'js'
+  context.coffee = invariate (k,v) ->
+    js = ";#{coffeescript_helpers}(#{v})();"
+    js = minify(js) if app.settings['minify']
+    route verb: 'get', path: k, handler: js, type: 'js'
     return
 
-  context.js = (obj) ->
-    for k, v of obj
-      js = String(v)
-      js = minify(js) if app.settings['minify']
-      route verb: 'get', path: k, handler: js, type: 'js'
+  context.js = invariate (k,v) ->
+    js = String(v)
+    js = minify(js) if app.settings['minify']
+    route verb: 'get', path: k, handler: js, type: 'js'
     return
 
-  context.css = (obj) ->
-    for k, v of obj
-      if typeof v is 'object'
-        coffee_css ?= require 'coffee-css'
-        css = coffee_css.compile v
-      else
-        css = String(v)
-      route verb: 'get', path: k, handler: css, type: 'css'
+  context.css = invariate (k,v) ->
+    if typeof v is 'object'
+      coffee_css ?= require 'coffee-css'
+      css = coffee_css.compile v
+    else
+      css = String(v)
+    route verb: 'get', path: k, handler: css, type: 'css'
     return
 
-  context.with = (obj) ->
-    zappa_with =
-      css: (modules) ->
-        if typeof modules is 'string'
-          modules = [modules]
-        for name in modules
-          module = require(name)
-          context[name] = (obj) ->
-            for k, v of obj
-              module.render v, filename: k, (err, css) ->
-                throw err if err
-                css = css.css if css.css? and typeof css.css is 'string' # less
-                route verb: 'get', path: k, handler: css, type: 'css'
-            return
-        return
+  zappa_with =
+    css: (modules) ->
+      if typeof modules is 'string'
+        modules = [modules]
+      for name in modules
+        module = require(name)
+        context[name] = invariate (k,v) ->
+          module.render v, filename: k, (err, css) ->
+            throw err if err
+            css = css.css if css.css? and typeof css.css is 'string' # less
+            route verb: 'get', path: k, handler: css, type: 'css'
+          return
+      return
 
-    for k,v of obj
-      if zappa_with[k]
-        zappa_with[k] v
+  context.with = invariate (k,v) ->
+    if zappa_with[k]
+      zappa_with[k] v
 
-  context.helper = (obj) ->
-    for k, v of obj
-      helpers[k] = v
+  context.helper = invariate (k,v) ->
+    helpers[k] = v
     return
 
-  context.on = (obj) ->
-    for k, v of obj
-      ws_handlers[k] = v
+  context.on = invariate (k,v) ->
+    ws_handlers[k] = v
     return
 
-  context.view = (obj) ->
-    for k, v of obj
-      ext = path.extname k
-      p = path.join app.get('views'), k
-      if not ext
-        p += '.' + app.get('view engine')
-      views[p] = v
+  context.view = invariate (k,v) ->
+    ext = path.extname k
+    p = path.join app.get('views'), k
+    if not ext
+      p += '.' + app.get('view engine')
+    views[p] = v
     return
 
-  context.engine = (obj) ->
-    for k, v of obj
-      app.engine k, v
+  context.engine = invariate (k,v) ->
+    app.engine k, v
     return
 
-  context.set = (obj) ->
-    for k, v of obj
-      app.set k, v
+  context.set = invariate (k,v) ->
+    app.set k, v
     return
 
   context.enable = ->
@@ -356,13 +352,12 @@ zappa.app = ->
   context.settings = app.settings
   context.locals = app.locals
 
-  context.shared = (obj) ->
+  context.shared = invariate (k,v) ->
     context.use 'zappa' unless zappa_used
-    for k, v of obj
-      js = ";zappa.run(#{v});"
-      js = minify(js) if app.settings['minify']
-      route verb: 'get', path: k, handler: js, type: 'js'
-      v.apply context
+    js = ";zappa.run(#{v});"
+    js = minify(js) if app.settings['minify']
+    route verb: 'get', path: k, handler: js, type: 'js'
+    v.apply context
     return
 
   context.include = (p) ->
@@ -380,51 +375,27 @@ zappa.app = ->
         return
     ctx
 
-  # Local socket
-  request_socket = (req) ->
-    socket_id = req.session?.__socket?[app.settings.zappa_channel]?.id
-    if socket_id
-      # io.sockets is the default namespace (=== io.of('/')).
-      # io.sockets.sockets is the list of sockets in that namespace.
-      for socket in io.sockets.sockets
-        return socket if socket.id is socket_id
-    return null
+  build_param = (callback) ->
+    (req,res,next,p) ->
+      ctx =
+        app: app
+        settings: app.settings
+        locals: res.locals
+        request: req
+        req: req
+        query: req.query
+        params: req.params
+        body: req.body
+        session: req.session
+        response: res
+        res: res
+        next: next
+        param: p
+      apply_helpers ctx
+      callback.call ctx, req, res, next, p
 
-  # The callback will receive (err,session).
-  socket_session = (socket,cb) ->
-    # First retrieve the data record associated with the socket.id
-    context.session_store.get socket.id, (err,data) ->
-      if err
-        return cb err.toString(), null
-      if data?.id?
-        # Then retrieve the session data stored by Express
-        context.session_store.get data.id, cb
-      else
-        cb 'Invalid data record', null
-
-  context.param = (obj) ->
-    build = (callback) ->
-      (req,res,next,p) ->
-        ctx =
-          app: app
-          settings: app.settings
-          locals: res.locals
-          request: req
-          req: req
-          query: req.query
-          params: req.params
-          body: req.body
-          session: req.session
-          response: res
-          res: res
-          next: next
-          param: p
-        apply_helpers ctx
-        callback.call ctx, req, res, next, p
-
-    for k, v of obj
-      @app.param k, build v
-
+  context.param = invariate (k,v) ->
+    @app.param k, build_param v
     return
 
   # Register a route with express.
@@ -463,14 +434,11 @@ zappa.app = ->
               for k, v of arguments[0]
                 render.apply @, [k, v]
             return
-          emit: ->
-            socket = request_socket req
-            if socket?
-              if typeof arguments[0] isnt 'object'
-                socket.emit.apply socket, arguments
-              else
-                for k, v of arguments[0]
-                  socket.emit.apply socket, [k, v]
+          emit: invariate (k,v) ->
+            socket_id = req.session?.__socket?[app.settings.zappa_channel]?.id
+            if socket_id?
+              room = io.sockets.in socket_id
+              room.emit.apply room, [k, v]
             return
 
         render = (name,opts = {},fn) ->
@@ -502,9 +470,13 @@ zappa.app = ->
     else
       throw new Error "ZappaJS invalid handler of type #{typeof r.handler}: #{util.inspect r.handler}"
 
+  # Zappa local channel (the default channel used for @emit inside Zappa's own @get etc.
+  app.set 'zappa_channel', '__local'
+
   # Register socket.io handlers.
   io?.sockets.on 'connection', (socket) ->
     c = {}
+    session_id = null
 
     build_ctx = ->
       ctx =
@@ -519,49 +491,67 @@ zappa.app = ->
           socket.join room
         leave: (room) ->
           socket.leave room
-        emit: ->
-          if typeof arguments[0] isnt 'object'
-            socket.emit.apply socket, arguments
-          else
-            for k, v of arguments[0]
-              socket.emit.apply socket, [k, v]
+        emit: invariate (k,v) ->
+          socket.emit.apply socket, [k, v]
           return
-        broadcast: ->
+        broadcast: invariate (k,v) ->
           broadcast = socket.broadcast
-          if typeof arguments[0] isnt 'object'
-            broadcast.emit.apply broadcast, arguments
-          else
-            for k, v of arguments[0]
-              broadcast.emit.apply broadcast, [k, v]
+          broadcast.emit.apply broadcast, [k, v]
           return
         broadcast_to: (room, args...) ->
           room = io.sockets.in room
-          if typeof args[0] isnt 'object'
-            room.emit.apply room, args
-          else
-            for k, v of args[0]
-              room.emit.apply room, [k, v]
+          broadcast = invariate (k,v) ->
+            room.emit.apply room, [k, v]
+          broadcast args...
           return
-        session: -> socket_session socket, arguments...
 
       apply_helpers ctx
       ctx
 
+    # Wrap the handler for `connection`
     ctx = build_ctx()
     ws_handlers.connection.apply(ctx) if ws_handlers.connection?
 
+    # Wrap the handler for `disconnect`
     socket.on 'disconnect', ->
       ctx = build_ctx()
       ws_handlers.disconnect.apply(ctx) if ws_handlers.disconnect?
 
+    socket.on '__zappa_key', (data,ack) ->
+      unless context.session_store? and data.key?
+        ack no
+        return
+      # Retrieve the data record associated with the key.
+      context.session_store.get data.key, (err,data) ->
+        if err? or not data?
+          ack no
+          return
+        session_id = data.id
+        ack yes
+
+    get_session = (next) ->
+      unless context.session_store? and session_id?
+        next null
+        return
+      # Retrieve the session data stored by Express
+      context.session_store.get session_id, (error,data) ->
+        if error
+          next null
+          return
+        next data
+
+    # Wrap all other (event) handlers
     for name, h of ws_handlers
       do (name, h) ->
         if name isnt 'connection' and name isnt 'disconnect'
           socket.on name, (data, ack) ->
             ctx = build_ctx()
+            ctx.event = name
             ctx.data = data
             ctx.ack = ack
-            h.call ctx, data, ack
+            get_session (session) ->
+              ctx.session = session
+              h.call ctx, data, ack
         return
     return
 
@@ -597,36 +587,36 @@ zappa.app = ->
   do ->
     zappa_prefix = app.settings.zappa_prefix
     context.get zappa_prefix+'/socket/:channel_name/:socket_id', ->
-      if @session?
-        channel_name = @params.channel_name
-        socket_id = @params.socket_id
-
-        @session.__socket ?= {}
-
-        if @session.__socket[channel_name]?
-          # Client (or hijacker) trying to re-key.
-          @json error:'Channel already assigned', channel_name: channel_name
-        else
-          key = uuid.v4() # used for socket 'authorization'
-
-          # Update the Express session store
-          @session.__socket[channel_name] =
-            id: socket_id
-            key: key
-
-          # Update the store.
-          data =
-            id: @req.sessionID   # local Express Session ID
-            key: key
-            cookie: {}
-          context.session_store.set socket_id, data, (err) =>
-            if err
-              @json error: err.toString()
-              return
-            # Let the client know which key to use.
-            @json channel_name: channel_name, key: key
-      else
+      if not @session?
         @json error:'No session'
+        return
+
+      channel_name = @params.channel_name
+      socket_id = @params.socket_id
+
+      @session.__socket ?= {}
+
+      if @session.__socket[channel_name]?
+        @json channel_name: channel_name, key: @session.__socket[channel_name].key
+      else
+        key = uuid.v4() # used for socket 'authorization'
+
+        # Update the Express session store
+        @session.__socket[channel_name] =
+          id: socket_id
+          key: key
+
+        # Update the store.
+        data =
+          id: @req.sessionID   # local Express Session ID
+          key: key
+          cookie: {}
+        context.session_store.set key, data, (err) =>
+          if err
+            @json error: err.toString()
+            return
+          # Let the client know which key to use.
+          @json channel_name: channel_name, key: key
       return
 
   context

@@ -1,6 +1,6 @@
 ---
 layout: default
-title: API Reference (v1.3.1)
+title: API Reference (v2.0.0)
 ---
 
 # {{page.title}}
@@ -446,7 +446,7 @@ Same as `@express.static(root + '/public')`, where `root` is the directory of th
 
 This zappa middleware is a wrapper for `express-session`. Use it instead of `express-session` to enable `@session` inside your Socket.io code.
 
-The Express session store saved by this middleware is available in ZappaJS' root scope as `@session_store`.
+The Express session-store saved by this middleware is available in ZappaJS' root scope as `@session_store`.
 
 #### zappa
 
@@ -653,6 +653,12 @@ Example:
         'image/png':
           qr_encode client
 
+### @emit
+
+Send a Socket.IO message to the local socket.
+
+That socket was automatically referenced using the channel-name `__local` if using the ZappaJS client. See the description of `@share` and of `@session` (under the socket root scope) for more details.
+
 ## SOCKETS HANDLERS SCOPE
 
 The function you pass to `@on` will be called with `this`/`@` set to an object with the following attributes:
@@ -688,6 +694,9 @@ Shortcut to `@socket.id`.
 An empty object unique for each socket. You can put data pertaining to the client here, as an alternative to `@socket.set`.
 
 ### @emit
+
+    @emit 'event'
+    @emit 'event', {key:value}
 
 Shortcut to `@socket.emit`. Send a message to the client.
 
@@ -725,12 +734,14 @@ Broadcast to a room.
 
 ### @session
 
-    @session (error,session) ->
+If available, the Express session object associated with the Socket.io socket. Modifications to this object will not be made available back to Express or to other Socket.io sockets.
 
-Retrieves the associated Express session.
+The client must first link the Socket.io socket with its Express session by using `@share`.
 
-The session object is only available if the Express session was previously linked to the socket using client-side `@share`. This is done automatically for the default, local Express session and local Socket.IO server.
-You must also use Zappa's `@use session:....` instead of directly calling `@use 'express-session'`.
+The session object is only available _after_ the Socket.IO socket has been linked with the Express session using client-side `@share`; it is especially not available inside `@on connection` since at that time the client hasn't had an opportunity to do so.
+This is done automatically for the default, local Express session and local Socket.IO server.
+
+Note: You must use Zappa's `@use session:....` instead of directly calling `@use 'express-session'` if you plan to use this feature.
 
 See `examples/share_*.coffee` for a complete example using separate servers for Socket.IO and Express. The Socket.IO and Express applications can run on the same host (Node.js clustering) or on different hosts.
 
@@ -833,10 +844,12 @@ Same as the client-side root scope's `@emit`.
 
 ### @share
 
-`@share(channel_name,socket,callback)` will associate the socket to the `channel_name`.
-This is used to make the Express session data available to the Socket.IO server.
+`@share(channel_name,socket,next)` will associate the socket to the `channel_name`.
+This is used to make the Express session data available to Socket.IO on the server.
 
-The channel name `__local` is reserved for the local Socket.IO server (in order for Socket.IO server-side to get access to the Express session object in a single-instance scenario).
+The last parameter is a callback; it will be called with `true` in case of success, `false` otherwise.
+
+The channel-name `__local` is reserved for the local Socket.IO server (in order for Socket.IO server-side to get access to the Express session object in a single-instance scenario).
 
 For a multi-server / Node.js cluster example, see `examples/share_*.coffee`.
 

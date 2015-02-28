@@ -37,15 +37,12 @@ require('./zappajs') 3000, io:false, ->
       log = -> $('#log').append arguments...
       socket = null
 
-      @connect()
-
       channel_name = Math.random()
 
       # connect to the separate Socket.IO process.
       socket = io.connect 'http://127.0.0.1:3001'
       socket.on 'connect', =>
-        @share channel_name, socket, (data) ->
-          log "<p>Received key #{data.key} for channel #{data.channel_name}</p>"
+        @share channel_name, socket, (ok) ->
           $.getJSON "/touch", (data) ->
             $.getJSON "/verify", (data) ->
               log "<p>Express says that foo = #{data.foo}</p>"
