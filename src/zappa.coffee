@@ -614,9 +614,7 @@ zappa.app = ->
 
         # Update the store.
         data =
-          id: @req.sessionID   # local Express Session ID
-          key: key
-          cookie: {}
+          id: @session.id   # local Express Session ID
         context.session_store.set key, data, (err) =>
           if err
             @json error: err.toString()
