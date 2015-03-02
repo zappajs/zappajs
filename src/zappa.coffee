@@ -518,13 +518,18 @@ zappa.app = ->
       ws_handlers.disconnect.apply(ctx) if ws_handlers.disconnect?
 
     socket.on '__zappa_key', (data,ack) ->
-      unless context.session_store? and data.key?
-        ack no
+      unless context.session_store?
+        ack error:'Missing session-store.'
+      unless data.key?
+        ack error:'Missing key.'
         return
       # Retrieve the data record associated with the key.
       context.session_store.get data.key, (err,data) ->
-        if err? or not data?
-          ack no
+        if err?
+          ack error:err
+          return
+        if not data?
+          ack error:'Missing data'
           return
         session_id = data.id
         ack yes
@@ -587,7 +592,13 @@ zappa.app = ->
   do ->
     zappa_prefix = app.settings.zappa_prefix
     context.get zappa_prefix+'/socket/:channel_name/:socket_id', ->
+      if not context.session_store?
+        @res.status 500
+        @json error:'No session-store.'
+        return
+
       if not @session?
+        @res.status 400
         @json error:'No session'
         return
 
@@ -599,12 +610,7 @@ zappa.app = ->
       if @session.__socket[channel_name]?
         @json channel_name: channel_name, key: @session.__socket[channel_name].key
       else
-        key = uuid.v4() # used for socket 'authorization'
-
-        # Update the Express session store
-        @session.__socket[channel_name] =
-          id: socket_id
-          key: key
+        key = uuid.v4() # used for socket 'authentication'
 
         # Update the store.
         data =
@@ -615,6 +621,12 @@ zappa.app = ->
           if err
             @json error: err.toString()
             return
+
+          # Update the Express session store
+          @session.__socket[channel_name] =
+            id: socket_id
+            key: key
+
           # Let the client know which key to use.
           @json channel_name: channel_name, key: key
       return

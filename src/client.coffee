@@ -55,6 +55,8 @@ skeleton = ->
     context.emit = invariate (message,data) ->
       context.socket.emit.apply context.socket, [message, data]
 
+    # The callback will receive `true` iff the operation was successful
+    # Might receive an object in case of error, or simply `false`.
     context.share = (channel_name,socket,next) ->
       zappa_prefix = settings.zappa_prefix ? ""
       socket_id = socket.id
@@ -62,13 +64,13 @@ skeleton = ->
         next? false
         return
       $.getJSON "#{zappa_prefix}/socket/#{channel_name}/#{socket_id}"
-        .done ({key}) ->
-          if key?
-            socket.emit '__zappa_key', {key}, next
-          else
-            next? false
-        .fail ->
+      .done ({key}) ->
+        if key?
+          socket.emit '__zappa_key', {key}, next
+        else
           next? false
+      .fail ->
+        next? false
 
     route = (r) ->
       ctx = {app}
