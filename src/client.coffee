@@ -69,7 +69,7 @@ skeleton = ->
       # socket.socket.sessionid is the old (0.9) Socket.IO sessionid.
       sessionid = socket.io?.engine.id ? socket.socket?.sessionid
       if sessionid?
-        $.getJSON "#{zappa_prefix}/socket/#{channel}/#{sessionid}", cb
+        $.getJSON ".#{zappa_prefix}/socket/#{channel}/#{sessionid}", cb
 
     route = (r) ->
       ctx = {app}
