@@ -34,7 +34,13 @@ class Client
     opts.followRedirect ?= no
     opts.jar = false
     opts.method ?= method
-    opts.url = "http://#{@host}:#{@port}#{path}"
+    {pathname,search} = url.parse path
+    opts.url = url.format
+      protocol: 'http:'
+      hostname: @host
+      port: @port
+      pathname: pathname
+      search: search
     opts.encoding ?= 'utf8'
 
     req = request opts, (err, res) ->
@@ -55,7 +61,11 @@ class Client
   patch: (args...) -> @request 'patch', args...
 
   connect: ->
-      @socket = io.connect("http://#{@host}:#{@port}", { 'force new connection': true })
+    the_url = url.format
+      protocol: 'http:'
+      hostname: if @host is '::' then '127.0.0.1' else @host
+      port: @port
+    @socket = io(the_url, { 'force new connection': true })
 
   on: -> @socket.on.apply @socket, arguments
   emit: -> @socket.emit.apply @socket, arguments

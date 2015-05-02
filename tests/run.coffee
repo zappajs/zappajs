@@ -15,7 +15,7 @@ port = 15800
     c2.get '/', (err, res) -> t.equal '127.0.0.1', res.body, 'default'
     c3 = t.client 'http://0.0.0.0:3000'
     c3.get '/', (err, res) -> t.equal '0.0.0.0', res.body, 'default'
-    c4 = t.client 'http://::1:3000'
+    c4 = t.client 'http://[::1]:3000'
     c4.get '/', (err, res) -> t.equal '::1', res.body, 'default'
 
   'default host, specified port as number': (t) ->
