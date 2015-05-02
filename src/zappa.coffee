@@ -666,7 +666,7 @@ zappa.run = ->
       Express server listening on #{addr.address}:#{addr.port} in #{app.settings.env} mode.
       Zappa #{zappa.version} orchestrating the show.
 
-    """
+    """ unless app.settings.silent_zappa
 
   if host
     server.listen port, host, express_ready
