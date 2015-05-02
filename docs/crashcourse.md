@@ -35,7 +35,7 @@ You have direct access to the low-level APIs via `@app` and `@io`:
     require('zappajs') ->
       @app.get '/', (req, res) ->
         res.send 'boring!'
-      @io.sockets.on 'connection', (socket) ->
+      @io.on 'connection', (socket) ->
         socket.emit 'boring'
 
 On top of that, you also have some handy shortcuts such as the `@get` you already know, `@on` (to define *socket.io* handlers), `@use`, `@set`, etc. Those are not only shorter but also accept smarter parameters:

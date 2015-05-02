@@ -22,7 +22,7 @@ port = 16000
     zapp = zappa port++, ->
       @app.get '/', (req, res) ->
         res.send 'boring!'
-      @io.sockets.on 'connection', (socket) ->
+      @io.on 'connection', (socket) ->
         socket.emit 'boring'
 
     c = t.client(zapp.server)
