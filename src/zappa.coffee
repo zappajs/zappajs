@@ -518,6 +518,7 @@ zappa.app = ->
       ws_handlers.disconnect.apply(ctx) if ws_handlers.disconnect?
 
     socket.on '__zappa_key', (data,ack) ->
+      return unless ack?
       unless context.session_store?
         ack error:'Missing session-store.'
       unless data.key?
