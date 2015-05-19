@@ -16,6 +16,19 @@ port = 15900
     c.get '/foo', (err, res) ->
       t.ok 'zappa handles successful queries', res.headers['x-powered-by'].match /^Zappa/
 
+  'silent zappa': (t) ->
+    t.expect 'silent zappa'
+    t.wait 3000
+
+    zapp = zappa port++, ->
+      @enable 'silent_zappa'
+      @get '/', -> 'ok'
+
+    c = t.client(zapp.server)
+
+    c.get '/', (err, res) ->
+      t.ok 'silent zappa', res.body is 'ok'
+
   'format': (t) ->
     t.expect 1,2,3
     t.wait 3000

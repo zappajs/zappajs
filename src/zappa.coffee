@@ -661,18 +661,19 @@ zappa.run = ->
   zapp = zappa.app(root_function,options)
   {server,app} = zapp
 
-  express_ready = ->
-    addr = server.address()
-    log """
-      Express server listening on #{addr.address}:#{addr.port} in #{app.settings.env} mode.
-      Zappa #{zappa.version} orchestrating the show.
+  unless app.settings.silent_zappa
+    server.on 'listening', ->
+      addr = server.address()
+      log """
+        Express server listening on #{addr.address}:#{addr.port} in #{app.settings.env} mode.
+        Zappa #{zappa.version} orchestrating the show.
 
-    """ unless app.settings.silent_zappa
+      """ unless app.settings.silent_zappa
 
   if host
-    server.listen port, host, express_ready
+    server.listen port, host
   else
-    server.listen port, express_ready
+    server.listen port
 
   zapp
 
