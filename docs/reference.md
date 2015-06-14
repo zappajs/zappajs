@@ -114,25 +114,25 @@ Ex.:
       else
         @next "Failed to load user #{@params.id}"
 
-    @get '/', load_user, -> 'hi'
+    @get '/:id', load_user, -> 'hi'
 
     # Or using alternate syntax
-    @get '/': [load_user, -> 'hi']
+    @get '/:id': [load_user, -> 'hi']
 
 You can pass middleware arrays using Coffee-Script's `...` splats:
 
     common = [auth, load_user, apply_policy]
 
-    @get '/', common..., -> 'hi'
+    @get '/:id', common..., -> 'hi'
 
 Or as plain arrays, as Express allows:
 
     common = [auth, load_user, apply_policy]
 
-    @get '/', common, -> 'hi'
+    @get '/:id', common, -> 'hi'
 
     # Or using alternate syntax
-    @get '/': [common, -> 'hi']
+    @get '/:id': [common, -> 'hi']
 
 Finally, the original arguments are available as regular function parameters if for some reason you'd rather do that:
 
