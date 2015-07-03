@@ -21,3 +21,15 @@ JS_TYPE = 'application/javascript; charset=utf-8'
       t.equal 4, res.headers['content-type'], JS_TYPE
     c.get '/zappa/sammy.js', (err, res) ->
       t.equal 5, res.headers['content-type'], JS_TYPE
+
+  arguments: (t) ->
+    t.expect 1
+    t.wait 3000
+
+    zapp = zappa port++, ->
+      @include './included.coffee', a:4
+
+    c = t.client(zapp.server)
+    c.get '/foo', (err, res) ->
+      t.equal 1, res.body, '{"a":4}'
+      t.equal 2, res.headers['content-type'], 'application/json; charset=utf-8'

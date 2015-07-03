@@ -247,6 +247,22 @@ Allows to `require` arbitrary modules (using the standard Node.js algorithm). Th
 
 This allows you to package your Zappa components in modules and locate them automatically.
 
+### @include (file|module) args...
+
+The extraneous arguments are passed as-is to the `@include` function.
+This can be used with both the `file` and the `module` versions of `@include`.
+
+For example:
+
+    # app.coffee
+    require('zappajs') ->
+      @include './sub', auth, foo
+
+    # sub.coffee
+    @include = (auth,foo) ->
+      @get '/', auth, ->
+        @json foo
+
 ### @client
 
     @client '/foo.js': ->

@@ -360,9 +360,9 @@ zappa.app = ->
     v.apply context
     return
 
-  context.include = (p) ->
+  context.include = (p,args...) ->
     sub = if typeof p is 'string' then require path.join(root, p) else p
-    sub.include.apply context
+    sub.include.apply context, args
 
   apply_helpers = (ctx) ->
     for name, helper of helpers
