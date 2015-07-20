@@ -27,28 +27,7 @@ coffee_css = null
 # and consequently to any helpers it might need. So we need to reintroduce
 # these helpers manually inside any "rewritten" function.
 # This list is taken from coffeescript's `src/nodes.coffee` UTILITIES.
-coffeescript_helpers = """
-  var __slice = [].slice;
-  var __hasProp = {}.hasOwnProperty;
-  var __bind = function(fn, me){
-    return function(){ return fn.apply(me, arguments); };
-  };
-  var __extends = function(child, parent) {
-    for (var key in parent) {
-      if (__hasProp.call(parent, key)) child[key] = parent[key];
-    }
-    function ctor() { this.constructor = child; }
-    ctor.prototype = parent.prototype;
-    child.prototype = new ctor();
-    child.__super__ = parent.prototype;
-    return child;
-  };
-  var __indexOf = [].indexOf || function(item) {
-    for (var i = 0, l = this.length; i < l; i++) {
-      if (i in this && this[i] === item) return i;
-    } return -1; };
-  var __modulo = function(a, b) { return (+a % (b = +b) + b) % b; };
-""".replace /\n/g, ''
+coffeescript_helpers = require 'coffeescript-helpers'
 
 minify = (js) ->
   uglify ?= require 'uglify-js'
@@ -206,7 +185,7 @@ zappa.app = ->
     return
 
   context.coffee = invariate (k,v) ->
-    js = ";#{coffeescript_helpers}(#{v})();"
+    js = coffeescript_helpers.p_fun v
     js = minify(js) if app.settings['minify']
     route verb: 'get', path: k, handler: js, type: 'js'
     return
@@ -572,7 +551,7 @@ zappa.app = ->
 
   # The stringified zappa client.
   client = require('./client').build(zappa.version, app.settings)
-  client = ";#{coffeescript_helpers}(#{client})();"
+  client = coffeescript_helpers.p_fun client
   client_bundle_simple = -> client_bundle_simple.content ?=
     if io?
       jquery() + socketjs() + client

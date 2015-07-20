@@ -1,5 +1,6 @@
 zappa = require '../src/zappa'
 port = 15200
+vm = require 'vm'
 
 JS_TYPE = 'application/javascript; charset=utf-8'
 CSS_TYPE = 'text/css; charset=utf-8'
@@ -25,17 +26,48 @@ CSS_TYPE = 'text/css; charset=utf-8'
       t.equal 5, res.headers['content-type'], JS_TYPE
 
   coffee: (t) ->
-    t.expect 1, 2
-    t.wait 3000
+    t.expect 1, 2, 3, 4, 5, 6
+    t.wait 10000
 
     zapp = zappa port++, ->
       @coffee '/coffee.js': ->
         alert 'hi'
+      @coffee '/slice.js': ->
+        [a,b,c...] = 'zappa,hi,zappa,here'.split ','
+        alert b
+      @coffee '/hasProp.js': ->
+        for own k,v of a:1,b:'hi',c:3 when k is 'b'
+          alert v
+      @coffee '/modulo.js': ->
+        a = 8 %% 5
+        alert a
 
     c = t.client(zapp.server)
     c.get '/coffee.js', (err, res) ->
-      t.equal 1, res.body, ';var __slice = [].slice;var __hasProp = {}.hasOwnProperty;var __bind = function(fn, me){  return function(){ return fn.apply(me, arguments); };};var __extends = function(child, parent) {  for (var key in parent) {    if (__hasProp.call(parent, key)) child[key] = parent[key];  }  function ctor() { this.constructor = child; }  ctor.prototype = parent.prototype;  child.prototype = new ctor();  child.__super__ = parent.prototype;  return child;};var __indexOf = [].indexOf || function(item) {  for (var i = 0, l = this.length; i < l; i++) {    if (i in this && this[i] === item) return i;  } return -1; };var __modulo = function(a, b) { return (+a % (b = +b) + b) % b; };(function () {\n            return alert(\'hi\');\n          })();'
+      sandbox =
+        alert: (text) ->
+          t.equal 1, text, 'hi'
+      do vm.runInNewContext res.body, sandbox
       t.equal 2, res.headers['content-type'], JS_TYPE
+
+    c.get '/slice.js', (err,res) ->
+      sandbox =
+        alert: (text) ->
+          t.equal 3, text, 'hi'
+      do vm.runInNewContext res.body, sandbox
+      t.equal 4, res.headers['content-type'], JS_TYPE
+
+    c.get '/hasProp.js', (err,res) ->
+      sandbox =
+        alert: (text) ->
+          t.equal 5, text, 'hi'
+      do vm.runInNewContext res.body, sandbox
+
+    c.get '/modulo.js', (err,res) ->
+      sandbox =
+        alert: (text) ->
+          t.equal 6, text, 3
+      do vm.runInNewContext res.body, sandbox
 
   js: (t) ->
     t.expect 1, 2
@@ -257,7 +289,7 @@ CSS_TYPE = 'text/css; charset=utf-8'
     c.get '/shared.js', (err, res) ->
       t.equal 'shared', res.headers['content-length'], '91'
     c.get '/coffee.js', (err, res) ->
-      t.equal 'coffee', res.headers['content-length'], '492'
+      t.equal 'coffee', res.headers['content-length'], '184'
     c.get '/js.js', (err, res) ->
       t.equal 'js', res.headers['content-length'], '13'
 

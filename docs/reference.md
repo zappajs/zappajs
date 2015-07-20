@@ -287,6 +287,8 @@ Serves `";zappa.run(#{your_function});"` as `/foo.js`, with content-type `applic
 
 To use it, you must also include `/zappa/zappa.js` in your page, before `/foo.js`.
 
+Notice that since we cannot retrieve the original CoffeeScript code from the Javascript compiled version, there could be conflicts with the helper functions' names. Therefor avoid using the following names as variables: `slice`, `hasProp`, `bind`, `extend`, `indexOf`, and `modulo`.
+
 ### @shared
 
     @shared '/index.js': ->
@@ -316,6 +318,8 @@ Same as `@client`, but also makes the elements defined in the function available
       alert 'hi!'
 
 Serves `";#{coffeescript_helpers}(#{your_function})();"` as `/foo.js`, with content-type `application/javascript`.
+
+Notice that since we cannot retrieve the original CoffeeScript code from the Javascript compiled version, there could be conflicts with the helper functions' names. Therefor avoid using the following names as variables: `slice`, `hasProp`, `bind`, `extend`, `indexOf`, and `modulo`.
 
 ### @js
 
