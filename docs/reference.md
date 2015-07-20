@@ -191,6 +191,7 @@ Define an inline template.
 
 Ex.:
 
+    {h1} = @teacup
     @view index: ->
       h1 @foo
 
@@ -200,6 +201,7 @@ Ex.:
 
 By default, the templating engine is teacup with extension `.coffee`. Since teacup is just coffee-script, you might use any coffee-script construct in your views:
 
+    {ul,li} = @teacup
     @view index: ->
       ul =>
         for item in @items
@@ -207,6 +209,7 @@ By default, the templating engine is teacup with extension `.coffee`. Since teac
 
 The parameters are also available explicitely:
 
+    {ul,li} = @teacup
     @view index: ({items}) ->
       ul =>
         for item in items
@@ -495,6 +498,11 @@ Wraps a middleware function so that it supports both the Express API and the Zap
     # Or as inline middleware
     @get '/user', mw, ->
       @send @locals.user
+
+### @teacup
+
+A shortcut to the [`teacup`](http://goodeggs.github.io/teacup/) module.
+
 
 ### @set
 
