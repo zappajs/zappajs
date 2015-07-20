@@ -301,6 +301,28 @@ Finally, when using strings and objects, zappa will intercept some specific midd
 
 Note: `static` is a ZappaJS wrapper for `server-static`, `session` a wrapper for `express-session`. You should use those instead of the original modules for full Zappa effect.
 
+## Asynchronous dancing
+
+Of course ZappaJS might be used with any type of asynchronous toolbox, but if the library you're using supports Promises and your version of Node.js/io.js support generators, you can turn
+
+    @get '/user/:name', ->
+      user = null
+      user_db.get @params.name
+      .then (doc) ->
+        user = doc
+        group_db.get user.group
+      .then (group) =>
+        @json {user,group}
+
+into the much more palatable
+
+    @get '/user/:name', @seem ->
+      user = yield user_db.get @params.name
+      group = yield group_db.get user.group
+      @json {user,group}
+
+thanks to the magic of [`seem`](https://github.com/shimaore/seem).
+
 ## Aaaaaand that's it for tonight.
 
 Thank you for coming to the show, hope you enjoyed it. [CoffeeScript](https://coffeescript.org) on guitar, [Express](http://expressjs.com) on the keyboards, [Socket.IO](http://socket.io) on drums. [Node.js](http://nodejs.org) on background vocals, [npm](http://npmjs.org) on bass. G'night everyone.

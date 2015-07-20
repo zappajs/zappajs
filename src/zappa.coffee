@@ -11,6 +11,7 @@ path = require 'path'
 util = require 'util'
 uuid = require 'node-uuid'
 methods = require 'methods'
+seem = require 'seem'
 
 session = require 'express-session'
 
@@ -146,6 +147,7 @@ zappa.app = ->
   app.engine 'coffee', teacup_express.renderFile
   app.engine 'coffee zappa', (template,options) -> (teacup.renderable template).call options, options
   context.teacup = teacup
+  context.seem = seem
 
   app.set 'views', path.join(root, '/views')
 
@@ -440,6 +442,13 @@ zappa.app = ->
           res.setHeader 'X-Powered-By', "Zappa #{zappa.version}"
 
         result = r.handler.call ctx, req, res, next
+        if typeof result?.then is 'function'
+          result.then (result) ->
+            res.type(r.type) if r.type?
+            if typeof result is 'string' then res.send result
+            else return result
+          , next
+          return
 
         res.type(r.type) if r.type?
         if typeof result is 'string' then res.send result

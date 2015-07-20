@@ -88,6 +88,8 @@ The handler functions will have access to all variables described in the **reque
 
 If a handler returns a string, `res.send(string)` will be called automatically.
 
+If a handler returns a Promise and that Promise's value is a string, `res.send(string)` is called on the value. If the Promise is rejected, the error is passed down to `next` instead of being hidden.
+
 Handlers which are neither functions nor strings will generate an exception.
 
 Ex.:
@@ -222,6 +224,28 @@ To use other engines, just use express' mechanisms:
 Or:
 
     @set 'view engine': 'jade'
+
+### @seem
+
+A shortcut to the [`seem`](https://github.com/shimaore/seem#promises-and-generators) module.
+
+This module combines Promises and generators to linearize asynchronous statements. If `foo` is an operation that returns a Promise, then
+
+    @seem ->
+      @send yield foo()
+
+will `@send` the value of the Promise. This is syntax sugar for
+
+    ->
+      foo().then (result) =>
+        @send result
+
+Operations can be chained. For example, assuming `user_db.get` and `group_db.get` return Promises:
+
+    @get '/user/:name', ->
+      user = yield user_db.get @params.name
+      group = yield group_db.get user.group
+      @json {user,group}
 
 ### @include (file)
 
@@ -502,7 +526,6 @@ Wraps a middleware function so that it supports both the Express API and the Zap
 ### @teacup
 
 A shortcut to the [`teacup`](http://goodeggs.github.io/teacup/) module.
-
 
 ### @set
 

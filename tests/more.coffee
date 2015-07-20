@@ -53,3 +53,19 @@ port = 15900
       t.equal 2, body.name, 'Bob'
     c.get '/clients/3', headers:{Accept:'text/html'}, (err, res) ->
       t.equal 3, res.body, '<div id="3">Bob</div>'
+
+  'default': (t) ->
+    t.expect 1,2
+    zapp = zappa port++, ->
+      @get '/text', ->
+        'goo'
+
+      @get '/async', ->
+        Promise.resolve 'blar'
+
+    c = t.client(zapp.server)
+
+    c.get '/text', (err, res) ->
+      t.equal 1, res.body, 'goo'
+    c.get '/async', (err, res) ->
+      t.equal 2, res.body, 'blar'
