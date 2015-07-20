@@ -13,7 +13,6 @@ uuid = require 'node-uuid'
 methods = require 'methods'
 
 session = require 'express-session'
-serveStatic = require 'serve-static'
 
 vendor_module = (module,args...) ->
   fs.readFileSync (path.join (path.dirname require.resolve module), args...), 'utf-8'
@@ -286,7 +285,7 @@ zappa.app = ->
         options ?= {}
         p = options.path ? path.join(root, '/public')
         delete options.path
-        serveStatic(p,options)
+        express.static(p,options)
       zappa: ->
         zappa_used = yes
         (req, res, next) ->
