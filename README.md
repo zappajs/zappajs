@@ -12,7 +12,7 @@ require('zappajs') ->
   @get '/': ->
     @render 'index',
       title: 'Zappa!'
-      scripts: '/zappa/simple.js /index.js /client.js'
+      scripts: '/zappa/full.js /index.js /client.js'
       stylesheet: '/index.css'
 
   {doctype,html,head,title,script,link,body,h1,div} = @teacup
