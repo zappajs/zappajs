@@ -50,6 +50,7 @@ skeleton = ->
         action.apply ctx, data
 
     context.connect = ->
+      return unless io?
       context.socket = io.apply io, arguments
 
     context.emit = invariate (message,data) ->
