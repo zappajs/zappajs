@@ -560,6 +560,7 @@ zappa.app = ->
   # The stringified zappa client.
   client = require('./client').build(zappa.version, app.settings)
   client = coffeescript_helpers.p_fun client
+  client = "(function(){var f = #{client} return f.call(this);}).call(this);"
   client_bundle_simple = -> client_bundle_simple.content ?=
     if io?
       jquery() + socketjs() + client
