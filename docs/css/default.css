@@ -5771,7 +5771,7 @@ body{color:#777;font:400 12px/1.5 "Open Sans",sans-serif}
 a{color:#259dff;text-decoration:none}
 h1,h2,h3{color:#353535;font-weight:normal;margin:5px 0}
 h2{margin-top:40px;padding-top:40px}
-h3{background:url("http://zappajs.com/images/hr.png") no-repeat scroll center top;font-weight:bold;margin-top:30px;padding-bottom:5px;padding-top:40px}
+h3{font-weight:bold;margin-top:30px;padding-bottom:5px;padding-top:40px}
 p{margin:5px 0}
 section section p{width:60%}
 pre{background:none;border-color:#e7e7e7 #e7e7e7 #ddd;border-style:solid;border-width:1px;color:#353535;font-size:14px;line-height:1.4;margin:20px 0;padding:20px;}
@@ -5818,7 +5818,7 @@ nav a:hover{text-decoration:underline}
 #content #source .code .nv{color:#19469d}
 #content #source .code .s{color:#219161}
 #content #source .code .o{color:#666}
-.boxes{background:url("http://zappajs.com/images/hr.png") no-repeat scroll center top transparent;clear:both;margin-left:50px;padding-bottom:50px;padding-top:50px;}
+.boxes{clear:both;margin-left:50px;padding-bottom:50px;padding-top:50px;}
 .boxes h3{background:none;margin-top:0;padding-top:0}
 .boxes section{float:left;margin:0 20px;width:180px;}
 .boxes section p{width:100%;}
