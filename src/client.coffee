@@ -49,7 +49,7 @@ skeleton = ->
           emit: context.emit
           share: context.share
         apply_helpers ctx
-        action.apply ctx, data
+        action.call ctx, data
 
     context.connect = ->
       return unless io?
