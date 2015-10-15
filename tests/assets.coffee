@@ -234,6 +234,18 @@ CSS_TYPE = 'text/css; charset=utf-8'
       t.equal 'content-type', res.headers['content-type'], 'application/javascript'
       t.equal 'body-length', res.body.length, 173964
 
+  teacup: (t) ->
+    t.expect 'content-type', 'length'
+    t.wait 3000
+
+    zapp = zappa port++, ->
+      @use 'zappa'
+
+    c = t.client(zapp.server)
+    c.get '/zappa/teacup.js', (err, res) ->
+      t.equal 'content-type', res.headers['content-type'], JS_TYPE
+      t.equal 'length', res.headers['content-length'], '15260'
+
   zappa: (t) ->
     t.expect 'content-type', 'snippet'
     t.wait 3000

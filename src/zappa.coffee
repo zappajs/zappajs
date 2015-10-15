@@ -304,6 +304,7 @@ zappa.app = ->
               when zappa_prefix+'/jquery.js' then send jquery_minified()
               when zappa_prefix+'/sammy.js' then send sammy_minified()
               when zappa_prefix+'/socket.io.js' then send socketjs()
+              when zappa_prefix+'/teacup.js' then send teacupjs()
               else next()
           return
       session: (options) ->
@@ -556,6 +557,7 @@ zappa.app = ->
   sammy = -> sammy.content ?= app.settings.sammy_js ? vendor_module 'sammy', 'sammy.js'
   sammy_minified = -> sammy_minified.content ?= app.settings.sammy_min_js ? vendor_module 'sammy', 'min', 'sammy-latest.min.js'
   socketjs = -> socketjs.content ?= app.settings.socketio_js ? vendor_module 'socket.io-client', 'socket.io.js'
+  teacupjs = -> teacupjs.content ?= app.settings.teacup_js ? vendor_module 'teacup', 'teacup.js'
 
   # The stringified zappa client.
   client = require('./client').build(zappa.version, app.settings)

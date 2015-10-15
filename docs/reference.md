@@ -497,7 +497,7 @@ The Express session-store saved by this middleware is available in ZappaJS' root
 
 #### zappa
 
-This zappa middleware serves `/zappa/simple.js`, `/zappa/full.js`, `/zappa/zappa.js`, `/zappa/jquery.js` and `/zappa/sammy.js`. It is automatically added by `@client` and `@shared` if not added before, which means that in most cases you don't need to `@use 'zappa'`.
+This zappa middleware serves `/zappa/simple.js`, `/zappa/full.js`, `/zappa/zappa.js`, `/zappa/jquery.js`, `/zappa/sammy.js`, '/zappa/socket.io.js', and '/zappa/teacup.js'. It is automatically added by `@client` and `@shared` if not added before, which means that in most cases you don't need to `@use 'zappa'`.
 
 To minimize page download delay on the client, prefer `/zappa/full.js`, which combines Zappa, jQuery, Sammy.js, and Socket.IO client-side scripts into a single download.
 If your client-side code doesn't require Sammy, use `/zappa/simple.js` which combines Zappa, jQuery, and Socket.IO.
