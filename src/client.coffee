@@ -16,6 +16,8 @@ skeleton = ->
   zappa.run = (func) ->
     context = {}
 
+    context.settings = settings
+
     # Storage for the functions provided by the user.
     helpers = {}
 
