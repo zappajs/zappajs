@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "coffee-css": "0.0.5",
-    "coffee-script": "^1.9.3",
+    "coffee-script": "^1.10.0",
     "coffeescript-helpers": "^2.1.0",
     "express": "^4.13.1",
     "express-session": "^1.12.0",
