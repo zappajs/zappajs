@@ -232,7 +232,7 @@ CSS_TYPE = 'text/css; charset=utf-8'
     c = t.client(zapp.server)
     c.get '/socket.io/socket.io.js', (err, res) ->
       t.equal 'content-type', res.headers['content-type'], 'application/javascript'
-      t.equal 'body-length', res.body.length, 173964
+      t.equal 'body-length', res.body.length, 174046
 
   teacup: (t) ->
     t.expect 'content-type', 'length'
@@ -334,4 +334,4 @@ CSS_TYPE = 'text/css; charset=utf-8'
     c = t.client(zapp.server)
     c.get '/myapp/socket.io/socket.io.js', (err, res) ->
       t.equal 'content-type', res.headers['content-type'], 'application/javascript'
-      t.equal 'body-length', res.body.length, 173964
+      t.equal 'body-length', res.body.length, 174046
