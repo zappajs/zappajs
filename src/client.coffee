@@ -31,18 +31,12 @@ skeleton = ->
             ctx[name] = helper
       ctx
 
-    app = context.app = Sammy() if Sammy?
-
-    context.get = invariate (k,v) ->
-      route path: k, handler: v
-
     context.helper = invariate (k,v) ->
       helpers[k] = v
 
     context.on = invariate (message,action) ->
       context.socket.on message, (data) ->
         ctx =
-          app: app
           socket: context.socket
           id: context.socket.id
           data: data
@@ -56,7 +50,7 @@ skeleton = ->
       context.socket = io.apply io, arguments
 
     context.emit = invariate (message,data) ->
-      context.socket.emit.apply context.socket, [message, data]
+      context.socket.emit.call context.socket, message, data
 
     # The callback will receive `true` iff the operation was successful
     # Might receive an object in case of error, or simply `false`.
@@ -66,7 +60,7 @@ skeleton = ->
       if not socket_id?
         next? false
         return
-      $.getJSON "#{zappa_prefix}/socket/#{channel_name}/#{socket_id}"
+      request.get "#{zappa_prefix}/socket/#{channel_name}/#{socket_id}"
       .done ({key}) ->
         if key?
           socket.emit '__zappa_key', {key}, next
@@ -74,18 +68,6 @@ skeleton = ->
           next? false
       .fail ->
         next? false
-
-    route = (r) ->
-      ctx = {app}
-
-      apply_helpers ctx
-
-      app.get r.path, (sammy_context) ->
-        ctx.params = sammy_context.params
-        ctx.sammy_context = sammy_context
-        ctx.render = -> sammy_context.render.apply sammy_context, arguments
-        ctx.redirect = -> sammy_context.redirect.apply sammy_context, arguments
-        r.handler.apply ctx
 
     # GO!!!
     func.apply(context, [context])

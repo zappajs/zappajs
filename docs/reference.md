@@ -497,10 +497,9 @@ The Express session-store saved by this middleware is available in ZappaJS' root
 
 #### zappa
 
-This zappa middleware serves `/zappa/simple.js`, `/zappa/full.js`, `/zappa/zappa.js`, `/zappa/jquery.js`, `/zappa/sammy.js`, '/zappa/socket.io.js', and '/zappa/teacup.js'. It is automatically added by `@client` and `@shared` if not added before, which means that in most cases you don't need to `@use 'zappa'`.
+This zappa middleware serves `/zappa/simple.js`, `/zappa/zappa.js`, '/zappa/socket.io.js', and '/zappa/teacup.js'. It is automatically added by `@client` and `@shared` if not added before, which means that in most cases you don't need to `@use 'zappa'`.
 
-To minimize page download delay on the client, prefer `/zappa/full.js`, which combines Zappa, jQuery, Sammy.js, and Socket.IO client-side scripts into a single download.
-If your client-side code doesn't require Sammy, use `/zappa/simple.js` which combines Zappa, jQuery, and Socket.IO.
+`/zappa/simple.js` combines Zappa and Socket.IO.
 
 If the `minify` setting is enabled, the contents will be minified using `uglify-js`.
 
@@ -800,14 +799,6 @@ See `examples/share_*.coffee` for a complete example using separate servers for 
 
 This is the scope inside a `@client` or `@shared` callback.
 
-### @app
-
-The Sammy.js application, if Sammy is present.
-
-### @get
-
-Route with sammy.js.
-
 ### @connect
 
 Should be called first when the client is started to establish the Socket.IO websocket with the server.
@@ -842,40 +833,9 @@ Send a message to the server.
 
 Same as its server-side counterpart. Helper functions are available in routes and socket handlers.
 
-## CLIENT-SIDE ROUTE HANDLERS SCOPE
-
-The client-side route-handler scope contains any client-side helper, and the following.
-
-### @app
-
-The Sammy.js application, if Sammy is present.
-
-### @sammy_context
-
-The [sammy.js EventContext](http://sammyjs.org/docs/api/master/all#Sammy.EventContext).
-
-### @render
-
-Sammy.js [render](http://sammyjs.org/docs/api/master/all#Sammy.EventContext-render).
-
-### @redirect
-
-Sammy.js [redirect](http://sammyjs.org/docs/api/master/all#Sammy.EventContext-redirect).
-
-### @params
-
-Sammy.js route parameters.
-
-    @get '#/:name', ->
-      name = @params.name
-
 ## CLIENT-SIDE SOCKETS HANDLERS SCOPE
 
 The client-side socket-handler scope contains any helper function, and the following.
-
-### @app
-
-The Sammy.js application, if Sammy is present.
 
 ### @socket
 
@@ -912,7 +872,7 @@ Any of Express' options are available as well.
 
 ### 'minify'
 
-Uses uglify-js to minify the outputs of `/zappa/full.js`, `/zappa/simple.js`, `/zappa/zappa.js`, `@client`, `@shared`, `@coffee`, `@js`.
+Uses uglify-js to minify the outputs of `/zappa/simple.js`, `/zappa/zappa.js`, `@client`, `@shared`, `@coffee`, `@js`.
 
 ### 'x-powered-by'
 
@@ -922,17 +882,7 @@ Unless disabled, ZappaJS adds a `X-Powered-By` header in HTTP responses.
 
 Normally a prefix of `/zappa` is used for all Zappa-specific URIs. This settings allows you to specify a different path.
 
-### 'jquery_min_js'
+### 'socketio_js'
 
-Replaces `/zappa/jquery.js`. If unspecified, ZappaJS' default version is used.
-(Using this setting voids your warranty.)
-
-### 'sammy_min_js'
-
-Replaces `/zappa/sammy.js`. If unspecified, ZappaJS' default version is used.
-(Using this setting voids your warranty.)
-
-### 'jquery_js', 'sammy_js', 'socketio_js'
-
-Used to build `/zappa/full.js` and `/zappa/simple.js`. If unspecified ZappaJS' default versions are used.
+Used to build `/zappa/simple.js`. If unspecified ZappaJS' default versions are used.
 (Using these settings voids your warranty.)

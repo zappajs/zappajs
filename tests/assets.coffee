@@ -7,7 +7,7 @@ CSS_TYPE = 'text/css; charset=utf-8'
 
 @tests =
   client: (t) ->
-    t.expect 1, 2, 3, 4, 5
+    t.expect 1, 2, 3
     t.wait 3000
 
     zapp = zappa port++, ->
@@ -20,10 +20,6 @@ CSS_TYPE = 'text/css; charset=utf-8'
       t.equal 2, res.headers['content-type'], JS_TYPE
     c.get '/zappa/zappa.js', (err, res) ->
       t.equal 3, res.headers['content-type'], JS_TYPE
-    c.get '/zappa/jquery.js', (err, res) ->
-      t.equal 4, res.headers['content-type'], JS_TYPE
-    c.get '/zappa/sammy.js', (err, res) ->
-      t.equal 5, res.headers['content-type'], JS_TYPE
 
   coffee: (t) ->
     t.expect 1, 2, 3, 4, 5, 6
@@ -199,30 +195,6 @@ CSS_TYPE = 'text/css; charset=utf-8'
 
       '''
 
-  jquery: (t) ->
-    t.expect 'content-type', 'length'
-    t.wait 3000
-
-    zapp = zappa port++, ->
-      @use 'zappa'
-
-    c = t.client(zapp.server)
-    c.get '/zappa/jquery.js', (err, res) ->
-      t.equal 'content-type', res.headers['content-type'], JS_TYPE
-      t.equal 'length', res.headers['content-length'], '84380'
-
-  sammy: (t) ->
-    t.expect 'content-type', 'length'
-    t.wait 3000
-
-    zapp = zappa port++, ->
-      @use 'zappa'
-
-    c = t.client(zapp.server)
-    c.get '/zappa/sammy.js', (err, res) ->
-      t.equal 'content-type', res.headers['content-type'], JS_TYPE
-      t.equal 'length', res.headers['content-length'], '27206'
-
   'socket.io': (t) ->
     t.expect 'content-type', 'body-length'
     t.wait 3000
@@ -306,7 +278,7 @@ CSS_TYPE = 'text/css; charset=utf-8'
       t.equal 'js', res.headers['content-length'], '13'
 
   zappa_prefix: (t) ->
-    t.expect 1, 2, 3, 4, 5
+    t.expect 1, 2, 3
     t.wait 3000
 
     zapp = zappa port++, ->
@@ -320,10 +292,6 @@ CSS_TYPE = 'text/css; charset=utf-8'
       t.equal 2, res.headers['content-type'], JS_TYPE
     c.get '/myapp/zappa/zappa.js', (err, res) ->
       t.equal 3, res.headers['content-type'], JS_TYPE
-    c.get '/myapp/zappa/jquery.js', (err, res) ->
-      t.equal 4, res.headers['content-type'], JS_TYPE
-    c.get '/myapp/zappa/sammy.js', (err, res) ->
-      t.equal 5, res.headers['content-type'], JS_TYPE
 
   'socket.io_path': (t) ->
     t.expect 'content-type', 'body-length'

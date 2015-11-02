@@ -195,9 +195,6 @@ On a step further, you have `@client`, which gives you access to a matching clie
       @emit time: {time: new Date()}
 
     @client '/index.js': ->
-      @get '#/foo': ->
-        $('body').append 'client-side route with sammy.js'
-
       @on time: ->
         $('body').append "Server time: #{@data.time}"
 

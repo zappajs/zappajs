@@ -5,7 +5,7 @@ JS_TYPE = 'application/javascript; charset=utf-8'
 
 @tests =
   client: (t) ->
-    t.expect 1, 2, 3, 4, 5
+    t.expect 1, 2, 3
     t.wait 3000
 
     zapp = zappa port++, ->
@@ -17,10 +17,6 @@ JS_TYPE = 'application/javascript; charset=utf-8'
       t.equal 2, res.headers['content-type'], JS_TYPE
     c.get '/zappa/zappa.js', (err, res) ->
       t.equal 3, res.headers['content-type'], JS_TYPE
-    c.get '/zappa/jquery.js', (err, res) ->
-      t.equal 4, res.headers['content-type'], JS_TYPE
-    c.get '/zappa/sammy.js', (err, res) ->
-      t.equal 5, res.headers['content-type'], JS_TYPE
 
   arguments: (t) ->
     t.expect 1

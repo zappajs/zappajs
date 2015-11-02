@@ -298,11 +298,8 @@ zappa.app = ->
           else
             zappa_prefix = app.settings.zappa_prefix
             switch req.url
-              when zappa_prefix+'/full.js' then send client_bundled()
               when zappa_prefix+'/simple.js' then send client_bundle_simple()
               when zappa_prefix+'/zappa.js' then send client
-              when zappa_prefix+'/jquery.js' then send jquery_minified()
-              when zappa_prefix+'/sammy.js' then send sammy_minified()
               when zappa_prefix+'/socket.io.js' then send socketjs()
               when zappa_prefix+'/teacup.js' then send teacupjs()
               else next()
@@ -552,10 +549,6 @@ zappa.app = ->
   # Go!
   func.apply context
 
-  jquery = -> jquery.content ?= app.settings.jquery_js ? vendor_module 'jquery', 'jquery.js'
-  jquery_minified = -> jquery_minified.content ?= app.settings.jquery_min_js ? vendor_module 'jquery', 'jquery.min.js'
-  sammy = -> sammy.content ?= app.settings.sammy_js ? vendor_module 'sammy', 'sammy.js'
-  sammy_minified = -> sammy_minified.content ?= app.settings.sammy_min_js ? vendor_module 'sammy', 'min', 'sammy-latest.min.js'
   socketjs = -> socketjs.content ?= app.settings.socketio_js ? vendor_module 'socket.io-client', 'socket.io.js'
   teacupjs = -> teacupjs.content ?= app.settings.teacup_js ? vendor_module 'teacup', 'teacup.js'
 
@@ -565,19 +558,13 @@ zappa.app = ->
   client = "(function(){var f = #{client} return f.call(this);}).call(this);"
   client_bundle_simple = -> client_bundle_simple.content ?=
     if io?
-      jquery() + socketjs() + client
+      socketjs() + client
     else
-      jquery() + client
-  client_bundled = -> client_bundled.content ?=
-    if io?
-      jquery() + socketjs() + sammy() + client
-    else
-      jquery() + sammy() + client
+      client
 
   if app.settings['minify']
     client = minify client
     client_bundle_simple.content = minify client_bundle_simple()
-    client_bundled.content = minify client_bundled()
     socketjs.content = minify socketjs()
 
   do ->
