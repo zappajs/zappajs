@@ -15,9 +15,6 @@ seem = require 'seem'
 
 session = require 'express-session'
 
-vendor_module = (module,args...) ->
-  fs.readFileSync (path.join (path.dirname require.resolve module), args...), 'utf-8'
-
 # Soft dependencies:
 uglify = null
 coffee_css = null
@@ -86,9 +83,6 @@ zappa.app = ->
   if options.io isnt false
     socketio = options.socketio ? require 'socket.io'
     io = context.io = socketio context.server, options.io ? {}
-
-  # Reference to the zappa client, the value will be set later.
-  client = null
 
   # Tracks if the zappa middleware is already mounted (`@use 'zappa'`).
   zappa_used = no
@@ -288,22 +282,6 @@ zappa.app = ->
         p = options.path ? path.join(root, '/public')
         delete options.path
         express.static(p,options)
-      zappa: ->
-        zappa_used = yes
-        (req, res, next) ->
-          send = (code) ->
-            res.type 'js'
-            res.send code
-          if req.method.toUpperCase() isnt 'GET' then next()
-          else
-            zappa_prefix = app.settings.zappa_prefix
-            switch req.url
-              when zappa_prefix+'/simple.js' then send client_bundle_simple()
-              when zappa_prefix+'/zappa.js' then send client
-              when zappa_prefix+'/socket.io.js' then send socketjs()
-              when zappa_prefix+'/teacup.js' then send teacupjs()
-              else next()
-          return
       session: (options) ->
         context.session_store = options.store
         session options
@@ -548,24 +526,6 @@ zappa.app = ->
 
   # Go!
   func.apply context
-
-  socketjs = -> socketjs.content ?= app.settings.socketio_js ? vendor_module 'socket.io-client', 'socket.io.js'
-  teacupjs = -> teacupjs.content ?= app.settings.teacup_js ? vendor_module 'teacup', 'teacup.js'
-
-  # The stringified zappa client.
-  client = require('./client').build(zappa.version, app.settings)
-  client = coffeescript_helpers.p_fun client
-  client = "(function(){var f = #{client} return f.call(this);}).call(this);"
-  client_bundle_simple = -> client_bundle_simple.content ?=
-    if io?
-      socketjs() + client
-    else
-      client
-
-  if app.settings['minify']
-    client = minify client
-    client_bundle_simple.content = minify client_bundle_simple()
-    socketjs.content = minify socketjs()
 
   do ->
     zappa_prefix = app.settings.zappa_prefix
