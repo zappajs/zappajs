@@ -3,9 +3,10 @@
 # integrating [express](http://expressjs.com), [socket.io](http://socket.io)
 # and other best-of-breed libraries.
 
-zappa = version: (require '../package.json').version
+pkg = require '../package'
+zappa = version: pkg.version
 
-log = console.log
+debug = (require 'debug') pkg.name
 fs = require 'fs'
 path = require 'path'
 util = require 'util'
@@ -591,14 +592,13 @@ zappa.run = ->
   zapp = zappa.app(root_function,options)
   {server,app} = zapp
 
-  unless app.settings.silent_zappa
-    server.on 'listening', ->
-      addr = server.address()
-      log """
-        Express server listening on #{addr.address}:#{addr.port} in #{app.settings.env} mode.
-        Zappa #{zappa.version} orchestrating the show.
+  server.on 'listening', ->
+    addr = server.address()
+    debug """
+      Express server listening on #{addr.address}:#{addr.port} in #{app.settings.env} mode.
+      Zappa #{zappa.version} orchestrating the show.
 
-      """ unless app.settings.silent_zappa
+    """
 
   if host
     server.listen port, host
