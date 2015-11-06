@@ -11,6 +11,7 @@ path = require 'path'
 util = require 'util'
 uuid = require 'node-uuid'
 methods = require 'methods'
+invariate = require 'invariate'
 seem = require 'seem'
 
 session = require 'express-session'
@@ -40,14 +41,6 @@ flatten = (arr, ret) ->
     else
       ret.push o
   ret
-
-invariate = (f) ->
-  ->
-    if typeof arguments[0] is 'object'
-      for k,v of arguments[0]
-        f.apply this, [k, v]
-    else
-      f.apply this, arguments
 
 # Takes in a function and builds express/socket.io apps based on the rules
 # contained in it.
