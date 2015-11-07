@@ -78,9 +78,6 @@ zappa.app = ->
     socketio = options.socketio ? require 'socket.io'
     io = context.io = socketio context.server, options.io ? {}
 
-  # Tracks if the zappa middleware is already mounted (`@use 'zappa'`).
-  zappa_used = no
-
   views = context.views = {}
 
   # This is our own version of Express' original `lib/view.js`.
@@ -167,7 +164,6 @@ zappa.app = ->
         return
 
   context.client = invariate (k,v) ->
-    context.use 'zappa' unless zappa_used
     js = ";zappa.run(#{v});"
     js = minify(js) if app.settings['minify']
     route verb: 'get', path: k, handler: js, type: 'js'
@@ -303,7 +299,6 @@ zappa.app = ->
   context.locals = app.locals
 
   context.shared = invariate (k,v) ->
-    context.use 'zappa' unless zappa_used
     js = ";zappa.run(#{v});"
     js = minify(js) if app.settings['minify']
     route verb: 'get', path: k, handler: js, type: 'js'
