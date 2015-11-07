@@ -26,7 +26,7 @@
   },
   "devDependencies": {
     "basic-auth": "^1.0.3",
-    "bluebird": "^2.10.2",
+    "bluebird": "^3.0.5",
     "body-parser": "^1.14.1",
     "connect-redis": "^3.0.1",
     "consolidate": "^0.13.1",
