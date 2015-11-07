@@ -5,7 +5,7 @@ JS_TYPE = 'application/javascript; charset=utf-8'
 
 @tests =
   client: (t) ->
-    t.expect 1, 2, 3
+    t.expect 1, 2
     t.wait 3000
 
     zapp = zappa port++, ->
@@ -15,8 +15,6 @@ JS_TYPE = 'application/javascript; charset=utf-8'
     c.get '/index.js', (err, res) ->
       t.equal 1, res.body, ';zappa.run(function () {\n        return this.get({\n          \'#/\': function() {\n            return alert(\'hi\');\n          }\n        });\n      });'
       t.equal 2, res.headers['content-type'], JS_TYPE
-    c.get '/zappa/zappa.js', (err, res) ->
-      t.equal 3, res.headers['content-type'], JS_TYPE
 
   arguments: (t) ->
     t.expect 1

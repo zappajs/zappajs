@@ -7,7 +7,7 @@ CSS_TYPE = 'text/css; charset=utf-8'
 
 @tests =
   client: (t) ->
-    t.expect 1, 2, 3
+    t.expect 1, 2
     t.wait 3000
 
     zapp = zappa port++, ->
@@ -18,8 +18,6 @@ CSS_TYPE = 'text/css; charset=utf-8'
     c.get '/index.js', (err, res) ->
       t.equal 1, res.body, ';zappa.run(function () {\n            return this.get({\n              \'#/\': function() {\n                return alert(\'hi\');\n              }\n            });\n          });'
       t.equal 2, res.headers['content-type'], JS_TYPE
-    c.get '/zappa/zappa.js', (err, res) ->
-      t.equal 3, res.headers['content-type'], JS_TYPE
 
   coffee: (t) ->
     t.expect 1, 2, 3, 4, 5, 6
@@ -206,92 +204,12 @@ CSS_TYPE = 'text/css; charset=utf-8'
       t.equal 'content-type', res.headers['content-type'], 'application/javascript'
       t.equal 'body-length', res.body.length, 174046
 
-  teacup: (t) ->
-    t.expect 'content-type', 'length'
-    t.wait 3000
-
-    zapp = zappa port++, ->
-      @use 'zappa'
-
-    c = t.client(zapp.server)
-    c.get '/zappa/teacup.js', (err, res) ->
-      t.equal 'content-type', res.headers['content-type'], JS_TYPE
-      t.equal 'length', res.headers['content-length'], '15260'
-
-  zappa: (t) ->
-    t.expect 'content-type', 'snippet'
-    t.wait 3000
-
-    zapp = zappa port++, ->
-      @use 'zappa'
-
-    c = t.client(zapp.server)
-    c.get '/zappa/zappa.js', (err, res) ->
-      t.equal 'content-type', res.headers['content-type'], JS_TYPE
-      t.ok 'snippet', res.body.indexOf('window.zappa = {};') > -1
-
-  full: (t) ->
-    t.expect 'content-type', 'snippet'
-    t.wait 3000
-
-    zapp = zappa port++, ->
-      @use 'zappa'
-
-    c = t.client(zapp.server)
-    c.get '/zappa/full.js', (err, res) ->
-      t.equal 'content-type', res.headers['content-type'], JS_TYPE
-      t.ok 'snippet', res.body.indexOf('window.zappa = {};') > -1
-
-  'zappa (automatic)': (t) ->
-    t.expect 'content-type', 'snippet'
-    t.wait 3000
-
-    zapp = zappa port++, ->
-      @client '/index.js': ->
-
-    c = t.client(zapp.server)
-    c.get '/zappa/zappa.js', (err, res) ->
-      t.equal 'content-type', res.headers['content-type'], JS_TYPE
-      t.ok 'snippet', res.body.indexOf('window.zappa = {};') > -1
-
-  minify: (t) ->
-    t.expect 'zappa', 'client', 'shared', 'coffee', 'js'
-    t.wait 3000
-
-    zapp = zappa port++, ->
-      @enable 'minify'
-      @client '/client.js': -> alert 'foo'
-      @shared '/shared.js': -> alert 'foo' if window?
-      @coffee '/coffee.js': -> alert 'foo'
-      @js '/js.js': "alert('foo');"
-
-    c = t.client(zapp.server)
-    c.get '/zappa/zappa.js', (err, res) ->
-      t.ok 'zappa', res.body.indexOf('window.zappa={},') > -1
-    c.get '/client.js', (err, res) ->
-      t.equal 'client', res.headers['content-length'], '43'
-    c.get '/shared.js', (err, res) ->
-      t.equal 'shared', res.headers['content-length'], '91'
-    c.get '/coffee.js', (err, res) ->
-      t.equal 'coffee', res.headers['content-length'], '184'
-    c.get '/js.js', (err, res) ->
-      t.equal 'js', res.headers['content-length'], '13'
-
-  zappa_prefix: (t) ->
+ zappa_prefix: (t) ->
     t.expect 1, 2, 3
     t.wait 3000
 
     zapp = zappa port++, ->
       @set zappa_prefix: '/myapp/zappa'
-      @client '/myapp/index.js': ->
-        @get '#/': -> alert 'hi'
-
-    c = t.client(zapp.server)
-    c.get '/myapp/index.js', (err, res) ->
-      t.equal 1, res.body, ';zappa.run(function () {\n            return this.get({\n              \'#/\': function() {\n                return alert(\'hi\');\n              }\n            });\n          });'
-      t.equal 2, res.headers['content-type'], JS_TYPE
-    c.get '/myapp/zappa/zappa.js', (err, res) ->
-      t.equal 3, res.headers['content-type'], JS_TYPE
 
   'socket.io_path': (t) ->
     t.expect 'content-type', 'body-length'
