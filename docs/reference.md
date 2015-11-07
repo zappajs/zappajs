@@ -495,6 +495,9 @@ This zappa middleware is a wrapper for `express-session`. Use it instead of `exp
 
 The Express session-store saved by this middleware is available in ZappaJS' root scope as `@session_store`.
 
+    ExpressRedisStore = (require 'connect-redis') @session
+    @use session: new ExpressRedisStore redis_config
+
 #### zappa
 
 This zappa middleware serves `/zappa/simple.js`, `/zappa/zappa.js`, '/zappa/socket.io.js', and '/zappa/teacup.js'. It is automatically added by `@client` and `@shared` if not added before, which means that in most cases you don't need to `@use 'zappa'`.
@@ -784,7 +787,9 @@ Broadcast to a room.
 
 ### @session
 
-If available, the Express session object associated with the Socket.io socket. Modifications to this object will not be made available back to Express or to other Socket.io sockets.
+If available, the Express session object associated with the Socket.io socket. Modifications to this object will not be made available back to Express or to other Socket.io sockets unless you explicitely save it:
+
+    @session.save()
 
 The client must first link the Socket.io socket with its Express session by using `@share`.
 

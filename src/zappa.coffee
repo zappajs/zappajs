@@ -474,26 +474,41 @@ zappa.app = ->
       ctx = build_ctx()
       ws_handlers.disconnect.apply(ctx) if ws_handlers.disconnect?
 
-    socket.on '__zappa_key', (data,ack) ->
-      return unless ack?
+    socket.on '__zappa_settings', (data,ack) ->
+      unless ack?
+        debug 'Client did not request `ack` for __zappa_settings'
+        return
+      ack app.settings
+
+    socket.on '__zappa_key', ({key},ack) ->
+      unless ack?
+        debug 'Client did not request `ack` for __zappa_key'
+        return
+
       unless context.session_store?
+        debug 'Missing session-store.'
         ack error:'Missing session-store.'
-      unless data.key?
+      unless key?
+        debug 'Missing key.'
         ack error:'Missing key.'
         return
       # Retrieve the data record associated with the key.
-      context.session_store.get data.key, (err,data) ->
+      context.session_store.get key, (err,data) ->
         if err?
-          ack error:err
+          debug 'session_store.get #{key}: #{err}'
+          ack error:err.toString()
           return
         if not data?
+          debug 'session_store.get #{key}: Missing data'
           ack error:'Missing data'
           return
+        # Bind the session.id so that the handlers can access the session.
         session_id = data.id
-        ack yes
+        ack {key}
 
     get_session = (next) ->
       unless context.session_store? and session_id?
+        debug 'get_session() not ready'
         next null
         return
       # Retrieve the session data stored by Express
@@ -515,7 +530,9 @@ zappa.app = ->
             get_session (session) ->
               ctx.session = session
               h.call ctx, data, ack
+              session?.save()
         return
+
     return
 
   # Go!
@@ -525,11 +542,13 @@ zappa.app = ->
     zappa_prefix = app.settings.zappa_prefix
     context.get zappa_prefix+'/socket/:channel_name/:socket_id', ->
       if not context.session_store?
+        debug 'Missing session-store.'
         @res.status 500
         @json error:'No session-store.'
         return
 
       if not @session?
+        debug 'Missing session.'
         @res.status 400
         @json error:'No session'
         return
@@ -537,29 +556,37 @@ zappa.app = ->
       channel_name = @params.channel_name
       socket_id = @params.socket_id
 
+      # Use memoized socket data if available.
       @session.__socket ?= {}
 
       if @session.__socket[channel_name]?
-        @json channel_name: channel_name, key: @session.__socket[channel_name].key
-      else
-        key = uuid.v4() # used for socket 'authentication'
+        @json
+          key: @session.__socket[channel_name].key
+        return
 
-        # Update the store.
-        data =
-          id: @session.id   # local Express Session ID
-          cookie: {}
-        context.session_store.set key, data, (err) =>
-          if err
-            @json error: err.toString()
-            return
+      # Create a new socket session document
+      # The `key` is used to hide the actual `@session.id` from the
+      # client while allowing it to provide us with a pointer to the
+      # session document using the key.
+      key = uuid.v4() # used for socket 'authentication'
 
-          # Update the Express session store
-          @session.__socket[channel_name] =
-            id: socket_id
-            key: key
+      # Update the store.
+      data =
+        id: @session.id   # local Express Session ID
+        cookie: {}
+      context.session_store.set key, data, (err) =>
+        if err
+          @json error: err.toString()
+          return
 
-          # Let the client know which key to use.
-          @json channel_name: channel_name, key: key
+        # Save the key and socket.id in the local Express session store.
+        @session.__socket[channel_name] =
+          id: socket_id
+          key: key
+
+        # Let the client know which key it should use on the Socket.IO side.
+        @json
+          key: key
       return
 
   context
