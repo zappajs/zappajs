@@ -340,7 +340,7 @@ zappa.app = ->
       callback.call ctx, req, res, next, p
 
   context.param = invariate (k,v) ->
-    @app.param k, build_param v
+    app.param k, build_param v
     return
 
   # Register a route with express.
