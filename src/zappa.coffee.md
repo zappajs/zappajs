@@ -748,8 +748,8 @@ Let the client know which key it should use on the Socket.IO side.
 Takes a function and runs it as a zappa app. Optionally accepts a port number, and/or a hostname (any order). The hostname must be a string, and the port number must be castable as a number.
 
     zappa.run = ->
-      host = null
-      port = 3000
+      host = process.env.ZAPPA_HOST ? null
+      port = process.env.ZAPPA_PORT ? 3000
       root_function = null
       options = {}
 
