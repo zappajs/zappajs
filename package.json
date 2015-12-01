@@ -57,8 +57,7 @@
   ],
   "main": "lib/zappa.js",
   "files": [
-    "lib/zappa.js",
-    "lib/client.js"
+    "lib/zappa.js"
   ],
   "scripts": {
     "pretest": "npm install -d",
