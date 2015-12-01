@@ -61,9 +61,12 @@
     "lib/client.js"
   ],
   "scripts": {
-    "pretest": "npm install -d && cake setup",
-    "test": "cake test && mocha --compilers coffee:coffee-script/register mocha/tests/",
-    "prepublish": "cake setup"
+    "pretest": "npm install -d",
+    "test": "coffee tests/index.coffee && mocha --compilers coffee:coffee-script/register mocha/tests/",
+    "prepublish": "coffee -o lib -c -m src/*.coffee.md",
+    "docs": "docco src/*.coffee.md",
+    "clean": "rm lib/*.js lib/*.js.map benchmarks/out/*.dat benchmarks/out/*.out tests/*.js",
+    "bench": "cd benchmarks && ./run"
   },
   "contributors": [
     "Maurice Machado <maurice@bitbending.com>",
