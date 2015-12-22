@@ -70,3 +70,15 @@ require('zappajs') ->
 - Questions, suggestions? Drop us a line on the [mailing list](http://groups.google.com/group/zappajs)
 
 - Found a bug? Open an [issue](http://github.com/zappajs/zappajs/issues) at github
+
+## ZappaJS 4.0 Changes
+
+- Major improvements in Socket.IO interface:
+  - Now supports saving the Session object in Socket.IO methods.
+  - Support `ack` for all Socket.IO `emit` calls.
+- Removal of embedded client-side code:
+  - The ZappaJS client is no longer embedded and was moved to a separate module, `zappajs-client`.
+  - Sammy and jQuery are no longer embedded.
+  - As a consequence the `zappa` middleware is no longer required and was removed. If your code references any Javascript file under `/zappa/`, consider using e.g. `browserify-middleware` to build the dependencies.
+- Now uses the `debug` module instead of logging to console directly.
+- Host and port might be specified using `ZAPPA_PORT` and `ZAPPA_HOST` environment variables, which are used as default if no explicit configuration is provided.
