@@ -70,6 +70,23 @@ port = 15700
       t.reached 'acked'
       t.equal 'data', data.foo, 'bar'
 
+  'client ack': (t) ->
+    t.expect 'got-foo', 'acked', 'data'
+    t.wait 10000
+
+    zapp = zappa port++, ->
+      @on connection: ->
+        @emit 'foo', bar:'foo', (data) ->
+          t.reached 'acked'
+          t.equal 'data', data.foo, 'bar'
+
+    c = t.client(zapp.server)
+    c.connect()
+
+    c.on 'foo', (data,ack) ->
+      t.reached 'got-foo'
+      ack foo:'bar'
+
   'server rooms': (t) ->
     t.expect 'joined1', 'room1', 'joined2', 'room2',
       'reached1', 'reached2', 'data1', 'data2'
