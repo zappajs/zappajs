@@ -498,11 +498,11 @@ Context available inside the `get`, ... handlers.
                   for k, v of arguments[0]
                     render.apply @, [k, v]
                 return
-              emit: invariate (k,v) ->
+              emit: invariate (k,v,ack) ->
                 socket_id = req.session?.__socket?[app.settings.zappa_channel]?.id
                 if socket_id?
                   room = io.sockets.in socket_id
-                  room.emit.apply room, [k, v]
+                  room.emit.call room, k, v, ack
                 return
 
             render = (name,opts = {},fn) ->
@@ -570,17 +570,17 @@ Context available inside the Socket.IO `on` functions.
               socket.join room
             leave: (room) ->
               socket.leave room
-            emit: invariate (k,v) ->
-              socket.emit.apply socket, [k, v]
+            emit: invariate (k,v,ack) ->
+              socket.emit.call socket, k, v, ack
               return
-            broadcast: invariate (k,v) ->
+            broadcast: invariate (k,v,ack) ->
               broadcast = socket.broadcast
-              broadcast.emit.apply broadcast, [k, v]
+              broadcast.emit.call broadcast, k, v, ack
               return
             broadcast_to: (room, args...) ->
               room = io.sockets.in room
-              broadcast = invariate (k,v) ->
-                room.emit.apply room, [k, v]
+              broadcast = invariate (k,v,ack) ->
+                room.emit.call room, k, v, ack
               broadcast args...
               return
 
