@@ -15,7 +15,7 @@
     "debug": "^2.2.0",
     "express": "^4.13.3",
     "express-session": "^1.12.0",
-    "invariate": "^1.1.0",
+    "invariate": "^1.2.0",
     "methods": "^1.1.1",
     "node-uuid": "^1.4.3",
     "seem": "^1.1.0",
