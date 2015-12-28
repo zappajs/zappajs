@@ -216,7 +216,7 @@ FIXME: either remove, or use browserify to run within zappajs-client.
 =======
 
       context.coffee = invariate (k,v) ->
-        js = coffeescript_helpers.p_fun v
+        js = coffeescript_helpers.p_exec v
         js = minify(js) if app.settings['minify']
         route verb: 'get', path: k, handler: js, type: 'js'
         return
