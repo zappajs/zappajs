@@ -47,27 +47,27 @@ CSS_TYPE = 'text/css; charset=utf-8'
       sandbox =
         alert: (text) ->
           t.equal 1, text, 'hi'
-      do vm.runInNewContext res.body, sandbox
+      vm.runInNewContext res.body, sandbox
       t.equal 2, res.headers['content-type'], JS_TYPE
 
     c.get '/slice.js', (err,res) ->
       sandbox =
         alert: (text) ->
           t.equal 3, text, 'hi'
-      do vm.runInNewContext res.body, sandbox
+      vm.runInNewContext res.body, sandbox
       t.equal 4, res.headers['content-type'], JS_TYPE
 
     c.get '/hasProp.js', (err,res) ->
       sandbox =
         alert: (text) ->
           t.equal 5, text, 'hi'
-      do vm.runInNewContext res.body, sandbox
+      vm.runInNewContext res.body, sandbox
 
     c.get '/modulo.js', (err,res) ->
       sandbox =
         alert: (text) ->
           t.equal 6, text, 3
-      do vm.runInNewContext res.body, sandbox
+      vm.runInNewContext res.body, sandbox
 
   js: (t) ->
     t.expect 1, 2
@@ -301,7 +301,7 @@ CSS_TYPE = 'text/css; charset=utf-8'
     c.get '/shared.js', (err, res) ->
       t.equal 'shared', res.headers['content-length'], '91'
     c.get '/coffee.js', (err, res) ->
-      t.equal 'coffee', res.headers['content-length'], '184'
+      t.equal 'coffee', res.headers['content-length'], '186'
     c.get '/js.js', (err, res) ->
       t.equal 'js', res.headers['content-length'], '13'
 
