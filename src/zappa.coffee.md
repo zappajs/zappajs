@@ -64,12 +64,22 @@ Takes in a function and builds express/socket.io apps based on the rules contain
 
       root = path.dirname module.parent.filename
 
-Storage for user-provided stuff.
+Storage for user-provided stuff:
+
+- Handlers (callbacks) for Socket.IO;
 
       ws_handlers = {}
+
+- Helper functions.
+
       helpers = {}
 
+The application itself is ExpressJS'.
+
       app = context.app = express()
+
+Use the `https` options to create a HTTP web server, create a plain HTTP server otherwise.
+
       if options.https?
         context.server = require('https').createServer options.https, app
       else
@@ -77,16 +87,17 @@ Storage for user-provided stuff.
 
 Set `options.io` to `false` to disable socket.io.
 Set `options.io` to socket.io's parameters otherwise (optional).
+Default is to enable Socket.IO with its default options.
 
       io = null
       if options.io isnt false
         socketio = options.socketio ? require 'socket.io'
         io = context.io = socketio context.server, options.io ? {}
 
-      views = context.views = {}
-
 ZappaView
 =========
+
+      views = context.views = {}
 
 Zappa View is used to inject views declared inside the Zappa context into Express (without writing them to the filesystem, etc.).
 
@@ -153,8 +164,16 @@ Zappa's default settings
       teacup = require 'teacup'
       teacup_express = require 'teacup/lib/express'
 
+Render `.coffee` files using Teacup.
+
       app.engine 'coffee', teacup_express.renderFile
+
+Render our internal views using Teacup as well.
+
       app.engine 'coffee zappa', (template,options) -> (teacup.renderable template).call options, options
+
+Provide `@teacup` and `@seem`.
+
       context.teacup = teacup
       context.seem = seem
 
@@ -186,7 +205,7 @@ Single argument: multiple routes in an object.
             else
               for k, v of arguments[0]
 
-For each individual entry, if the value is an array, its content must middleware..., handler.
+For each individual entry, if the value is an array, its content must be `middleware..., handler`.
 
                 if v instanceof Array
                   route
@@ -280,6 +299,8 @@ FIXME: either remove, or use browserify to run within zappajs-client.
 .view
 =====
 
+Define an internal view. Since the lookup will use a full pathname, make sure an extension is provided.
+
       context.view = invariate (k,v) ->
         ext = path.extname k
         p = path.join app.get('views'), k
@@ -319,7 +340,7 @@ FIXME: either remove, or use browserify to run within zappajs-client.
 .wrap
 =====
 
-Wrap Zappa-oriented middlewars so that they can be ran as regular Express middleware.
+Wrap Zappa-oriented middlewares so that they can be ran as regular Express middleware.
 
       context.wrap = (f) ->
         (req,res,next) ->
@@ -352,6 +373,9 @@ This is the context available to Zappa middleware.
 ====
 
       context.use = ->
+
+Zappa middleware available as `@use 'zappa'`, `@use session:options`.
+
         zappa_middleware =
           static: (options) ->
             if typeof options is 'string'
