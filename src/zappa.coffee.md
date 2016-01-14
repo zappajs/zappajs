@@ -671,13 +671,19 @@ Bind the session.id so that the handlers can access the session.
             next null
             return
 
+          req =
+            sessionID: session_id
+            sessionStore: context.session_store
+
 Retrieve the session data stored by Express
 
           context.session_store.get session_id, (error,data) ->
             if error
+              debug "get_session() #{error}"
               next null
               return
-            next data
+            req.session = new context.session.Session req, data
+            next req.session
 
 Wrap all other (event) handlers
 
