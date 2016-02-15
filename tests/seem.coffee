@@ -2,6 +2,7 @@ zappa = require '../src/zappa'
 port = 17300
 Promise = require 'bluebird'
 fs = Promise.promisifyAll require 'fs'
+seem = require 'seem'
 
 @tests =
   'seem': (t) ->
@@ -9,7 +10,7 @@ fs = Promise.promisifyAll require 'fs'
     t.wait 3000
 
     zapp = zappa port++, ->
-      @get '/package.json', @seem ->
+      @get '/package.json', seem ->
         @json JSON.parse yield fs.readFileAsync 'package.json', 'utf-8'
 
       user_db =
@@ -35,7 +36,7 @@ fs = Promise.promisifyAll require 'fs'
               else
                 Promise.reject new Error "No such group #{name}"
 
-      @get '/user/:name', @seem ->
+      @get '/user/:name', seem ->
         user = yield user_db.get @params.name
         group = yield group_db.get user.group
         @json {user,group}

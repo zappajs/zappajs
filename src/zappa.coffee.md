@@ -13,7 +13,6 @@ Zappa
     uuid = require 'node-uuid'
     methods = require 'methods'
     invariate = require 'invariate'
-    seem = require 'seem'
 
     session = require 'express-session'
 
@@ -172,10 +171,9 @@ Render our internal views using Teacup as well.
 
       app.engine 'coffee zappa', (template,options) -> (teacup.renderable template).call options, options
 
-Provide `@teacup` and `@seem`.
+Provide `@teacup`.
 
       context.teacup = teacup
-      context.seem = seem
 
       app.set 'views', path.join(root, '/views')
 
