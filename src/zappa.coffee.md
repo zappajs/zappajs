@@ -25,6 +25,7 @@ CoffeeScript-generated JavaScript may contain anyone of these; when we "rewrite"
 This list is taken from coffeescript's `src/nodes.coffee` UTILITIES.
 
     coffeescript_helpers = require 'coffeescript-helpers'
+    Browserify = require 'browserify-string'
 
     minify = (js) ->
       uglify ?= require 'uglify-js'
@@ -218,17 +219,6 @@ Otherwise, the value is simply the handler.
                   route verb: verb, path: k, handler: v
             return
 
-.client
-=======
-
-FIXME: either remove, or use browserify to run within zappajs-client.
-
-      context.client = invariate (k,v) ->
-        js = ";zappa.run(#{v});"
-        js = minify(js) if app.settings['minify']
-        route verb: 'get', path: k, handler: js, type: 'js'
-        return
-
 .coffee
 =======
 
@@ -236,6 +226,35 @@ FIXME: either remove, or use browserify to run within zappajs-client.
         js = coffeescript_helpers.p_exec v
         js = minify(js) if app.settings['minify']
         route verb: 'get', path: k, handler: js, type: 'js'
+        return
+
+.browserify
+===========
+
+      browserify = (k,v) ->
+
+        js = coffeescript_helpers.p_exec v
+        js = Browserify js,
+          basedir: root
+          paths: [root]
+        .bundle (err,src) ->
+          if err
+            debug "browserify: #{err.stack ? err}"
+            return
+          debug "browserify: ready"
+          js = src.toString()
+          js = minify(js) if app.settings['minify']
+          route verb: 'get', path: k, handler: js, type: 'js'
+        return
+
+      context.browserify = invariate browserify
+
+.isomorph
+=========
+
+      context.isomorph = invariate (k,v) ->
+        browserify k,v
+        v.apply context
         return
 
 .js
@@ -414,18 +433,6 @@ Zappa middleware available as `@use 'zappa'`, `@use session:options`.
 ======
 
       context.locals = app.locals
-
-.shared
-=======
-
-FIXME: same as .client, browserify or remove
-
-      context.shared = invariate (k,v) ->
-        js = ";zappa.run(#{v});"
-        js = minify(js) if app.settings['minify']
-        route verb: 'get', path: k, handler: js, type: 'js'
-        v.apply context
-        return
 
 .include
 ========
@@ -699,6 +706,7 @@ Wrap all other (event) handlers
                   session?.save()
             return
 
+        debug 'Socket.IO ready'
         return
 
 Go!

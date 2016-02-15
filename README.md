@@ -8,6 +8,7 @@ Zappa is a [CoffeeScript](http://coffeescript.org)-optimized interface to [Expre
 require('zappajs') ->
 
   ## Server-side ##
+  teacup = @teacup
 
   @get '/': ->
     @render 'index',
@@ -15,8 +16,8 @@ require('zappajs') ->
       scripts: '/zappa/full.js /index.js /client.js'
       stylesheet: '/index.css'
 
-  {doctype,html,head,title,script,link,body,h1,div} = @teacup
   @view index: ->
+    {doctype,html,head,title,script,link,body,h1,div} = teacup
     doctype 5
     html =>
       head =>
@@ -28,11 +29,14 @@ require('zappajs') ->
         h1 'Welcome to Zappa!'
         div id:'content'
 
+  pixels = 12
+
   @css '/index.css':
     body:
       font: '12px Helvetica'
     h1:
       color: 'pink'
+      height: "#{pixels}px"
 
   @get '/:name/data.json': ->
     record =
@@ -49,11 +53,12 @@ require('zappajs') ->
   @coffee '/index.js': ->
     alert 'hi'
 
-  @client '/client.js': ->
-    @connect()
+  @browserify '/client.js': ->
+    Zappa = require 'zappajs-client'
 
-    $ =>
-      @emit 'ready', 'hello'
+    Zappa ->
+      @ev.on 'ready', ->
+        @emit 'ready', 'hello'
 
     @get '#/': ->
       @app.swap 'Ready to roll!'
@@ -77,8 +82,9 @@ require('zappajs') ->
   - Now supports saving the Session object in Socket.IO methods.
   - Support `ack` for all Socket.IO `emit` calls.
 - Removal of embedded client-side code:
-  - The ZappaJS client is no longer embedded and was moved to a separate module, `zappajs-client`.
+  - The ZappaJS client is no longer embedded and was moved to a separate module, [`zappajs-client`](https://github.com/zappajs/zappajs-client).
   - Sammy and jQuery are no longer embedded.
   - As a consequence the `zappa` middleware is no longer required and was removed. If your code references any Javascript file under `/zappa/`, consider using e.g. `browserify-middleware` to build the dependencies.
+  - Client-side code is now bundled using `browserify-string`.
 - Now uses the `debug` module instead of logging to console directly.
 - Host and port might be specified using `ZAPPA_PORT` and `ZAPPA_HOST` environment variables, which are used as default if no explicit configuration is provided.
