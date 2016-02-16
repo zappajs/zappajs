@@ -583,7 +583,7 @@ Register socket.io handlers.
         c = {}
         session_id = null
 
-        build_ctx = ->
+        build_ctx = (o) ->
 
 Context available inside the Socket.IO `on` functions.
 
@@ -600,7 +600,11 @@ Context available inside the Socket.IO `on` functions.
             leave: (room) ->
               socket.leave room
             emit: invariate.acked (k,v,ack) ->
-              socket.emit.call socket, k, v, ack
+              socket.emit.call socket, k, v, (ack_data) ->
+                ctx = build_ctx
+                  event: k
+                  data: ack_data
+                ack.apply ctx, arguments
               return
             broadcast: invariate (k,v) ->
               broadcast = socket.broadcast
@@ -614,18 +618,29 @@ Context available inside the Socket.IO `on` functions.
               return
 
           apply_helpers ctx
+          if o?
+            ctx[k] = v for own k,v of o
           ctx
+
+On `connection`
+---------------
 
 Wrap the handler for `connection`
 
         ctx = build_ctx()
         ws_handlers.connection.apply(ctx) if ws_handlers.connection?
 
+On `disconnect`
+---------------
+
 Wrap the handler for `disconnect`
 
         socket.on 'disconnect', ->
           ctx = build_ctx()
           ws_handlers.disconnect.apply(ctx) if ws_handlers.disconnect?
+
+On `__zappa_settings`
+---------------------
 
 The special event `__zappa_settings` is used by the client to request that the current application settings be sent back.
 
@@ -696,10 +711,10 @@ Wrap all other (event) handlers
           do (name, h) ->
             if name isnt 'connection' and name isnt 'disconnect'
               socket.on name, (data, ack) ->
-                ctx = build_ctx()
-                ctx.event = name
-                ctx.data = data
-                ctx.ack = ack
+                ctx = build_ctx
+                  event: name
+                  data: data
+                  ack: ack
                 get_session (session) ->
                   ctx.session = session
                   h.call ctx, data, ack
