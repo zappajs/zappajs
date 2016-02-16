@@ -531,8 +531,19 @@ Context available inside the `get`, ... handlers.
                 socket_id = req.session?.__socket?[app.settings.zappa_channel]?.id
                 if socket_id?
                   room = io.sockets.in socket_id
-                  room.emit.call room, k, v, ack
+                  room.emit.call room, k, v, (ack_data) ->
+                    ack_ctx = build_ctx
+                      event: k
+                      data: ack_data
+                    ack.apply ack_ctx, arguments
                 return
+
+            build_ctx = (o) ->
+              _ctx = {}
+              _ctx[k] = v for own k,v of default_ctx
+              if o?
+                _ctx[k] = v for own k,v of o
+              _ctx
 
             render = (name,opts = {},fn) ->
 
