@@ -20,6 +20,7 @@
     "invariate": "^1.2.0",
     "methods": "^1.1.2",
     "node-uuid": "^1.4.7",
+    "seem": "^1.1.1",
     "socket.io": "^1.4.5",
     "socket.io-client": "^1.4.5",
     "teacup": "^2.0.0",
