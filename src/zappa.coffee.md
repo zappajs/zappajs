@@ -63,14 +63,28 @@ Takes in a function and builds express/socket.io apps based on the rules contain
       seem = options.seem ? require 'seem'
 
       is_generator = (f) ->
-        f.next? and f.throw?
+        f? and f.next? and f.throw?
 
-      seemify = (f) ->
+Detect whether a function is a generator function, and if it is, memoize the generator version.
+
+      seemify = (f,ctx,args) ->
         return unless f?
-        if is_generator f
-          seem f
-        else
-          f
+
+Use the memoized generator if present.
+
+        if f.__generator?
+          return f.__generator.apply ctx, args
+
+        v = f.apply ctx, args
+
+If the outcome of the function call is a generator, the function was a generator function, we better memoize it.
+
+        if is_generator v
+          f.__generator = seem f
+        if f.__generator?
+          return f.__generator.apply ctx, args
+
+        v
 
       context = {id: uuid.v4(), zappa, express, session}
 
@@ -395,7 +409,7 @@ This is the context available to Zappa middleware.
             format: -> res.format.apply res, arguments
 
           apply_helpers ctx
-          seemify f.call ctx, req, res, next
+          seemify f, ctx, [req, res, next]
 
 .use
 ====
@@ -460,7 +474,7 @@ Zappa middleware available as `@use 'zappa'`, `@use session:options`.
           do (name, helper) ->
             if typeof helper is 'function'
               ctx[name] = ->
-                seemify helper.apply ctx, arguments
+                seemify helper, ctx, arguments
             else
               ctx[name] = helper
             return
@@ -550,7 +564,7 @@ FIXME: Study render specifications for ExpressJS (esp. since async is becoming t
                     ack_ctx = build_ctx
                       event: k
                       data: ack_data
-                    seemify ack.apply ack_ctx, arguments
+                    seemify ack, ack_ctx, arguments
                 return
 
             build_ctx = (o) ->
@@ -587,12 +601,9 @@ FIXME: Study render specifications for ExpressJS (esp. since async is becoming t
             if app.settings['x-powered-by']
               res.setHeader 'X-Powered-By', "Zappa #{zappa.version}"
 
-            result = r.handler.call ctx, req, res, next
+            result = seemify r.handler, ctx, [req, res, next]
 
 A generator function will return an Object. Assume that object returns a Promise (as in `co` or `seem`).
-
-            result = seemify result
-
 We can then handle the Promise.
 
             if typeof result?.then is 'function'
@@ -637,7 +648,7 @@ Context available inside the Socket.IO `on` functions.
                 ctx = build_ctx
                   event: k
                   data: ack_data
-                seemify ack.apply ctx, arguments
+                seemify ack, ctx, arguments
               return
             broadcast: invariate (k,v) ->
               broadcast = socket.broadcast
@@ -661,7 +672,7 @@ On `connection`
 Wrap the handler for `connection`
 
         ctx = build_ctx()
-        seemify ws_handlers.connection.apply(ctx) if ws_handlers.connection?
+        seemify ws_handlers.connection, ctx if ws_handlers.connection?
 
 On `disconnect`
 ---------------
@@ -670,7 +681,7 @@ Wrap the handler for `disconnect`
 
         socket.on 'disconnect', ->
           ctx = build_ctx()
-          seemify ws_handlers.disconnect.apply(ctx) if ws_handlers.disconnect?
+          seemify ws_handlers.disconnect, ctx if ws_handlers.disconnect?
 
 On `__zappa_settings`
 ---------------------
@@ -750,7 +761,7 @@ Wrap all other (event) handlers
                   ack: ack
                 get_session (session) ->
                   ctx.session = session
-                  v = seemify h.call ctx, data, ack
+                  v = seemify h, ctx, [data, ack]
                   if v?.then?
                     v.then -> session?.save()
                   else

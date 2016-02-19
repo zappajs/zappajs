@@ -123,6 +123,21 @@ port = 15000
     c.head '/', (err,res) -> t.equal 5, res.body, ''
     c.patch '/', (err,res) -> t.equal 6, res.body, 'patched'
 
+  generators: (t) ->
+    t.expect 1, 2, 3, 4
+    t.wait 3000
+
+    zapp = zappa port++, ->
+
+      @get '/', -> yield @send 'got'
+      @get '/:name', -> yield @send @params.name
+
+    c = t.client zapp.server
+    c.get '/', (err,res) -> t.equal 1, res.body, 'got'
+    c.get '/', (err,res) -> t.equal 2, res.body, 'got'
+    c.get '/foo', (err,res) -> t.equal 3, res.body, 'foo'
+    c.get '/bar', (err,res) -> t.equal 4, res.body, 'bar'
+
   json: (t) ->
     t.expect 2
     t.wait 3000
