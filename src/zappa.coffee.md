@@ -253,7 +253,6 @@ Otherwise, the value is simply the handler.
           if err
             debug "browserify: #{err.stack ? err}"
             return
-          debug "browserify: ready"
           js = src.toString()
           js = minify(js) if app.settings['minify']
           route verb: 'get', path: k, handler: js, type: 'js'
@@ -533,6 +532,9 @@ Context available inside the `get`, ... handlers.
               jsonp: -> res.jsonp.apply res, arguments
               redirect: -> res.redirect.apply res, arguments
               format: -> res.format.apply res, arguments
+
+FIXME: Study render specifications for ExpressJS (esp. since async is becoming the only supported method) and adjust here, using `invariate` if that makes sense.
+
               render: ->
                 if typeof arguments[0] isnt 'object'
                   render.apply @, arguments
@@ -604,7 +606,7 @@ We can then handle the Promise.
 Socket.IO
 =========
 
-Zappa local channel (the default channel used for @emit inside Zappa's own @get etc.
+Zappa local channel (the default channel used for @emit inside Zappa's own @get etc.).
 
       app.set 'zappa_channel', '__local'
 
@@ -718,7 +720,7 @@ Bind the session.id so that the handlers can access the session.
 
         get_session = (next) ->
           unless context.session_store? and session_id?
-            debug 'get_session() not ready'
+            debug 'Session Store is not ready, `@session` will not be available.'
             next null
             return
 
@@ -825,6 +827,8 @@ Let the client know which key it should use on the Socket.IO side.
               key: key
           return
 
+The value returned by `Zappa.app` is the global context.
+
       context
 
 `zappa.run [host,] [port,] [{options},] root_function`
@@ -867,6 +871,8 @@ Takes a function and runs it as a zappa app. Optionally accepts a port number, a
         server.listen port, host
       else
         server.listen port
+
+The value returned by `Zappa.run` (aka `Zappa`) is the global context.
 
       zapp
 
