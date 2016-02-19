@@ -54,14 +54,11 @@ require('zappajs') ->
     alert 'hi'
 
   @browserify '/client.js': ->
-    Zappa = require 'zappajs-client'
+    ZappaClient = require 'zappajs-client'
 
-    Zappa ->
+    ZappaClient ->
       @ev.on 'ready', ->
         @emit 'ready', 'hello'
-
-    @get '#/': ->
-      @app.swap 'Ready to roll!'
 ```
 
 ## Install
@@ -78,13 +75,24 @@ require('zappajs') ->
 
 ## ZappaJS 4.0 Changes
 
-- Major improvements in Socket.IO interface:
-  - Now supports saving the Session object in Socket.IO methods.
-  - Support `ack` for all Socket.IO `emit` calls.
-- Removal of embedded client-side code:
-  - The ZappaJS client is no longer embedded and was moved to a separate module, [`zappajs-client`](https://github.com/zappajs/zappajs-client).
-  - Sammy and jQuery are no longer embedded.
-  - As a consequence the `zappa` middleware is no longer required and was removed. If your code references any Javascript file under `/zappa/`, consider using e.g. `browserify-middleware` to build the dependencies.
-  - Client-side code is now bundled using `browserify-string`.
-- Now uses the `debug` module instead of logging to console directly.
-- Host and port might be specified using `ZAPPA_PORT` and `ZAPPA_HOST` environment variables, which are used as default if no explicit configuration is provided.
+### Major improvements in Socket.IO interface:
+
+Now supports saving the Session object in Socket.IO methods. Session content can be modified both from ExpressJS and from Socket.IO.
+
+Supports `ack` callback for all Socket.IO `emit` calls.
+
+### Removal of embedded client-side code:
+
+The ZappaJS client is no longer embedded and was moved to a separate module, [`zappajs-client`](https://github.com/zappajs/zappajs-client).
+
+Sammy and jQuery are no longer embedded:
+- As a consequence the `zappa` middleware is no longer required and was removed. If your code references any Javascript file under `/zappa/`, consider using e.g. `browserify-middleware` to build the dependencies.
+- Also, `@client` and `@shared` are gone (along with their magic).
+
+Client-side code is now bundled using `browserify-string`; `@browserify` replaces `@client`, while `@isomorph` replaces `@shared`.
+
+### New features
+
+Now uses the `debug` module instead of logging to console directly.
+
+Host and port might be specified using the `ZAPPA_PORT` and `ZAPPA_HOST` environment variables, which are used as default if no explicit configuration is provided.

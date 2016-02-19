@@ -18,9 +18,6 @@ And give your foot a push:
 
     $ npm install zappajs
     $ coffee cuppa.coffee
-       info  - socket.io started
-    Express server listening on 0.0.0.0:3000 in development mode
-    Zappa 1.0.5 orchestrating the show
 
 (hat tip to [sinatra](http://sinatrarb.com))
 
@@ -45,7 +42,7 @@ On top of that, you also have some handy shortcuts such as the `@get` you alread
       @use (require 'body-parser').urlencoded(), 'method-override', 'static'
       @set 'view engine': 'jade', views: "#{__dirname}/custom/dir"
 
-After running your function, zappa automatically starts the whole thing and spits out a message with some useful info.
+After running your function, zappa automatically starts the whole thing.
 
 ## What about \[ENTER OPTION HERE\]?
 
@@ -90,6 +87,13 @@ If you return a string, it will automatically be sent as the response. But most 
         @send poncho.type
 
 Note that we're using a fat arrow (`=>`) here, to preserve the value of `this`.
+
+You might also use the Promises and Generators pattern to build more readable asynchronous functions:
+
+    @get '/user/:name', ->
+      user = yield user_db.get @params.name
+      group = yield group_db.get user.group
+      @json {user,group}
 
 ## Radical views
 
@@ -186,7 +190,7 @@ With `@coffee`, you can define client-side code inline, and serve it in JS form 
       body ->
         h1 'Inline client example'
 
-On a step further, you have `@client`, which gives you access to a matching client-side zappa API:
+On a step further, you have [`zappajs-client`](https://github.com/zappajs/zappajs-client), which gives you access to a matching client-side zappa API:
 
     @get '/': ->
       @render 'index'
