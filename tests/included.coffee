@@ -1,6 +1,6 @@
 @include = (foo) ->
-  @client '/index.js': ->
-    @get '#/': -> alert 'hi'
+  @browserify '/index.js': ->
+    alert 'hi'
 
   @get '/foo', ->
     @json foo

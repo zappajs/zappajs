@@ -8,7 +8,7 @@ CSS_TYPE = 'text/css; charset=utf-8'
 @tests =
   browserify: (t) ->
     t.expect 1, 2
-    t.wait 7000
+    t.wait 11000
 
     zapp = zappa port++, ->
       @browserify '/index.js': ->
@@ -30,7 +30,7 @@ CSS_TYPE = 'text/css; charset=utf-8'
 
           '''
         t.equal 2, res.headers['content-type'], JS_TYPE
-    , 5000
+    , 10000
 
   coffee: (t) ->
     t.expect 1, 2, 3, 4, 5, 6
