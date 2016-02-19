@@ -60,6 +60,18 @@ Takes in a function and builds express/socket.io apps based on the rules contain
 
       express = options.express ? require 'express'
 
+      seem = options.seem ? require 'seem'
+
+      is_generator = (f) ->
+        f.next? and f.throw?
+
+      seemify = (f) ->
+        return unless f?
+        if is_generator f
+          seem f
+        else
+          f
+
       context = {id: uuid.v4(), zappa, express, session}
 
       root = path.dirname module.parent.filename
@@ -384,7 +396,7 @@ This is the context available to Zappa middleware.
             format: -> res.format.apply res, arguments
 
           apply_helpers ctx
-          f.call ctx, req, res, next
+          seemify f.call ctx, req, res, next
 
 .use
 ====
@@ -449,7 +461,7 @@ Zappa middleware available as `@use 'zappa'`, `@use session:options`.
           do (name, helper) ->
             if typeof helper is 'function'
               ctx[name] = ->
-                helper.apply ctx, arguments
+                seemify helper.apply ctx, arguments
             else
               ctx[name] = helper
             return
@@ -498,6 +510,7 @@ Register a route with express.
             res.send r.handler
             return
         else if r.handler.call?
+
           app[r.verb] r.path, r.middleware, (req, res, next) ->
 
 Context available inside the `get`, ... handlers.
@@ -535,7 +548,7 @@ Context available inside the `get`, ... handlers.
                     ack_ctx = build_ctx
                       event: k
                       data: ack_data
-                    ack.apply ack_ctx, arguments
+                    seemify ack.apply ack_ctx, arguments
                 return
 
             build_ctx = (o) ->
@@ -560,23 +573,30 @@ Context available inside the `get`, ... handlers.
 
               res.render.call res, name, opts, report
 
+            finalize = (value) ->
+              res.type(r.type) if r.type?
+              if typeof value is 'string'
+                res.send value
+              else
+                value
+
             apply_helpers ctx
 
             if app.settings['x-powered-by']
               res.setHeader 'X-Powered-By', "Zappa #{zappa.version}"
 
             result = r.handler.call ctx, req, res, next
-            if typeof result?.then is 'function'
-              result.then (result) ->
-                res.type(r.type) if r.type?
-                if typeof result is 'string' then res.send result
-                else return result
-              , next
-              return
 
-            res.type(r.type) if r.type?
-            if typeof result is 'string' then res.send result
-            else return result
+A generator function will return an Object. Assume that object returns a Promise (as in `co` or `seem`).
+
+            result = seemify result
+
+We can then handle the Promise.
+
+            if typeof result?.then is 'function'
+              result.then finalize, next
+            else
+              finalize result
 
         else
           throw new Error "ZappaJS invalid handler of type #{typeof r.handler}: #{util.inspect r.handler}"
@@ -615,7 +635,7 @@ Context available inside the Socket.IO `on` functions.
                 ctx = build_ctx
                   event: k
                   data: ack_data
-                ack.apply ctx, arguments
+                seemify ack.apply ctx, arguments
               return
             broadcast: invariate (k,v) ->
               broadcast = socket.broadcast
@@ -639,7 +659,7 @@ On `connection`
 Wrap the handler for `connection`
 
         ctx = build_ctx()
-        ws_handlers.connection.apply(ctx) if ws_handlers.connection?
+        seemify ws_handlers.connection.apply(ctx) if ws_handlers.connection?
 
 On `disconnect`
 ---------------
@@ -648,7 +668,7 @@ Wrap the handler for `disconnect`
 
         socket.on 'disconnect', ->
           ctx = build_ctx()
-          ws_handlers.disconnect.apply(ctx) if ws_handlers.disconnect?
+          seemify ws_handlers.disconnect.apply(ctx) if ws_handlers.disconnect?
 
 On `__zappa_settings`
 ---------------------
@@ -728,8 +748,11 @@ Wrap all other (event) handlers
                   ack: ack
                 get_session (session) ->
                   ctx.session = session
-                  h.call ctx, data, ack
-                  session?.save()
+                  v = seemify h.call ctx, data, ack
+                  if v?.then?
+                    v.then -> session?.save()
+                  else
+                    session?.save()
             return
 
         debug 'Socket.IO ready'
