@@ -57,7 +57,7 @@ require('zappajs') ->
     ZappaClient = require 'zappajs-client'
 
     ZappaClient ->
-      @ev.on 'ready', ->
+      @ready ->
         @emit 'ready', 'hello'
 ```
 
