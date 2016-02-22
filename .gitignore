@@ -2,9 +2,11 @@
 material/
 node_modules/
 lib/*.js
+lib/*.js.map
 benchmarks/out/*.dat
 benchmarks/out/*.out
 tests/*.js
 _site
 vendor
 examples/public/bin
+.__browserify_string*
