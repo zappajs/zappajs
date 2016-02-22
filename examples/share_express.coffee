@@ -1,7 +1,8 @@
 #!/usr/bin/coffee
 #
 # This examples show how data can be shared between Express and Socket.IO.
-# You must run share_socketio.coffee in parallel to this script.
+# You must run share_socketio.coffee in parallel to this script
+# and have a Redis server instance running (e.g. `docker run --net=host shimaore/redis-server`).
 #
 
 # No cheating: we start ZappaJS without Socket.IO!
