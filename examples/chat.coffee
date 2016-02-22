@@ -1,4 +1,6 @@
 require('./zappajs') ->
+  @with 'client'
+  @use session: store: new @session.MemoryStore(), secret: 'foo', resave: true, saveUninitialized: true
 
   @get '/': ->
     @render 'index'
@@ -11,20 +13,18 @@ require('./zappajs') ->
     @emit said: {nickname: @client.nickname, text: @data.text}
 
   @client '/index.js': ->
-    @connect()
+    $ = require 'component-dom'
+    @emit 'set nickname': {nickname: prompt 'Pick a nickname!'}
 
-    $ =>
-      @emit 'set nickname': {nickname: prompt 'Pick a nickname!'}
+    @on said: ->
+      $('#panel').append "<p>#{@data.nickname} said: #{@data.text}</p>"
 
-      @on said: ->
-        $('#panel').append "<p>#{@data.nickname} said: #{@data.text}</p>"
+    $('#box').focus()
 
-      $('#box').focus()
-
-      $('button').click (e) =>
-        @emit said: {text: $('#box').val()}
-        $('#box').val('').focus()
-        e.preventDefault()
+    ($ 'button').on 'click', (e) =>
+      @emit said: {text: $('#box').value()}
+      $('#box').value('').focus()
+      e.preventDefault()
 
   {doctype,html,head,title,script,body,div,form,input,button} = @teacup
   @view index: ->
