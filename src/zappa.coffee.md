@@ -759,7 +759,7 @@ Applies a plugin to the current context.
         ctx = {context,route,browserify}
         if typeof k is 'string'
           k = require "zappajs-plugin-#{k}"
-        k.apply ctx, v
+        k.call ctx, v
 
 Go!
 ===
