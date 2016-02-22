@@ -259,13 +259,13 @@ Otherwise, the value is simply the handler.
 
       browserify = (k,v) ->
 
-        js = coffeescript_helpers.p_exec v
-        js = Browserify js,
+        actual = coffeescript_helpers.p_exec v
+        js = Browserify actual,
           basedir: root
           paths: [root]
         .bundle (err,src) ->
           if err
-            debug "browserify: #{err.stack ? err}"
+            debug "browserify: #{err.stack ? err}", actual
             return
           js = src.toString()
           js = minify(js) if app.settings['minify']
