@@ -305,9 +305,9 @@ For example:
       @get '/', auth, ->
         @json foo
 
-### @browserify
+### @browser
 
-    @browserify '/foo.js': ->
+    @browser '/foo.js': ->
 
       @on welcome: ->
         console.log 'A socket.io event.'
@@ -318,7 +318,7 @@ Notice that since we cannot retrieve the original CoffeeScript code from the Jav
 
 This function is particularly useful to build client-side application that require the [`zappajs-client`](https://github.com/zappajs/zappajs-client) module:
 
-    @browserify '/app.js', ->
+    @browser '/app.js', ->
       Debug = require 'debug'
       Debug.enable '*'
 
@@ -335,7 +335,7 @@ This function is particularly useful to build client-side application that requi
 
 But obviously this might work for any of your client-side needs:
 
-    @browserify '/with-jquery.js', ->
+    @browser '/with-jquery.js', ->
 
       $ = require 'component-dom' # did you expect something else?!
 
@@ -721,7 +721,7 @@ Directly from socket.io. Used to provide acknowledgement of messages sent by `@e
       console.log @data # 'now'
       @ack 'Got it!'
 
-    @browserify '/index.js', ->
+    @browser '/index.js', ->
       ZappaClient = require 'zappajs-client'
 
       ZappaClient ->
