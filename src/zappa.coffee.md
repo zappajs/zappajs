@@ -756,7 +756,7 @@ Wrap all other (event) handlers
 Applies a plugin to the current context.
 
       context.with = invariate (k,v) ->
-        ctx = {context,route,browserify}
+        ctx = {context,route,browserify,require}
         if typeof k is 'string'
           k = require "zappajs-plugin-#{k}"
         k.call ctx, v
