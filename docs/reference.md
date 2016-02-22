@@ -529,6 +529,10 @@ Additionally `@param` is assigned the value of the parameter.
 
 Install a plugin in your ZappaJS application.
 
+Known plugins:
+- [Client Plugin](https://github.com/zappajs/zappajs-plugin-client), adds `@client`.
+- [CSS Plugin](https://github.com/zappajs/zappajs-plugin-css), adds a function named after the CSS rendering library's name. For example `@with css:'stylus'` will provide `@stylus`.
+
 #### @with function-or-module
 
 Install the function/module as plugin.
