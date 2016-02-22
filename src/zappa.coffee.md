@@ -43,12 +43,6 @@ Flatten array recursively (copied from Express's utils.js)
           ret.push o
       ret
 
-Default Plugins set
-===================
-
-    zappa_with =
-      css: require 'zappajs-plugin-css'
-
 Zappa Application
 =================
 
@@ -764,10 +758,7 @@ Applies a plugin to the current context.
       context.with = invariate (k,v) ->
         ctx = {context,route,browserify}
         if typeof k is 'string'
-          if zappa_with[k]?
-            k = zappa_with[k]
-          else
-            k = require "zappajs-plugin-#{k}"
+          k = require "zappajs-plugin-#{k}"
         k.apply ctx, v
 
 Go!
