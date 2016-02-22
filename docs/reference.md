@@ -542,13 +542,13 @@ The plugin package must be available.
 
 For example,
 
-    @with css: 'less'
+    @with 'client'
 
 is a shortcut for
 
-    @with (require 'zappajs-plugin-css')(name)
+    @with require 'zappajs-plugin-client'
 
-which means the [CSS Plugin](https://github.com/zappajs/zappajs-plugin-css) must be present in your application.
+which means the [Client Plugin](https://github.com/zappajs/zappajs-plugin-client) must be present in your application.
 
 ### @zappa
 
