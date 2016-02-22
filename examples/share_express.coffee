@@ -13,7 +13,7 @@ require('./zappajs') 3000, io:false, ->
 
   @get '/': ->
     @render 'default',
-      scripts: '/zappa/socket.io /zappa/simple /index'.split ' '
+      scripts: '/index'.split ' '
 
   @get '/touch': ->
     @session.foo = 'bar'
@@ -31,24 +31,24 @@ require('./zappajs') 3000, io:false, ->
       body ->
         div id:'log'
 
-  @client '/index.js': ->
+  @browser '/index.js': ->
+    Zappa = require 'zappajs-client'
 
-    $ =>
-      log = -> $('#log').append arguments...
-      socket = null
+    Zappa io:'http://127.0.0.1:3001', ->
+      @ready ->
+        $ = require 'component-dom'
+        log = -> $('#log').append arguments...
 
-      channel_name = Math.random()
+        @request
+        .get '/touch'
+        .then ({body}) =>
+          @request
+          .get '/verify'
+        .then ({body}) =>
+          log "<p>Express says that foo = #{body.foo}</p>"
+          @emit 'express done, your turn'
 
-      # connect to the separate Socket.IO process.
-      socket = io.connect 'http://127.0.0.1:3001'
-      socket.on 'connect', =>
-        @share channel_name, socket, (ok) ->
-          $.getJSON "/touch", (data) ->
-            $.getJSON "/verify", (data) ->
-              log "<p>Express says that foo = #{data.foo}</p>"
-              socket.emit 'express done, your turn'
+        @on 'all set', (data) ->
+          log "<p>Socket says that foo = #{data.foo}.</p>"
 
-      socket.on 'all set', (data) ->
-        log "<p>Socket says that foo = #{data.foo}.</p>"
-
-      log '<p>Client started.</p>'
+        log '<p>Client started.</p>'
