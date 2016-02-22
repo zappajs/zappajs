@@ -1,4 +1,6 @@
 require('./zappajs') ->
+  @with 'client'
+  @use session: store: new @session.MemoryStore(), secret: 'foo', resave: true, saveUninitialized: true
 
   @get '/': ->
     @render 'index'
@@ -20,26 +22,25 @@ require('./zappajs') ->
     @broadcast_to @client.room, 'said', data
 
   @client '/index.js': ->
-    @connect()
+    $ = require 'component-dom'
 
     @on said: ->
       $('#panel').append "<p>#{@data.nickname} said: #{@data.msg}</p>"
 
-    $ =>
-      @emit 'set nickname': {nickname: prompt 'Pick a nickname!'}
+    @emit 'set nickname': {nickname: prompt 'Pick a nickname!'}
+    @emit 'set room': {room: prompt 'Pick a room!'}
+
+    $('#box').focus()
+
+    $('#sendButton').on 'click', (e) =>
+      @emit said: {msg: $('#box').value()}
+      $('#box').value('').focus()
+      e.preventDefault()
+
+    $('#changeButton').on 'click', (e) =>
       @emit 'set room': {room: prompt 'Pick a room!'}
-
-      $('#box').focus()
-
-      $('#sendButton').click (e) =>
-        @emit said: {msg: $('#box').val()}
-        $('#box').val('').focus()
-        e.preventDefault()
-
-      $('#changeButton').click (e) =>
-        @emit 'set room': {room: prompt 'Pick a room!'}
-        $('#box').val('').focus()
-        e.preventDefault()
+      $('#box').value('').focus()
+      e.preventDefault()
 
   {doctype,html,head,title,script,body,div,form,input,button} = @teacup
   @view index: ->
