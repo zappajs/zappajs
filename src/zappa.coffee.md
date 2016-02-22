@@ -272,7 +272,7 @@ Otherwise, the value is simply the handler.
           route verb: 'get', path: k, handler: js, type: 'js'
         return
 
-      context.browserify = invariate browserify
+      context.browserify = context.browser = invariate browserify
 
 .isomorph
 =========
