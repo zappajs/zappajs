@@ -1,0 +1,2149 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Zappa</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <h1 id="zappa">Zappa</h1>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p><strong>Zappa</strong> is a <a href="http://coffeescript.org">CoffeeScript</a> DSL-ish interface for building web apps on the <a href="http://nodejs.org">node.js</a> runtime, integrating <a href="http://expressjs.com">express</a>, <a href="http://socket.io">socket.io</a> and other best-of-breed libraries.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>pkg = <span class="hljs-built_in">require</span> <span class="hljs-string">'../package'</span>
+zappa = version: pkg.version
+
+debug = (<span class="hljs-built_in">require</span> <span class="hljs-string">'debug'</span>) pkg.name
+fs = <span class="hljs-built_in">require</span> <span class="hljs-string">'fs'</span>
+path = <span class="hljs-built_in">require</span> <span class="hljs-string">'path'</span>
+util = <span class="hljs-built_in">require</span> <span class="hljs-string">'util'</span>
+uuid = <span class="hljs-built_in">require</span> <span class="hljs-string">'node-uuid'</span>
+methods = <span class="hljs-built_in">require</span> <span class="hljs-string">'methods'</span>
+invariate = <span class="hljs-built_in">require</span> <span class="hljs-string">'invariate'</span>
+
+session = <span class="hljs-built_in">require</span> <span class="hljs-string">'express-session'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Soft dependencies:</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>uglify = <span class="hljs-literal">null</span>
+coffee_css = <span class="hljs-literal">null</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>CoffeeScript-generated JavaScript may contain anyone of these; when we “rewrite” a function (see below) though, it loses access to its parent scope, and consequently to any helpers it might need. So we need to reintroduce these helpers manually inside any “rewritten” function.
+This list is taken from coffeescript’s <code>src/nodes.coffee</code> UTILITIES.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>coffeescript_helpers = <span class="hljs-built_in">require</span> <span class="hljs-string">'coffeescript-helpers'</span>
+Browserify = <span class="hljs-built_in">require</span> <span class="hljs-string">'browserify-string'</span>
+<span class="hljs-function">
+<span class="hljs-title">minify</span> = <span class="hljs-params">(js)</span> -&gt;</span>
+  uglify ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'uglify-js'</span>
+  result = uglify.minify js, fromString:<span class="hljs-literal">true</span>
+  result.code</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Flatten array recursively (copied from Express’s utils.js)</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-title">flatten</span> = <span class="hljs-params">(arr, ret)</span> -&gt;</span>
+  ret ?= []
+  <span class="hljs-keyword">for</span> o <span class="hljs-keyword">in</span> arr
+    <span class="hljs-keyword">if</span> Array.isArray o
+      flatten o, ret
+    <span class="hljs-keyword">else</span>
+      ret.push o
+  ret</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <h1 id="zappa-application">Zappa Application</h1>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Takes in a function and builds express/socket.io apps based on the rules contained in it.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>zappa.app = <span class="hljs-function">-&gt;</span>
+  <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> arguments
+    <span class="hljs-keyword">switch</span> <span class="hljs-keyword">typeof</span> a
+      <span class="hljs-keyword">when</span> <span class="hljs-string">'function'</span>
+        func = a
+      <span class="hljs-keyword">when</span> <span class="hljs-string">'object'</span>
+        options = a
+
+  options ?= {}
+
+  express = options.express ? <span class="hljs-built_in">require</span> <span class="hljs-string">'express'</span>
+
+  seem = options.seem ? <span class="hljs-built_in">require</span> <span class="hljs-string">'seem'</span>
+<span class="hljs-function">
+  <span class="hljs-title">is_generator</span> = <span class="hljs-params">(f)</span> -&gt;</span>
+    f? <span class="hljs-keyword">and</span> f.next? <span class="hljs-keyword">and</span> f.<span class="hljs-keyword">throw</span>?</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Detect whether a function is a generator function, and if it is, memoize the generator version.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function">  <span class="hljs-title">seemify</span> = <span class="hljs-params">(f,ctx,args)</span> -&gt;</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">unless</span> f?</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>Use the memoized generator if present.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> f.__generator?
+      <span class="hljs-keyword">return</span> f.__generator.apply ctx, args
+
+    v = f.apply ctx, args</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>If the outcome of the function call is a generator, the function was a generator function, we better memoize it.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> is_generator v
+      f.__generator = seem f
+    <span class="hljs-keyword">if</span> f.__generator?
+      <span class="hljs-keyword">return</span> f.__generator.apply ctx, args
+
+    v
+
+  context = {id: uuid.v4(), zappa, express, session}
+
+  root = path.dirname <span class="hljs-built_in">module</span>.parent.filename</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>Storage for user-provided stuff:</p>
+<ul>
+<li>Handlers (callbacks) for Socket.IO;</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  ws_handlers = {}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <ul>
+<li>Helper functions.</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  helpers = {}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>The application itself is ExpressJS’.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  app = context.app = express()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Use the <code>https</code> options to create a HTTP web server, create a plain HTTP server otherwise.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">if</span> options.https?
+    context.server = <span class="hljs-built_in">require</span>(<span class="hljs-string">'https'</span>).createServer options.https, app
+  <span class="hljs-keyword">else</span>
+    context.server = <span class="hljs-built_in">require</span>(<span class="hljs-string">'http'</span>).createServer app</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>Set <code>options.io</code> to <code>false</code> to disable socket.io.
+Set <code>options.io</code> to socket.io’s parameters otherwise (optional).
+Default is to enable Socket.IO with its default options.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  io = <span class="hljs-literal">null</span>
+  <span class="hljs-keyword">if</span> options.io <span class="hljs-keyword">isnt</span> <span class="hljs-literal">false</span>
+    socketio = options.socketio ? <span class="hljs-built_in">require</span> <span class="hljs-string">'socket.io'</span>
+    io = context.io = socketio context.server, options.io ? {}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <h1 id="zappaview">ZappaView</h1>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  views = context.views = {}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>Zappa View is used to inject views declared inside the Zappa context into Express (without writing them to the filesystem, etc.).</p>
+<p>This is our own version of Express’ original <code>lib/view.js</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ZappaView</span></span>
+    constructor: <span class="hljs-function"><span class="hljs-params">(name,options = {})</span> -&gt;</span>
+      @root = options.root ? <span class="hljs-string">''</span>
+      engines = options.engines
+      defaultEngine = options.defaultEngine
+      @ext = path.extname name
+      <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> @ext <span class="hljs-keyword">and</span> <span class="hljs-keyword">not</span> defaultEngine
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Error <span class="hljs-string">'No default engine was specified and no extensions was provided.'</span>
+      <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> @ext
+        @ext = <span class="hljs-keyword">if</span> defaultEngine[<span class="hljs-number">0</span>] <span class="hljs-keyword">isnt</span> <span class="hljs-string">'.'</span> <span class="hljs-keyword">then</span> <span class="hljs-string">".<span class="hljs-subst">#{defaultEngine}</span>"</span> <span class="hljs-keyword">else</span> defaultEngine
+        name += @ext
+      [@path,@proto] = @lookup name
+      <span class="hljs-keyword">if</span> @proto?
+        <span class="hljs-keyword">if</span> @proto
+          @engine = engines[<span class="hljs-string">"<span class="hljs-subst">#{@ext}</span> zappa"</span>] ?= <span class="hljs-built_in">require</span>(@ext.slice <span class="hljs-number">1</span>).render
+        <span class="hljs-keyword">else</span>
+          @engine = engines[@ext] ?= <span class="hljs-built_in">require</span>(@ext.slice <span class="hljs-number">1</span>).__express
+      @path</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <h2 id="lookup">Lookup</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p>First look inside our internal set of views, then use the filesystem.
+Return <code>path,proto</code> where <code>proto</code> indicates whether the document is internal or filesystem.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    lookup: <span class="hljs-function"><span class="hljs-params">(p)</span> -&gt;</span>
+<span class="hljs-function">      <span class="hljs-title">exists</span> = <span class="hljs-params">(p)</span> -&gt;</span>
+        <span class="hljs-keyword">if</span> views[p]?
+          <span class="hljs-keyword">return</span> [p,<span class="hljs-literal">true</span>]
+        <span class="hljs-keyword">if</span> fs.existsSync p
+          <span class="hljs-keyword">return</span> [p,<span class="hljs-literal">false</span>]
+        <span class="hljs-literal">null</span>
+
+      exists( path.resolve @root, p ) ? exists( path.join path.dirname(p), path.basename(p,@ext), <span class="hljs-string">"index.<span class="hljs-subst">#{@ext}</span>"</span> ) ? [<span class="hljs-literal">null</span>,<span class="hljs-literal">null</span>]</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <h2 id="render">Render</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <p>Try to render the internal view or the filesystem view based on the <code>proto</code> flag.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    render: <span class="hljs-function"><span class="hljs-params">(options,fn)</span> -&gt;</span>
+      <span class="hljs-keyword">if</span> @proto
+        e = <span class="hljs-literal">null</span>
+        <span class="hljs-keyword">try</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <p>FIXME: pass parameters as per Express2</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          r = @engine views[@path], options, @path
+        <span class="hljs-keyword">catch</span> error
+          e = <span class="hljs-string">"Engine .render for <span class="hljs-subst">#{@ext}</span> failed: <span class="hljs-subst">#{error}</span>"</span>
+        fn e, r
+      <span class="hljs-keyword">else</span>
+        @engine @path, options, fn</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <h1 id="zappa-s-default-settings">Zappa’s default settings</h1>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  app.set <span class="hljs-string">'view'</span>, ZappaView
+  app.set <span class="hljs-string">'view engine'</span>, <span class="hljs-string">'coffee'</span>
+
+  teacup = <span class="hljs-built_in">require</span> <span class="hljs-string">'teacup'</span>
+  teacup_express = <span class="hljs-built_in">require</span> <span class="hljs-string">'teacup/lib/express'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-26">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-26">&#182;</a>
+              </div>
+              <p>Render <code>.coffee</code> files using Teacup.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  app.engine <span class="hljs-string">'coffee'</span>, teacup_express.renderFile</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-27">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-27">&#182;</a>
+              </div>
+              <p>Render our internal views using Teacup as well.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  app.engine <span class="hljs-string">'coffee zappa'</span>, <span class="hljs-function"><span class="hljs-params">(template,options)</span> -&gt;</span> (teacup.renderable template).call options, options</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-28">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-28">&#182;</a>
+              </div>
+              <p>Provide <code>@teacup</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  context.teacup = teacup
+
+  app.set <span class="hljs-string">'views'</span>, path.join(root, <span class="hljs-string">'/views'</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-29">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-29">&#182;</a>
+              </div>
+              <p>Location of zappa-specific URIs.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  app.set <span class="hljs-string">'zappa_prefix'</span>, <span class="hljs-string">'/zappa'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-30">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-30">&#182;</a>
+              </div>
+              <h1 id="verbs-aka-http-methods-">Verbs (aka HTTP methods)</h1>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-31">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-31">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">for</span> verb <span class="hljs-keyword">in</span> [methods...,<span class="hljs-string">'all'</span>]
+    <span class="hljs-keyword">do</span> (verb) -&gt;
+      context[verb] = <span class="hljs-function"><span class="hljs-params">(args...)</span> -&gt;</span>
+        arity = args.length</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-32">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-32">&#182;</a>
+              </div>
+              <p>Multiple arguments: path, middleware…, handler</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> arity &gt; <span class="hljs-number">1</span>
+          route
+            verb: verb
+            path: args[<span class="hljs-number">0</span>]
+            middleware: flatten args[<span class="hljs-number">1.</span>..arity<span class="hljs-number">-1</span>]
+            handler: args[arity<span class="hljs-number">-1</span>]</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-33">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-33">&#182;</a>
+              </div>
+              <p>Single argument: multiple routes in an object.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">else</span>
+          <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">of</span> arguments[<span class="hljs-number">0</span>]</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-34">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-34">&#182;</a>
+              </div>
+              <p>For each individual entry, if the value is an array, its content must be <code>middleware..., handler</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">if</span> v <span class="hljs-keyword">instanceof</span> Array
+              route
+                verb: verb
+                path: k
+                middleware: flatten v[<span class="hljs-number">0.</span>..v.length<span class="hljs-number">-1</span>]
+                handler: v[v.length<span class="hljs-number">-1</span>]</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-35">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-35">&#182;</a>
+              </div>
+              <p>Otherwise, the value is simply the handler.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">else</span>
+              route verb: verb, path: k, handler: v
+        <span class="hljs-keyword">return</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-36">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-36">&#182;</a>
+              </div>
+              <h1 id="-coffee">.coffee</h1>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-37">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-37">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  context.coffee = invariate (k,v) -&gt;
+    js = coffeescript_helpers.p_exec v
+    js = minify(js) <span class="hljs-keyword">if</span> app.settings[<span class="hljs-string">'minify'</span>]
+    route verb: <span class="hljs-string">'get'</span>, path: k, handler: js, type: <span class="hljs-string">'js'</span>
+    <span class="hljs-keyword">return</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-38">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-38">&#182;</a>
+              </div>
+              <h1 id="-browserify">.browserify</h1>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-39">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-39">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function">  <span class="hljs-title">browserify</span> = <span class="hljs-params">(k,v)</span> -&gt;</span>
+
+    actual = coffeescript_helpers.p_exec v
+    js = Browserify actual,
+      basedir: root
+      paths: [root]
+    .bundle (err,src) -&gt;
+      <span class="hljs-keyword">if</span> err
+        debug <span class="hljs-string">"browserify: <span class="hljs-subst">#{err.stack ? err}</span>"</span>, actual
+        <span class="hljs-keyword">return</span>
+      js = src.toString()
+      js = minify(js) <span class="hljs-keyword">if</span> app.settings[<span class="hljs-string">'minify'</span>]
+      route verb: <span class="hljs-string">'get'</span>, path: k, handler: js, type: <span class="hljs-string">'js'</span>
+    <span class="hljs-keyword">return</span>
+
+  context.browserify = context.browser = invariate browserify</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-40">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-40">&#182;</a>
+              </div>
+              <h1 id="-isomorph">.isomorph</h1>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-41">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-41">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  context.isomorph = invariate (k,v) -&gt;
+    browserify k,v
+    v.apply context
+    <span class="hljs-keyword">return</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-42">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-42">&#182;</a>
+              </div>
+              <h1 id="-js">.js</h1>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-43">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-43">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  context.js = invariate (k,v) -&gt;
+    js = String(v)
+    js = minify(js) <span class="hljs-keyword">if</span> app.settings[<span class="hljs-string">'minify'</span>]
+    route verb: <span class="hljs-string">'get'</span>, path: k, handler: js, type: <span class="hljs-string">'js'</span>
+    <span class="hljs-keyword">return</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-44">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-44">&#182;</a>
+              </div>
+              <h1 id="-css">.css</h1>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-45">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-45">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  context.css = invariate (k,v) -&gt;
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> v <span class="hljs-keyword">is</span> <span class="hljs-string">'object'</span>
+      coffee_css ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'coffee-css'</span>
+      css = coffee_css.compile v
+    <span class="hljs-keyword">else</span>
+      css = String(v)
+    route verb: <span class="hljs-string">'get'</span>, path: k, handler: css, type: <span class="hljs-string">'css'</span>
+    <span class="hljs-keyword">return</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-46">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-46">&#182;</a>
+              </div>
+              <h1 id="-helper">.helper</h1>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-47">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-47">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  context.helper = invariate (k,v) -&gt;
+    helpers[k] = v
+    <span class="hljs-keyword">return</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-48">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-48">&#182;</a>
+              </div>
+              <h1 id="-on">.on</h1>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-49">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-49">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  context.<span class="hljs-literal">on</span> = invariate (k,v) -&gt;
+    ws_handlers[k] = v
+    <span class="hljs-keyword">return</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-50">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-50">&#182;</a>
+              </div>
+              <h1 id="-view">.view</h1>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-51">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-51">&#182;</a>
+              </div>
+              <p>Define an internal view. Since the lookup will use a full pathname, make sure an extension is provided.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  context.view = invariate (k,v) -&gt;
+    ext = path.extname k
+    p = path.join app.get(<span class="hljs-string">'views'</span>), k
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> ext
+      p += <span class="hljs-string">'.'</span> + app.get(<span class="hljs-string">'view engine'</span>)
+    views[p] = v
+    <span class="hljs-keyword">return</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-52">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-52">&#182;</a>
+              </div>
+              <h1 id="-engine">.engine</h1>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-53">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-53">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  context.engine = invariate (k,v) -&gt;
+    app.engine k, v
+    <span class="hljs-keyword">return</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-54">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-54">&#182;</a>
+              </div>
+              <h1 id="-set">.set</h1>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-55">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-55">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  context.set = invariate (k,v) -&gt;
+    app.set k, v
+    <span class="hljs-keyword">return</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-56">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-56">&#182;</a>
+              </div>
+              <h1 id="-enable">.enable</h1>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-57">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-57">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  context.enable = <span class="hljs-function">-&gt;</span>
+    app.enable i <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> arguments
+    <span class="hljs-keyword">return</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-58">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-58">&#182;</a>
+              </div>
+              <h1 id="-disable">.disable</h1>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-59">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-59">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  context.disable = <span class="hljs-function">-&gt;</span>
+    app.disable i <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> arguments
+    <span class="hljs-keyword">return</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-60">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-60">&#182;</a>
+              </div>
+              <h1 id="-wrap">.wrap</h1>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-61">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-61">&#182;</a>
+              </div>
+              <p>Wrap Zappa-oriented middlewares so that they can be ran as regular Express middleware.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  context.wrap = <span class="hljs-function"><span class="hljs-params">(f)</span> -&gt;</span>
+    (req,res,next) -&gt;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-62">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-62">&#182;</a>
+              </div>
+              <p>This is the context available to Zappa middleware.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      ctx =
+        app: app
+        settings: app.settings
+        locals: res.locals
+        request: req
+        req: req
+        query: req.query
+        params: req.params
+        body: req.body
+        session: req.session
+        response: res
+        res: res
+        next: next
+        send: <span class="hljs-function">-&gt;</span> res.send.apply res, arguments
+        json: <span class="hljs-function">-&gt;</span> res.json.apply res, arguments
+        jsonp: <span class="hljs-function">-&gt;</span> res.jsonp.apply res, arguments
+        redirect: <span class="hljs-function">-&gt;</span> res.redirect.apply res, arguments
+        format: <span class="hljs-function">-&gt;</span> res.format.apply res, arguments
+
+      apply_helpers ctx
+      seemify f, ctx, [req, res, next]</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-63">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-63">&#182;</a>
+              </div>
+              <h1 id="-use">.use</h1>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-64">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-64">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  context.use = <span class="hljs-function">-&gt;</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-65">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-65">&#182;</a>
+              </div>
+              <p>Zappa middleware available as <code>@use &#39;zappa&#39;</code>, <code>@use session:options</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    zappa_middleware =
+      static: <span class="hljs-function"><span class="hljs-params">(options)</span> -&gt;</span>
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> options <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span>
+          options = path: options
+        options ?= {}
+        p = options.path ? path.join(root, <span class="hljs-string">'/public'</span>)
+        <span class="hljs-keyword">delete</span> options.path
+        express.static(p,options)
+      session: <span class="hljs-function"><span class="hljs-params">(options)</span> -&gt;</span>
+        context.session_store = options.store
+        session options
+<span class="hljs-function">
+    <span class="hljs-title">use</span> = <span class="hljs-params">(name, arg = <span class="hljs-literal">null</span>)</span> -&gt;</span>
+      <span class="hljs-keyword">if</span> zappa_middleware[name]
+        app.use zappa_middleware[name](arg)
+      <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> express[name] <span class="hljs-keyword">is</span> <span class="hljs-string">'function'</span>
+        app.use express[name](arg)
+      <span class="hljs-keyword">else</span>
+        app.use (<span class="hljs-built_in">require</span> name)(arg)
+
+    <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> arguments
+      <span class="hljs-keyword">switch</span> <span class="hljs-keyword">typeof</span> a
+        <span class="hljs-keyword">when</span> <span class="hljs-string">'function'</span> <span class="hljs-keyword">then</span> app.use a
+        <span class="hljs-keyword">when</span> <span class="hljs-string">'string'</span> <span class="hljs-keyword">then</span> use a
+        <span class="hljs-keyword">when</span> <span class="hljs-string">'object'</span>
+          <span class="hljs-keyword">if</span> a.stack? <span class="hljs-keyword">or</span> a.route? <span class="hljs-keyword">or</span> a.handle?
+            app.use a
+          <span class="hljs-keyword">else</span>
+            use k, v <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">of</span> a
+    <span class="hljs-keyword">return</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-66">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-66">&#182;</a>
+              </div>
+              <h1 id="-settings">.settings</h1>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-67">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-67">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  context.settings = app.settings</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-68">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-68">&#182;</a>
+              </div>
+              <h1 id="-local">.local</h1>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-69">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-69">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  context.locals = app.locals</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-70">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-70">&#182;</a>
+              </div>
+              <h1 id="-include">.include</h1>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-71">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-71">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  context.include = <span class="hljs-function"><span class="hljs-params">(p,args...)</span> -&gt;</span>
+    sub = <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> p <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span> <span class="hljs-keyword">then</span> <span class="hljs-built_in">require</span> path.join(root, p) <span class="hljs-keyword">else</span> p
+    sub.include.apply context, args</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-72">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-72">&#182;</a>
+              </div>
+              <h1 id="-apply_helpers-"><code>apply_helpers</code></h1>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-73">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-73">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function">  <span class="hljs-title">apply_helpers</span> = <span class="hljs-params">(ctx)</span> -&gt;</span>
+    <span class="hljs-keyword">for</span> name, helper <span class="hljs-keyword">of</span> helpers
+      <span class="hljs-keyword">do</span> (name, helper) -&gt;
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> helper <span class="hljs-keyword">is</span> <span class="hljs-string">'function'</span>
+          ctx[name] = <span class="hljs-function">-&gt;</span>
+            seemify helper, ctx, arguments
+        <span class="hljs-keyword">else</span>
+          ctx[name] = helper
+        <span class="hljs-keyword">return</span>
+    ctx</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-74">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-74">&#182;</a>
+              </div>
+              <h1 id="-param">.param</h1>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-75">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-75">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function">  <span class="hljs-title">build_param</span> = <span class="hljs-params">(callback)</span> -&gt;</span>
+    (req,res,next,p) -&gt;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-76">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-76">&#182;</a>
+              </div>
+              <p>Context available to <code>param</code> functions.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      ctx =
+        app: app
+        settings: app.settings
+        locals: res.locals
+        request: req
+        req: req
+        query: req.query
+        params: req.params
+        body: req.body
+        session: req.session
+        response: res
+        res: res
+        next: next
+        param: p
+      apply_helpers ctx
+      callback.call ctx, req, res, next, p
+
+  context.param = invariate (k,v) -&gt;
+    app.param k, build_param v
+    <span class="hljs-keyword">return</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-77">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-77">&#182;</a>
+              </div>
+              <h1 id="route">route</h1>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-78">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-78">&#182;</a>
+              </div>
+              <p>Register a route with express.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function">  <span class="hljs-title">route</span> = <span class="hljs-params">(r)</span> -&gt;</span>
+    r.middleware ?= []
+
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> r.handler <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span>
+      app[r.verb] r.path, r.middleware, <span class="hljs-function"><span class="hljs-params">(req, res)</span> -&gt;</span>
+        res.type r.type <span class="hljs-keyword">if</span> r.type?
+        res.send r.handler
+        <span class="hljs-keyword">return</span>
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> r.handler.call?
+
+      app[r.verb] r.path, r.middleware, <span class="hljs-function"><span class="hljs-params">(req, res, next)</span> -&gt;</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-79">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-79">&#182;</a>
+              </div>
+              <p>Context available inside the <code>get</code>, … handlers.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        ctx =
+          app: app
+          settings: app.settings
+          locals: res.locals
+          request: req
+          req: req
+          query: req.query
+          params: req.params
+          body: req.body
+          session: req.session
+          response: res
+          res: res
+          next: next
+          send: <span class="hljs-function">-&gt;</span> res.send.apply res, arguments
+          json: <span class="hljs-function">-&gt;</span> res.json.apply res, arguments
+          jsonp: <span class="hljs-function">-&gt;</span> res.jsonp.apply res, arguments
+          redirect: <span class="hljs-function">-&gt;</span> res.redirect.apply res, arguments
+          format: <span class="hljs-function">-&gt;</span> res.format.apply res, arguments</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-80">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-80">&#182;</a>
+              </div>
+              <p>FIXME: Study render specifications for ExpressJS (esp. since async is becoming the only supported method) and adjust here, using <code>invariate</code> if that makes sense.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          render: <span class="hljs-function">-&gt;</span>
+            <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> arguments[<span class="hljs-number">0</span>] <span class="hljs-keyword">isnt</span> <span class="hljs-string">'object'</span>
+              render.apply @, arguments
+            <span class="hljs-keyword">else</span>
+              <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">of</span> arguments[<span class="hljs-number">0</span>]
+                render.apply @, [k, v]
+            <span class="hljs-keyword">return</span>
+          emit: invariate.acked (k,v,ack) -&gt;
+            socket_id = req.session?.__socket?[app.settings.zappa_channel]?.id
+            <span class="hljs-keyword">if</span> socket_id?
+              room = io.sockets.<span class="hljs-keyword">in</span> socket_id
+              room.emit.call room, k, v, <span class="hljs-function"><span class="hljs-params">(ack_data)</span> -&gt;</span>
+                ack_ctx = build_ctx
+                  event: k
+                  data: ack_data
+                seemify ack, ack_ctx, arguments
+            <span class="hljs-keyword">return</span>
+<span class="hljs-function">
+        <span class="hljs-title">build_ctx</span> = <span class="hljs-params">(o)</span> -&gt;</span>
+          _ctx = {}
+          _ctx[k] = v <span class="hljs-keyword">for</span> own k,v <span class="hljs-keyword">of</span> default_ctx
+          <span class="hljs-keyword">if</span> o?
+            _ctx[k] = v <span class="hljs-keyword">for</span> own k,v <span class="hljs-keyword">of</span> o
+          _ctx
+<span class="hljs-function">
+        <span class="hljs-title">render</span> = <span class="hljs-params">(name,opts = {},fn)</span> -&gt;</span>
+
+          report = fn ? (err,html) -&gt;
+            <span class="hljs-keyword">if</span> err
+              next err
+            <span class="hljs-keyword">else</span>
+              res.send html</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-81">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-81">&#182;</a>
+              </div>
+              <p>Make sure the second arg is an object.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> opts <span class="hljs-keyword">is</span> <span class="hljs-string">'function'</span>
+            fn = opts
+            opts = {}
+
+          res.render.call res, name, opts, report
+<span class="hljs-function">
+        <span class="hljs-title">finalize</span> = <span class="hljs-params">(value)</span> -&gt;</span>
+          res.type(r.type) <span class="hljs-keyword">if</span> r.type?
+          <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> value <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span>
+            res.send value
+          <span class="hljs-keyword">else</span>
+            value
+
+        apply_helpers ctx
+
+        <span class="hljs-keyword">if</span> app.settings[<span class="hljs-string">'x-powered-by'</span>]
+          res.setHeader <span class="hljs-string">'X-Powered-By'</span>, <span class="hljs-string">"Zappa <span class="hljs-subst">#{zappa.version}</span>"</span>
+
+        result = seemify r.handler, ctx, [req, res, next]</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-82">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-82">&#182;</a>
+              </div>
+              <p>A generator function will return an Object. Assume that object returns a Promise (as in <code>co</code> or <code>seem</code>).
+We can then handle the Promise.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> result?.<span class="hljs-keyword">then</span> <span class="hljs-keyword">is</span> <span class="hljs-string">'function'</span>
+          result.<span class="hljs-keyword">then</span> finalize, next
+        <span class="hljs-keyword">else</span>
+          finalize result
+
+    <span class="hljs-keyword">else</span>
+      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Error <span class="hljs-string">"ZappaJS invalid handler of type <span class="hljs-subst">#{<span class="hljs-keyword">typeof</span> r.handler}</span>: <span class="hljs-subst">#{util.inspect r.handler}</span>"</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-83">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-83">&#182;</a>
+              </div>
+              <h1 id="socket-io">Socket.IO</h1>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-84">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-84">&#182;</a>
+              </div>
+              <p>Zappa local channel (the default channel used for @emit inside Zappa’s own @get etc.).</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  app.set <span class="hljs-string">'zappa_channel'</span>, <span class="hljs-string">'__local'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-85">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-85">&#182;</a>
+              </div>
+              <p>Register socket.io handlers.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  io?.sockets.<span class="hljs-literal">on</span> <span class="hljs-string">'connection'</span>, <span class="hljs-function"><span class="hljs-params">(socket)</span> -&gt;</span>
+    c = {}
+    session_id = <span class="hljs-literal">null</span>
+<span class="hljs-function">
+    <span class="hljs-title">build_ctx</span> = <span class="hljs-params">(o)</span> -&gt;</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-86">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-86">&#182;</a>
+              </div>
+              <p>Context available inside the Socket.IO <code>on</code> functions.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      ctx =
+        app: app
+        io: io
+        settings: app.settings
+        locals: app.locals
+        socket: socket
+        id: socket.id
+        client: c
+        join: <span class="hljs-function"><span class="hljs-params">(room)</span> -&gt;</span>
+          socket.join room
+        leave: <span class="hljs-function"><span class="hljs-params">(room)</span> -&gt;</span>
+          socket.leave room
+        emit: invariate.acked (k,v,ack) -&gt;
+          socket.emit.call socket, k, v, <span class="hljs-function"><span class="hljs-params">(ack_data)</span> -&gt;</span>
+            ctx = build_ctx
+              event: k
+              data: ack_data
+            seemify ack, ctx, arguments
+          <span class="hljs-keyword">return</span>
+        broadcast: invariate (k,v) -&gt;
+          broadcast = socket.broadcast
+          broadcast.emit.call broadcast, k, v
+          <span class="hljs-keyword">return</span>
+        broadcast_to: <span class="hljs-function"><span class="hljs-params">(room, args...)</span> -&gt;</span>
+          room = io.sockets.<span class="hljs-keyword">in</span> room
+          broadcast = invariate (k,v) -&gt;
+            room.emit.call room, k, v
+          broadcast args...
+          <span class="hljs-keyword">return</span>
+
+      apply_helpers ctx
+      <span class="hljs-keyword">if</span> o?
+        ctx[k] = v <span class="hljs-keyword">for</span> own k,v <span class="hljs-keyword">of</span> o
+      ctx</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-87">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-87">&#182;</a>
+              </div>
+              <h2 id="on-connection-">On <code>connection</code></h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-88">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-88">&#182;</a>
+              </div>
+              <p>Wrap the handler for <code>connection</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    ctx = build_ctx()
+    seemify ws_handlers.connection, ctx <span class="hljs-keyword">if</span> ws_handlers.connection?</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-89">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-89">&#182;</a>
+              </div>
+              <h2 id="on-disconnect-">On <code>disconnect</code></h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-90">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-90">&#182;</a>
+              </div>
+              <p>Wrap the handler for <code>disconnect</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    socket.<span class="hljs-literal">on</span> <span class="hljs-string">'disconnect'</span>, <span class="hljs-function">-&gt;</span>
+      ctx = build_ctx()
+      seemify ws_handlers.disconnect, ctx <span class="hljs-keyword">if</span> ws_handlers.disconnect?</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-91">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-91">&#182;</a>
+              </div>
+              <h2 id="on-__zappa_settings-">On <code>__zappa_settings</code></h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-92">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-92">&#182;</a>
+              </div>
+              <p>The special event <code>__zappa_settings</code> is used by the client to request that the current application settings be sent back.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    socket.<span class="hljs-literal">on</span> <span class="hljs-string">'__zappa_settings'</span>, <span class="hljs-function"><span class="hljs-params">(data,ack)</span> -&gt;</span>
+      <span class="hljs-keyword">unless</span> ack?
+        debug <span class="hljs-string">'Client did not request `ack` for __zappa_settings'</span>
+        <span class="hljs-keyword">return</span>
+      ack app.settings</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-93">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-93">&#182;</a>
+              </div>
+              <h2 id="bind-with-express">Bind with Express</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-94">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-94">&#182;</a>
+              </div>
+              <p>The special event <code>__zappa_key</code> is used by the client to notify us of the key provided by Express.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    socket.<span class="hljs-literal">on</span> <span class="hljs-string">'__zappa_key'</span>, <span class="hljs-function"><span class="hljs-params">({key},ack)</span> -&gt;</span>
+      <span class="hljs-keyword">unless</span> ack?
+        debug <span class="hljs-string">'Client did not request `ack` for __zappa_key'</span>
+        <span class="hljs-keyword">return</span>
+
+      <span class="hljs-keyword">unless</span> context.session_store?
+        debug <span class="hljs-string">'Missing session-store.'</span>
+        ack error:<span class="hljs-string">'Missing session-store.'</span>
+      <span class="hljs-keyword">unless</span> key?
+        debug <span class="hljs-string">'Missing key.'</span>
+        ack error:<span class="hljs-string">'Missing key.'</span>
+        <span class="hljs-keyword">return</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-95">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-95">&#182;</a>
+              </div>
+              <p>Retrieve the data record associated with the key.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      context.session_store.get key, <span class="hljs-function"><span class="hljs-params">(err,data)</span> -&gt;</span>
+        <span class="hljs-keyword">if</span> err?
+          debug <span class="hljs-string">'session_store.get #{key}: #{err}'</span>
+          ack error:err.toString()
+          <span class="hljs-keyword">return</span>
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> data?
+          debug <span class="hljs-string">'session_store.get #{key}: Missing data'</span>
+          ack error:<span class="hljs-string">'Missing data'</span>
+          <span class="hljs-keyword">return</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-96">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-96">&#182;</a>
+              </div>
+              <p>Bind the session.id so that the handlers can access the session.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        session_id = data.id
+        ack {key}
+<span class="hljs-function">
+    <span class="hljs-title">get_session</span> = <span class="hljs-params">(next)</span> -&gt;</span>
+      <span class="hljs-keyword">unless</span> context.session_store? <span class="hljs-keyword">and</span> session_id?
+        debug <span class="hljs-string">'Session Store is not ready, `@session` will not be available.'</span>
+        next <span class="hljs-literal">null</span>
+        <span class="hljs-keyword">return</span>
+
+      req =
+        sessionID: session_id
+        sessionStore: context.session_store</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-97">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-97">&#182;</a>
+              </div>
+              <p>Retrieve the session data stored by Express</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      context.session_store.get session_id, <span class="hljs-function"><span class="hljs-params">(error,data)</span> -&gt;</span>
+        <span class="hljs-keyword">if</span> error
+          debug <span class="hljs-string">"get_session() <span class="hljs-subst">#{error}</span>"</span>
+          next <span class="hljs-literal">null</span>
+          <span class="hljs-keyword">return</span>
+        req.session = <span class="hljs-keyword">new</span> context.session.Session req, data
+        next req.session</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-98">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-98">&#182;</a>
+              </div>
+              <p>Wrap all other (event) handlers</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">for</span> name, h <span class="hljs-keyword">of</span> ws_handlers
+      <span class="hljs-keyword">do</span> (name, h) -&gt;
+        <span class="hljs-keyword">if</span> name <span class="hljs-keyword">isnt</span> <span class="hljs-string">'connection'</span> <span class="hljs-keyword">and</span> name <span class="hljs-keyword">isnt</span> <span class="hljs-string">'disconnect'</span>
+          socket.<span class="hljs-literal">on</span> name, <span class="hljs-function"><span class="hljs-params">(data, ack)</span> -&gt;</span>
+            ctx = build_ctx
+              event: name
+              data: data
+              ack: ack
+            get_session (session) -&gt;
+              ctx.session = session
+              v = seemify h, ctx, [data, ack]
+              <span class="hljs-keyword">if</span> v?.<span class="hljs-keyword">then</span>?
+                v.<span class="hljs-keyword">then</span> -&gt; session?.save()
+              <span class="hljs-keyword">else</span>
+                session?.save()
+        <span class="hljs-keyword">return</span>
+
+    debug <span class="hljs-string">'Socket.IO ready'</span>
+    <span class="hljs-keyword">return</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-99">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-99">&#182;</a>
+              </div>
+              <h1 id="-with">.with</h1>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-100">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-100">&#182;</a>
+              </div>
+              <p>Applies a plugin to the current context.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  context.with = invariate (k,v) -&gt;
+    ctx = {context,route,browserify,<span class="hljs-built_in">require</span>}
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> k <span class="hljs-keyword">is</span> <span class="hljs-string">'string'</span>
+      k = <span class="hljs-built_in">require</span> <span class="hljs-string">"zappajs-plugin-<span class="hljs-subst">#{k}</span>"</span>
+    k.call ctx, v</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-101">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-101">&#182;</a>
+              </div>
+              <h1 id="go-">Go!</h1>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-102">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-102">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  func.apply context</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-103">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-103">&#182;</a>
+              </div>
+              <h1 id="express-side-api-to-bind-with-socket-io">Express-side API to bind with Socket.IO</h1>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-104">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-104">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">do</span> -&gt;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-105">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-105">&#182;</a>
+              </div>
+              <p>API used by the client (e.g. <code>zappajs-client</code>) to create an Express-side key that will be used to bind Express and Socket.io sessions.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    zappa_prefix = app.settings.zappa_prefix
+    context.get zappa_prefix+<span class="hljs-string">'/socket/:channel_name/:socket_id'</span>, <span class="hljs-function">-&gt;</span>
+      <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> context.session_store?
+        debug <span class="hljs-string">'Missing session-store.'</span>
+        @res.status <span class="hljs-number">500</span>
+        @json error:<span class="hljs-string">'No session-store.'</span>
+        <span class="hljs-keyword">return</span>
+
+      <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> @session?
+        debug <span class="hljs-string">'Missing session.'</span>
+        @res.status <span class="hljs-number">400</span>
+        @json error:<span class="hljs-string">'No session'</span>
+        <span class="hljs-keyword">return</span>
+
+      channel_name = @params.channel_name
+      socket_id = @params.socket_id</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-106">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-106">&#182;</a>
+              </div>
+              <p>Use memoized socket data if available.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      @session.__socket ?= {}
+
+      <span class="hljs-keyword">if</span> @session.__socket[channel_name]?
+        @json
+          key: @session.__socket[channel_name].key
+        <span class="hljs-keyword">return</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-107">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-107">&#182;</a>
+              </div>
+              <p>Create a new socket session document
+The <code>key</code> is used to hide the actual <code>@session.id</code> from the
+client while allowing it to provide us with a pointer to the
+session document using the key.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      key = uuid.v4() <span class="hljs-comment"># used for socket 'authentication'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-108">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-108">&#182;</a>
+              </div>
+              <p>Update the store.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      data =
+        id: @session.id   <span class="hljs-comment"># local Express Session ID</span>
+        cookie: {}
+      context.session_store.set key, data, <span class="hljs-function"><span class="hljs-params">(err)</span> =&gt;</span>
+        <span class="hljs-keyword">if</span> err
+          @json error: err.toString()
+          <span class="hljs-keyword">return</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-109">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-109">&#182;</a>
+              </div>
+              <p>Save the key and socket.id in the local Express session store.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        @session.__socket[channel_name] =
+          id: socket_id
+          key: key</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-110">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-110">&#182;</a>
+              </div>
+              <p>Let the client know which key it should use on the Socket.IO side.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        @json
+          key: key
+      <span class="hljs-keyword">return</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-111">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-111">&#182;</a>
+              </div>
+              <p>The value returned by <code>Zappa.app</code> is the global context.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  context</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-112">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-112">&#182;</a>
+              </div>
+              <h1 id="-zappa-run-host-port-options-root_function-"><code>zappa.run [host,] [port,] [{options},] root_function</code></h1>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-113">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-113">&#182;</a>
+              </div>
+              <p>Takes a function and runs it as a zappa app. Optionally accepts a port number, and/or a hostname (any order). The hostname must be a string, and the port number must be castable as a number.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>zappa.run = <span class="hljs-function">-&gt;</span>
+  host = process.env.ZAPPA_HOST ? <span class="hljs-literal">null</span>
+  port = process.env.ZAPPA_PORT ? <span class="hljs-number">3000</span>
+  root_function = <span class="hljs-literal">null</span>
+  options = {}
+
+  <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> arguments
+    <span class="hljs-keyword">switch</span> <span class="hljs-keyword">typeof</span> a
+      <span class="hljs-keyword">when</span> <span class="hljs-string">'string'</span>
+        <span class="hljs-keyword">if</span> isNaN( (Number) a ) <span class="hljs-keyword">then</span> host = a
+        <span class="hljs-keyword">else</span> port = (Number) a
+      <span class="hljs-keyword">when</span> <span class="hljs-string">'number'</span> <span class="hljs-keyword">then</span> port = a
+      <span class="hljs-keyword">when</span> <span class="hljs-string">'function'</span> <span class="hljs-keyword">then</span> root_function = a
+      <span class="hljs-keyword">when</span> <span class="hljs-string">'object'</span>
+        <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">of</span> a
+          <span class="hljs-keyword">switch</span> k
+            <span class="hljs-keyword">when</span> <span class="hljs-string">'host'</span> <span class="hljs-keyword">then</span> host = v
+            <span class="hljs-keyword">when</span> <span class="hljs-string">'port'</span> <span class="hljs-keyword">then</span> port = v
+            <span class="hljs-keyword">else</span> options[k] = v
+
+  zapp = zappa.app(root_function,options)
+  {server,app} = zapp
+
+  server.<span class="hljs-literal">on</span> <span class="hljs-string">'listening'</span>, <span class="hljs-function">-&gt;</span>
+    addr = server.address()
+    debug <span class="hljs-string">"""
+      Express server listening on <span class="hljs-subst">#{addr.address}</span>:<span class="hljs-subst">#{addr.port}</span> in <span class="hljs-subst">#{app.settings.env}</span> mode.
+      Zappa <span class="hljs-subst">#{zappa.version}</span> orchestrating the show.
+
+    """</span>
+
+  <span class="hljs-keyword">if</span> host
+    server.listen port, host
+  <span class="hljs-keyword">else</span>
+    server.listen port</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-114">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-114">&#182;</a>
+              </div>
+              <p>The value returned by <code>Zappa.run</code> (aka <code>Zappa</code>) is the global context.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  zapp
+
+<span class="hljs-built_in">module</span>.exports = zappa.run
+<span class="hljs-built_in">module</span>.exports.run = zappa.run
+<span class="hljs-built_in">module</span>.exports.app = zappa.app
+<span class="hljs-built_in">module</span>.exports.version = zappa.version</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
