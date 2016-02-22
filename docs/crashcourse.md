@@ -19,6 +19,8 @@ And give your foot a push:
     $ npm install zappajs
     $ coffee cuppa.coffee
 
+The web application is then available on http://127.0.0.1:3000/
+
 (hat tip to [sinatra](http://sinatrarb.com))
 
 ## OK, what did just happen?
@@ -91,8 +93,8 @@ Note that we're using a fat arrow (`=>`) here, to preserve the value of `this`.
 You might also use the Promises and Generators pattern to build more readable asynchronous functions:
 
     @get '/user/:name', ->
-      user = yield user_db.get @params.name
-      group = yield group_db.get user.group
+      user = yield user_db.getAsync @params.name
+      group = yield group_db.getAsync user.group
       @json {user,group}
 
 ## Radical views
@@ -190,19 +192,19 @@ With `@coffee`, you can define client-side code inline, and serve it in JS form 
       body ->
         h1 'Inline client example'
 
-On a step further, you have [`zappajs-client`](https://github.com/zappajs/zappajs-client), which gives you access to a matching client-side zappa API:
+On a step further, [`zappajs-client`](https://github.com/zappajs/zappajs-client) gives you access to a matching client-side zappa API; you access it by using `@client`:
 
     @get '/': ->
       @render 'index'
 
-    @on connection: ->
+    @on ready: ->
       @emit time: {time: new Date()}
 
     @client '/index.js': ->
+      $ = require 'jquery'
       @on time: ->
         $('body').append "Server time: #{@data.time}"
-
-      @connect()
+      @emit 'ready', true
 
     {doctype,html,head,title,script,body} = @teacup
     @view index: ->
@@ -210,26 +212,10 @@ On a step further, you have [`zappajs-client`](https://github.com/zappajs/zappaj
       html ->
         head ->
           title 'Client-side zappa'
-          script src: '/zappa/full.js'
           script src: '/index.js'
         body ''
 
-Finally, there's `@shared`. This block of code is not only served to the client, but also executed on the server.
-
-    @shared '/shared.js': ->
-      root = window ? global
-      root.sum = (x, y) ->
-        String(Number(x) + Number(y))
-
-    # This uses global.sum (on the server).
-    @get '/sum/:x/:y': ->
-      @send sum(@params.x, @params.y)
-
-    # This uses window.sum (on the client).
-    @coffee '/index.js': ->
-      $ =>
-        $('button').click =>
-          $('#result').html(sum $('#x').html(), $('#y').html())
+Notice how there no need to wait for the DOM to be ready -- `@client` does that for you. On the other hand, it requires that you `@use session: ...`.
 
 ## Santa's little helpers
 
