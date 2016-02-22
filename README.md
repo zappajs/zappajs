@@ -5,7 +5,7 @@ Zappa is a [CoffeeScript](http://coffeescript.org)-optimized interface to [Expre
 ## Synopsis
 
 ```coffee
-require('zappajs') ->
+require('./zappajs') ->
 
   ## Server-side ##
   teacup = @teacup
@@ -13,7 +13,7 @@ require('zappajs') ->
   @get '/': ->
     @render 'index',
       title: 'Zappa!'
-      scripts: '/zappa/full.js /index.js /client.js'
+      scripts: '/index.js /more.js /client.js'
       stylesheet: '/index.css'
 
   @view index: ->
@@ -28,6 +28,7 @@ require('zappajs') ->
       body ->
         h1 'Welcome to Zappa!'
         div id:'content'
+        div id:'content2'
 
   pixels = 12
 
@@ -45,20 +46,35 @@ require('zappajs') ->
       email: "#{@params.name}@example.com"
     @json record
 
-  @on 'ready': ->
-    console.log "Client #{@id} is ready and says #{@data}."
-
   ## Client-side ##
-
   @coffee '/index.js': ->
     alert 'hi'
 
-  @browserify '/client.js': ->
-    ZappaClient = require 'zappajs-client'
+  ## Client-side with Browserify ##
+  @browser '/more.js': ->
+    domready = require 'domready'
+    $ = require 'component-dom'
+    domready ->
+      $('#content').html 'Ready to roll!'
 
-    ZappaClient ->
-      @ready ->
-        @emit 'ready', 'hello'
+  ## Client-side with ExpressJS/Socket.IO session sharing ##
+  @with 'client' # requires `zappajs-plugin-client`
+  @use session:
+    store: new @session.MemoryStore()
+    secret: 'foo'
+    resave: true, saveUninitialized: true
+
+  @on 'ready': ->
+    console.log "Client #{@id} is ready and says #{@data}."
+    @emit 'ok', null
+
+  @client '/client.js': ->
+    @emit 'ready', 'hello'
+    console.log 'A'
+    $ = require 'component-dom'
+    console.log 'B'
+    @on 'ok', ->
+      $('#content2').html 'Ready to roll too!'
 ```
 
 ## Install
