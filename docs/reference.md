@@ -527,54 +527,28 @@ Additionally `@param` is assigned the value of the parameter.
 
 ### @with
 
-This is a Zappa extension. The following options are supported.
+Install a plugin in your ZappaJS application.
 
-#### @with css
+#### @with function-or-module
 
-`@with css:'cssmod'`
+Install the function/module as plugin.
 
-Add a new function named `cssmod` to the [root scope](#root-scope). That function serves CSS compiled from the specified module. Here are two examples with `stylus` and `less`:
+#### @with 'name'
+#### @with name: arguments
 
-    @with css:'stylus'
+Install the module `zappajs-plugin-#{name}` as plugin.
 
-    @stylus '/foo.css': '''
-      border-radius()
-        -webkit-border-radius arguments
-        -moz-border-radius arguments
-        border-radius arguments
+The plugin package must be available.
 
-      body
-        font 12px Helvetica, Arial, sans-serif
+For example,
 
-      a.button
-        border-radius 5px
-    '''
+    @with css: 'less'
 
-Compiles the string with [stylus](http://learnboost.github.com/stylus) and serves the results as `/foo.css`, with content-type `text/css`.
+is a shortcut for
 
-You must have stylus installed with `npm install stylus`.
+    @with (require 'zappajs-plugin-css')(name)
 
-    @with css:'less'
-
-    @less '/foo.css': '''
-      .border-radius(@radius) {
-        -webkit-border-radius: @radius;
-        -moz-border-radius: @radius;
-        border-radius: @radius;
-      }
-
-      body {
-        font: 12px Helvetica, Arial, sans-serif;
-      }
-
-      a.button {
-        .border-radius(5px);
-      }
-    '''
-
-Compiles the string with [less](http://lesscss.org/) and servers the results as '/foo.css', with content-type `text/css`.
-
-You must have less installed with `npm install less`.
+which means the [CSS Plugin](https://github.com/zappajs/zappajs-plugin-css) must be present in your application.
 
 ### @zappa
 

@@ -43,6 +43,12 @@ Flatten array recursively (copied from Express's utils.js)
           ret.push o
       ret
 
+Default Plugins set
+===================
+
+    zappa_with =
+      css: require 'zappajs-plugin-css'
+
 Zappa Application
 =================
 
@@ -302,27 +308,6 @@ Otherwise, the value is simply the handler.
           css = String(v)
         route verb: 'get', path: k, handler: css, type: 'css'
         return
-
-.with
-=====
-
-      zappa_with =
-        css: (modules) ->
-          if typeof modules is 'string'
-            modules = [modules]
-          for name in modules
-            module = require(name)
-            context[name] = invariate (k,v) ->
-              module.render v, filename: k, (err, css) ->
-                throw err if err
-                css = css.css if css.css? and typeof css.css is 'string' # less
-                route verb: 'get', path: k, handler: css, type: 'css'
-              return
-          return
-
-      context.with = invariate (k,v) ->
-        if zappa_with[k]
-          zappa_with[k] v
 
 .helper
 =======
@@ -770,6 +755,20 @@ Wrap all other (event) handlers
 
         debug 'Socket.IO ready'
         return
+
+.with
+=====
+
+Applies a plugin to the current context.
+
+      context.with = invariate (k,v) ->
+        ctx = {context,route,browserify}
+        if typeof k is 'string'
+          if zappa_with[k]?
+            k = zappa_with[k]
+          else
+            k = require "zappajs-plugin-#{k}"
+        k.apply ctx, v
 
 Go!
 ===
