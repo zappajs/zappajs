@@ -245,6 +245,12 @@ Otherwise, the value is simply the handler.
                   route verb: verb, path: k, handler: v
             return
 
+.route
+======
+
+      context.route = (p) ->
+        app.route p
+
 .coffee
 =======
 
