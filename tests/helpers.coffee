@@ -36,6 +36,22 @@ port = 15100
     c = t.client(zapp.server)
     c.get '/'
 
+  multiple_in_one: (t) ->
+    t.expect 1, 2
+    t.wait 3000
+
+    zapp = zappa port++, ->
+      @helper
+        sum: (a, b) -> a + b
+        subtract: (a, b) -> a - b
+
+      @get '/': ->
+        t.equal 1, @sum(1, 2), 3
+        t.equal 2, @subtract(1, 2), -1
+
+    c = t.client(zapp.server)
+    c.get '/'
+
   objects: (t) ->
     t.expect 1, 2
     t.wait 3000
