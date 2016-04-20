@@ -640,7 +640,7 @@ Context available inside the Socket.IO `on` functions.
               broadcast.emit.call broadcast, k, v
               return
             broadcast_to: (room, args...) ->
-              room = io.sockets.in room
+              room = io.to room
               broadcast = invariate (k,v) ->
                 room.emit.call room, k, v
               broadcast args...
