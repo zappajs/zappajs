@@ -42,7 +42,7 @@ On top of that, you also have some handy shortcuts such as the `@get` you alread
     require('zappajs') ->
       @get '/foo': 'bar', '/ping': 'pong', '/zig': 'zag'
       @use (require 'body-parser').urlencoded(), 'method-override', 'static'
-      @set 'view engine': 'jade', views: "#{__dirname}/custom/dir"
+      @set 'view engine': 'pug', views: "#{__dirname}/custom/dir"
 
 After running your function, zappa automatically starts the whole thing.
 
@@ -131,7 +131,7 @@ Note that zappa comes with a default templating engine, [teacup](https://goodegg
     @set 'view engine': 'eco'
 
     @get '/': -> @render index: {foo: 'bar', title: 'Eco template'}
-    @get '/jade': -> @render 'index.jade': {foo: 'bar', title: 'Jade template'}
+    @get '/pug': -> @render 'index.pug': {foo: 'bar', title: 'pug template'}
 
     @view index: '''
       <!DOCTYPE html>
@@ -143,7 +143,7 @@ Note that zappa comes with a default templating engine, [teacup](https://goodegg
         </body>
     '''
 
-    @view 'index.jade': '''
+    @view 'index.pug': '''
       doctype html
       html
         head

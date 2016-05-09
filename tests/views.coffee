@@ -77,31 +77,31 @@ port = 15600
     c.get '/', (err, res) ->
       t.equal 1, res.body, '<h2>Eco file template: bar</h2>'
 
-  'jade, inline': (t) ->
+  'pug, inline': (t) ->
     t.expect 1
     t.wait 3000
 
     zapp = zappa port++, ->
-      @set 'view engine': 'jade'
+      @set 'view engine': 'pug'
 
       @get '/': ->
         @render 'index', foo: 'bar', layout: no
 
-      @view index: "h2= 'Jade inline template: ' + foo"
+      @view index: "h2= 'pug inline template: ' + foo"
 
     c = t.client(zapp.server)
     c.get '/', (err, res) ->
-      t.equal 1, res.body, '<h2>Jade inline template: bar</h2>'
+      t.equal 1, res.body, '<h2>pug inline template: bar</h2>'
 
-  'jade, inline + include': (t) ->
+  'pug, inline + include': (t) ->
     t.expect 1
     t.wait 3000
 
     zapp = zappa port++, ->
-      @set 'view engine': 'jade'
-      @engine 'jade zappa': (template,options,path) ->
+      @set 'view engine': 'pug'
+      @engine 'pug zappa': (template,options,path) ->
         options.filename = path
-        (require 'jade').render template, options
+        (require 'pug').render template, options
 
       @get '/': ->
         @render 'index', foo: 'bar'
@@ -111,24 +111,24 @@ port = 15600
         html
           include head
           body
-            h2= 'Jade inline template: ' + foo
+            h2= 'pug inline template: ' + foo
             include foot
       '''
 
     c = t.client(zapp.server)
     c.get '/', (err, res) ->
-      t.equal 1, res.body, '<!DOCTYPE html><html><head><title>Jade file header</title></head><body><h2>Jade inline template: bar</h2><div>This was an example.</div></body></html>'
+      t.equal 1, res.body, '<!DOCTYPE html><html><head><title>pug file header</title></head><body><h2>pug inline template: bar</h2><div>This was an example.</div></body></html>'
 
-  'jade, file': (t) ->
+  'pug, file': (t) ->
     t.expect 1
     t.wait 3000
 
     zapp = zappa port++, ->
-      @set 'view engine': 'jade'
+      @set 'view engine': 'pug'
 
       @get '/': ->
         @render 'index', foo: 'bar'
 
     c = t.client(zapp.server)
     c.get '/', (err, res) ->
-      t.equal 1, res.body, '<h2>Jade file template: bar</h2>'
+      t.equal 1, res.body, '<h2>pug file template: bar</h2>'

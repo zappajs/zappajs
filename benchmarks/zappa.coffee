@@ -1,10 +1,10 @@
 require('../src/zappa') ->
 
   @get '/': ->
-    @render 'index.jade', {foo: 'Zappa + Jade, no layout',layout:no}
+    @render 'index.pug', {foo: 'Zappa + pug, no layout',layout:no}
 
-  @get '/jade': ->
-    @render 'index.jade': {foo: 'Zappa + Jade'}
+  @get '/pug': ->
+    @render 'index.pug': {foo: 'Zappa + pug'}
 
   @get '/coffeekup': ->
     @render 'index.coffee': {foo: 'Zappa + CoffeeKup'}

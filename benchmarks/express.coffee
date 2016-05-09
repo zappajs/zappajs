@@ -8,7 +8,7 @@ app.engine '.coffee', (path,options,next) ->
   next null, cache[path] options
 
 app.get '/', (req, res) ->
-  res.render 'index.jade', foo: 'Express + Jade'
+  res.render 'index.pug', foo: 'Express + pug'
 
 app.get '/coffeekup', (req, res) ->
   res.render 'index.coffee', foo: 'Express + CoffeeCup'

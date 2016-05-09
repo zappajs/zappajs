@@ -40,7 +40,7 @@ port = 16000
 
       @get '/foo': 'bar', '/ping': 'pong', '/zig': 'zag'
       @use (require 'body-parser').urlencoded(extended:false), 'method-override', 'static'
-      @set 'view engine': 'jade', views: "#{__dirname}/custom/dir"
+      @set 'view engine': 'pug', views: "#{__dirname}/custom/dir"
 
     c = t.client(zapp.server)
     c.get '/foo', (err,res) ->
@@ -135,7 +135,7 @@ port = 16000
       @set 'view engine': 'eco'
 
       @get '/': -> @render index: {foo: 'bar', title: 'Eco template'}
-      @get '/jade': -> @render 'index.jade': {foo: 'bar', title: 'Jade template'}
+      @get '/pug': -> @render 'index.pug': {foo: 'bar', title: 'pug template'}
 
       @view index: '''
         <!DOCTYPE html>
@@ -147,7 +147,7 @@ port = 16000
           </body>
         </html>
       '''
-      @view 'index.jade': '''
+      @view 'index.pug': '''
         doctype html
         html
           head

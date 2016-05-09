@@ -256,11 +256,11 @@ The parameters are also available explicitely:
 
 To use other engines, just use express' mechanisms:
 
-    @render 'index.jade'
+    @render 'index.pug'
 
 Or:
 
-    @set 'view engine': 'jade'
+    @set 'view engine': 'pug'
 
 ### @include (file)
 
