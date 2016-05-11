@@ -63,7 +63,10 @@
   ],
   "main": "lib/zappa.js",
   "files": [
-    "lib/zappa.js"
+    "lib/zappa.js",
+    "lib/browserify-string.js",
+    "lib/zappa.js.map",
+    "lib/browserify-string.js.map"
   ],
   "scripts": {
     "pretest": "npm install -d",
