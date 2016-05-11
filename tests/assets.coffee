@@ -18,7 +18,7 @@ CSS_TYPE = 'text/css; charset=utf-8'
     c = t.client(zapp.server)
     setTimeout ->
       c.get '/index.js', (err, res) ->
-        t.equal 1, 1144, res.body.indexOf '''
+        t.equal 1, 362021, res.body.indexOf '''
           require('zappajs-plugin-client').client( function(){
         '''
         t.equal 2, res.headers['content-type'], JS_TYPE

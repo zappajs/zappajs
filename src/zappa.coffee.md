@@ -25,7 +25,7 @@ CoffeeScript-generated JavaScript may contain anyone of these; when we "rewrite"
 This list is taken from coffeescript's `src/nodes.coffee` UTILITIES.
 
     coffeescript_helpers = require 'coffeescript-helpers'
-    Browserify = require 'browserify-string'
+    Browserify = require './browserify-string'
 
     minify = (js) ->
       uglify ?= require 'uglify-js'
