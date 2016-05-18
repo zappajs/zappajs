@@ -25,7 +25,6 @@ CoffeeScript-generated JavaScript may contain anyone of these; when we "rewrite"
 This list is taken from coffeescript's `src/nodes.coffee` UTILITIES.
 
     coffeescript_helpers = require 'coffeescript-helpers'
-    Browserify = require './browserify-string'
 
     minify = (js) ->
       uglify ?= require 'uglify-js'
@@ -258,34 +257,6 @@ Otherwise, the value is simply the handler.
         js = coffeescript_helpers.p_exec v
         js = minify(js) if app.settings['minify']
         route verb: 'get', path: k, handler: js, type: 'js'
-        return
-
-.browserify
-===========
-
-      browserify = (k,v) ->
-
-        actual = coffeescript_helpers.p_exec v
-        js = Browserify actual,
-          basedir: root
-          paths: [root]
-        .bundle (err,src) ->
-          if err
-            debug "browserify: #{err.stack ? err}", actual
-            return
-          js = src.toString()
-          js = minify(js) if app.settings['minify']
-          route verb: 'get', path: k, handler: js, type: 'js'
-        return
-
-      context.browserify = context.browser = invariate browserify
-
-.isomorph
-=========
-
-      context.isomorph = invariate (k,v) ->
-        browserify k,v
-        v.apply context
         return
 
 .js
@@ -762,7 +733,7 @@ Wrap all other (event) handlers
 Applies a plugin to the current context.
 
       context.with = invariate (k,v) ->
-        ctx = {context,route,browserify,require}
+        ctx = {context,route,root,minify,require}
         if typeof k is 'string'
           k = require "zappajs-plugin-#{k}"
         k.call ctx, v

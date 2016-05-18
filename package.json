@@ -9,7 +9,6 @@
     "url": "git://github.com/zappajs/zappajs.git"
   },
   "dependencies": {
-    "browserify": "^13.0.1",
     "coffee-css": "0.0.5",
     "coffee-script": "^1.10.0",
     "coffeescript-helpers": "^2.2.0",
