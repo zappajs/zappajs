@@ -1,9 +1,19 @@
 ---
 layout: default
-title: API Reference (v4.0)
+title: Core API Reference (v4.0)
 ---
 
 # {{page.title}}
+
+## Core vs Plugins
+
+This is the documentation for ZappaJS' core API.
+
+You might also be interested by
+- the [client plugin](https://github.com/zappajs/zappajs-plugin-client), to embed client-side code in your Zappa application;
+- the [CSS plugin](https://github.com/zappajs/zappajs-plugin-css), to serve CSS using your preferred CSS engine.
+
+For client-side code, you should review [zappajs-client](https://github.com/zappajs/zappajs-client).
 
 ## References
 
@@ -305,50 +315,6 @@ For example:
       @get '/', auth, ->
         @json foo
 
-### @browser
-
-    @browser '/foo.js': ->
-
-      @on welcome: ->
-        console.log 'A socket.io event.'
-
-Serves the function, [browserified](http://browserify.org/), as `/foo.js`, with content-type `application/javascript`.
-
-Notice that since we cannot retrieve the original CoffeeScript code from the Javascript compiled version, there could be conflicts with the helper functions' names. Therefor avoid using the following names as variables: `slice`, `hasProp`, `bind`, `extend`, `ctor`, `indexOf`, and `modulo`.
-
-This function is particularly useful to build client-side application that require the [`zappajs-client`](https://github.com/zappajs/zappajs-client) module:
-
-    @browser '/app.js', ->
-      Debug = require 'debug'
-      Debug.enable '*'
-
-      pkg = require './package.json'
-      debug = Debug "#{pkg.name}:bar"
-
-      debug 'Starting client'
-      Zappa = require 'zappajs-client'
-
-      Zappa ->
-
-        @on 'server-said', (data) ->
-          @emit 'ok', data+4
-
-But obviously this might work for any of your client-side needs:
-
-    @browser '/with-jquery.js', ->
-
-      $ = require 'component-dom' # did you expect something else?!
-
-You can still use [`browserify-middleware`](https://www.npmjs.com/package/browserify-middleware) to build bundles from independent source files:
-
-    Browserify = require 'browserify-middleware'
-    # You may explicitely set the dependencies via `settings`
-    Browserify.settings transform: ['coffeeify']
-    # or use [`browserify.transform` in your `package.json`](https://github.com/substack/node-browserify#browserifytransform).
-
-    # It would be nice to have this as the default `engine` in ZappaJS.
-    @get '/my-app.js', Browserify './client/app.coffee'
-
 ### @coffee
 
     @coffee '/foo.js': ->
@@ -530,7 +496,7 @@ Additionally `@param` is assigned the value of the parameter.
 Install a plugin in your ZappaJS application.
 
 Known plugins:
-- [Client Plugin](https://github.com/zappajs/zappajs-plugin-client), adds `@client`.
+- [Client Plugin](https://github.com/zappajs/zappajs-plugin-client), adds `@client`, `@browser`, `@isomorph`.
 - [CSS Plugin](https://github.com/zappajs/zappajs-plugin-css), adds a function named after the CSS rendering library's name. For example `@with css:'stylus'` will provide `@stylus`.
 
 #### @with function-or-module
@@ -554,9 +520,11 @@ is a shortcut for
 
 which means the [Client Plugin](https://github.com/zappajs/zappajs-plugin-client) must be present in your application.
 
+Use `npm install --save zappajs-plugin-client` to add the `client` plugin to your application.
+
 ### @zappa
 
-The same object that is exported when you `require 'zappa'`.
+The same object that is exported when you `require 'zappajs'`.
 
 ### @express
 
@@ -721,6 +689,7 @@ Directly from socket.io. Used to provide acknowledgement of messages sent by `@e
       console.log @data # 'now'
       @ack 'Got it!'
 
+    @with `client`
     @browser '/index.js', ->
       ZappaClient = require 'zappajs-client'
 

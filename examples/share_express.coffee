@@ -32,6 +32,7 @@ require('./zappajs') 3000, io:false, ->
       body ->
         div id:'log'
 
+  @with 'client'
   @browser '/index.js': ->
     Zappa = require 'zappajs-client'
 

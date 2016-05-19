@@ -51,6 +51,7 @@ require('./zappajs') ->
     alert 'hi'
 
   ## Client-side with Browserify ##
+  @with 'client' # requires `zappajs-plugin-client`
   @browser '/more.js': ->
     domready = require 'domready'
     $ = require 'component-dom'
@@ -58,7 +59,6 @@ require('./zappajs') ->
       $('#content').html 'Ready to roll!'
 
   ## Client-side with ExpressJS/Socket.IO session sharing ##
-  @with 'client' # requires `zappajs-plugin-client`
   @use session:
     store: new @session.MemoryStore()
     secret: 'foo'
@@ -89,6 +89,12 @@ require('./zappajs') ->
 
 - Found a bug? Open an [issue](http://github.com/zappajs/zappajs/issues) at github
 
+## ZappaJS 5.0 Changes
+
+### Removal of browserify dependency
+
+`@browser` and `@isomorph` are now in the `client` module, alongside `@client`.
+
 ## ZappaJS 4.0 Changes
 
 ### Major improvements in Socket.IO interface:
@@ -97,7 +103,7 @@ Now supports saving the Session object in Socket.IO methods. Session content can
 
 Supports `ack` callback for all Socket.IO `emit` calls.
 
-### Removal of embedded client-side code:
+### Embedded client-side code:
 
 The ZappaJS client is no longer embedded and was moved to a separate module, [`zappajs-client`](https://github.com/zappajs/zappajs-client).
 
@@ -105,7 +111,7 @@ Sammy and jQuery are no longer embedded:
 - As a consequence the `zappa` middleware is no longer required and was removed. If your code references any Javascript file under `/zappa/`, consider using e.g. `browserify-middleware` to build the dependencies.
 - Also, `@client` and `@shared` are gone (along with their magic).
 
-Client-side code is now bundled using `browserify-string`; `@browserify` replaces `@client`, while `@isomorph` replaces `@shared`.
+Client-side code is now bundled using `browserify-string`; `@browser` is available alongside `@client`, while `@isomorph` replaces `@shared`.
 
 ### New features
 

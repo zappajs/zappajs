@@ -45,6 +45,7 @@ require('./zappajs') ->
     alert 'hi'
 
   ## Client-side with Browserify ##
+  @with 'client' # requires `zappajs-plugin-client`
   @browser '/more.js': ->
     domready = require 'domready'
     $ = require 'component-dom'
@@ -52,7 +53,6 @@ require('./zappajs') ->
       $('#content').html 'Ready to roll!'
 
   ## Client-side with ExpressJS/Socket.IO session sharing ##
-  @with 'client' # requires `zappajs-plugin-client`
   @use session:
     store: new @session.MemoryStore()
     secret: 'foo'

@@ -7,7 +7,7 @@ CSS_TYPE = 'text/css; charset=utf-8'
 
 @tests =
   client: (t) ->
-    t.expect 1, 2
+    t.expect 1, 2, 3
     t.wait 11000
 
     zapp = zappa port++, ->
@@ -18,10 +18,11 @@ CSS_TYPE = 'text/css; charset=utf-8'
     c = t.client(zapp.server)
     setTimeout ->
       c.get '/index.js', (err, res) ->
-        t.equal 1, 362021, res.body.indexOf '''
+        t.equal 1, 3014, res.body.indexOf '''
           require('zappajs-plugin-client').client( function(){
         '''
         t.equal 2, res.headers['content-type'], JS_TYPE
+        t.equal 3, 1285190, res.body.length
     , 10000
 
   browserify: (t) ->
@@ -29,6 +30,7 @@ CSS_TYPE = 'text/css; charset=utf-8'
     t.wait 11000
 
     zapp = zappa port++, ->
+      @with 'client'
       @browserify '/index.js': ->
         @get '#/': -> alert 'hi'
 
