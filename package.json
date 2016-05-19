@@ -107,6 +107,6 @@
     "Diwank Singh Tomer <singh@diwank.name>"
   ],
   "publishConfig": {
-    "tag": "latest"
+    "tag": "development"
   }
 }
