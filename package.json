@@ -49,7 +49,7 @@
     "underscore": "^1.8.3",
     "zappajs-client": "^2.1.0",
     "zappajs-plugin-client": "^1.1.1",
-    "zappajs-plugin-css": "^1.0.1"
+    "zappajs-plugin-css": "^1.0.2"
   },
   "keywords": [
     "framework",
