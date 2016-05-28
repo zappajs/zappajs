@@ -17,11 +17,11 @@ require('./zappajs') 3000, io:false, ->
       scripts: '/index'.split ' '
 
   @get '/touch': ->
-    @session.foo = 'bar'
+    @session.biscuit = 'chocolate'
     @send ok:true
 
   @get '/verify': ->
-    @send foo:@session.foo
+    @send biscuit:@session.biscuit
 
   {doctype,html,head,script,body,div} = @teacup
   @view default: ->
@@ -47,10 +47,10 @@ require('./zappajs') 3000, io:false, ->
           @request
           .get '/verify'
         .then ({body}) =>
-          log "<p>Express says that foo = #{body.foo}</p>"
+          log "<p>Express says that biscuit = #{body.biscuit}.</p>"
           @emit 'express done, your turn'
 
         @on 'all set', (data) ->
-          log "<p>Socket says that foo = #{data.foo}.</p>"
+          log "<p>Socket says that biscuit = #{data.biscuit}.</p>"
 
-        log '<p>Client started.</p>'
+        log "<p>Client started. Let's check the session data is shared between Express and Socket.IO on different servers:</p>"
