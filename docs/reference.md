@@ -10,6 +10,7 @@ title: Core API Reference (v5.0)
 This is the documentation for ZappaJS' core API.
 
 You might also be interested by
+
 - the [client plugin](https://github.com/zappajs/zappajs-plugin-client), to embed client-side code in your Zappa application;
 - the [CSS plugin](https://github.com/zappajs/zappajs-plugin-css), to serve CSS using your preferred CSS engine.
 
