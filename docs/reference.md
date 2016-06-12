@@ -531,6 +531,10 @@ The same object that is exported when you `require 'zappajs'`.
 
 The object returned by `require 'express'`.
 
+### @session
+
+The object returned by `require 'express-session'`.
+
 ### @io
 
 The object returned by `require('socket.io').listen`.
