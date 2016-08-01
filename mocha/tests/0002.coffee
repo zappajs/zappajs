@@ -10,8 +10,8 @@ describe 'GET /health', ->
 
   express = new_app()
 
-  it 'returns a 200 OK', (done) ->
+  it 'returns a 200 OK', ->
     supertest(express)
     .get '/health'
     .expect 'Content-Type', /json/
-    .expect 200, done
+    .expect 200
