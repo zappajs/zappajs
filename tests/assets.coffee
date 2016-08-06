@@ -18,11 +18,11 @@ CSS_TYPE = 'text/css; charset=utf-8'
     c = t.client(zapp.server)
     setTimeout ->
       c.get '/index.js', (err, res) ->
-        t.equal 1, 1222540, res.body.indexOf '''
+        t.equal 1, 1224378, res.body.indexOf '''
           require('zappajs-plugin-client').client( function(){
         '''
         t.equal 2, res.headers['content-type'], JS_TYPE
-        t.equal 3, 1226598, res.body.length
+        t.equal 3, 1228705, res.body.length
     , 10000
 
   browserify: (t) ->
