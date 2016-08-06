@@ -70,9 +70,7 @@ require('./zappajs') ->
 
   @client '/client.js': ->
     @emit 'ready', 'hello'
-    console.log 'A'
     $ = require 'component-dom'
-    console.log 'B'
     @on 'ok', ->
       $('#content2').html 'Ready to roll too!'
 ```
