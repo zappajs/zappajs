@@ -1,6 +1,6 @@
 Zappa is a [CoffeeScript](http://coffeescript.org)-optimized interface to [Express](http://expressjs.com) and [Socket.IO](http://socket.io).
 
-[![Build Status](https://secure.travis-ci.org/zappajs/zappajs.png?branch=4.x)](http://travis-ci.org/zappajs/zappajs) [![Dependency Status](https://gemnasium.com/zappajs/zappajs.png)](https://gemnasium.com/zappajs/zappajs)
+[![Build Status](https://secure.travis-ci.org/zappajs/zappajs.png?branch=5.x)](http://travis-ci.org/zappajs/zappajs)
 
 ## Synopsis
 
