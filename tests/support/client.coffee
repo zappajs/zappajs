@@ -22,6 +22,8 @@ class Client
         catch err
           process.nextTick check
       check()
+      if @host is '::'
+        @host = '127.0.0.1'
 
   request: (method = 'get', args...) ->
     for k, v of args
@@ -37,7 +39,7 @@ class Client
     {pathname,search} = url.parse path
     opts.url = url.format
       protocol: 'http:'
-      hostname: if @host is '::' then '127.0.0.1' else @host
+      hostname: @host
       port: @port
       pathname: pathname
       search: search
@@ -64,7 +66,7 @@ class Client
   connect: ->
     the_url = url.format
       protocol: 'http:'
-      hostname: if @host is '::' then '127.0.0.1' else @host
+      hostname: @host
       port: @port
     console.log the_url
     @socket = io(the_url, { 'force new connection': true })
