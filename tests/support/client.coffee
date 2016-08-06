@@ -43,7 +43,6 @@ class Client
       port: @port
       pathname: pathname
       search: search
-    console.log opts.url
     opts.encoding ?= 'utf8'
 
     req = request opts, (err, res) ->
@@ -68,7 +67,6 @@ class Client
       protocol: 'http:'
       hostname: @host
       port: @port
-    console.log the_url
     @socket = io(the_url, { 'force new connection': true })
 
   on: -> @socket.on.apply @socket, arguments

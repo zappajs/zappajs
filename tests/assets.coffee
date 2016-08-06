@@ -71,7 +71,6 @@ CSS_TYPE = 'text/css; charset=utf-8'
 
     c = t.client(zapp.server)
     c.get '/coffee.js', (err, res) ->
-      console.log "error: #{err.stack ? err}" if err?
       sandbox =
         alert: (text) ->
           t.equal 1, text, 'hi'
@@ -79,7 +78,6 @@ CSS_TYPE = 'text/css; charset=utf-8'
       t.equal 2, res.headers['content-type'], JS_TYPE
 
     c.get '/slice.js', (err,res) ->
-      console.log "error: #{err.stack ? err}" if err?
       sandbox =
         alert: (text) ->
           t.equal 3, text, 'hi'
@@ -87,14 +85,12 @@ CSS_TYPE = 'text/css; charset=utf-8'
       t.equal 4, res.headers['content-type'], JS_TYPE
 
     c.get '/hasProp.js', (err,res) ->
-      console.log "error: #{err.stack ? err}" if err?
       sandbox =
         alert: (text) ->
           t.equal 5, text, 'hi'
       vm.runInNewContext res.body, sandbox
 
     c.get '/modulo.js', (err,res) ->
-      console.log "error: #{err.stack ? err}" if err?
       sandbox =
         alert: (text) ->
           t.equal 6, text, 3
