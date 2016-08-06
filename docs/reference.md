@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Core API Reference (v5.0)
+title: Core API Reference (v5.1)
 ---
 
 # {{page.title}}
@@ -225,7 +225,7 @@ A function that will be available to both the request handler and socket handler
                             # Values when called from `@get` vs `@on`
       console.log a         # 5 vs 26
       console.log @request  # available vs undefined
-      console.log @emit     # undefined vs available
+      console.log @join     # undefined vs available
 
 Since the parameter is actually an object, you can define any number of helpers in one go:
 
@@ -672,6 +672,22 @@ Send a Socket.IO message to the local socket.
 
 If the `ack` handler returns a generator, that generator will be assumed to be an async function and will be passed through `seem` to yield a result.
 
+### `@broadcast_to`
+
+    @broadcast_to room, msg
+
+Shortcut to `@io.in(room).emit`.
+
+Broadcast to a room.
+
+### @io
+
+The object returned by `require('socket.io').listen`.
+
+### @id
+
+The `socket.id` of the client. Only available after the express and the socket.io sessions have been associated.
+
 The local socket was automatically referenced using the channel-name `__local` if using the ZappaJS client.
 
 ## SOCKET HANDLER SCOPE
@@ -745,7 +761,7 @@ Shortcut to `@socket.leave`.
 
     @broadcast_to room, msg
 
-Shortcut to `@io.sockets.in(room).emit`.
+Shortcut to `@io.in(room).emit`.
 
 Broadcast to a room.
 

@@ -446,6 +446,7 @@ Context available to `param` functions.
 
           ctx =
             app: app
+            io: io
             settings: app.settings
             locals: res.locals
             request: req
@@ -484,10 +485,18 @@ Register a route with express.
 
 Context available inside the `get`, ... handlers.
 
+            socket_id = req.session?.__socket?[app.settings.zappa_channel]?.id
+
             ctx =
               app: app
+              io: io
               settings: app.settings
               locals: res.locals
+              id: socket_id
+
+              ## socket
+              ## client
+
               request: req
               req: req
               query: req.query
@@ -512,16 +521,27 @@ FIXME: Study render specifications for ExpressJS (esp. since async is becoming t
                   for k, v of arguments[0]
                     render.apply @, [k, v]
                 return
+
+              ## join
+              ## leave
+
               emit: invariate.acked (k,v,ack) ->
-                socket_id = req.session?.__socket?[app.settings.zappa_channel]?.id
                 if socket_id?
-                  room = io.sockets.in socket_id
+                  room = io.in socket_id
                   room.emit.call room, k, v, (ack_data) ->
                     ack_ctx = build_ctx
                       event: k
                       data: ack_data
                     seemify ack, ack_ctx, arguments
                 return
+
+              broadcast_to: (room, args...) ->
+                room = io.to room
+                broadcast = invariate (k,v) ->
+                  room.emit.call room, k, v
+                broadcast args...
+                return
+
 
             build_ctx = (o) ->
               _ctx = {}
