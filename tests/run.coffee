@@ -3,7 +3,10 @@ port = 15800
 
 @tests =
   'default host and port (INADDR_ANY / 3000)': (t) ->
-    t.expect 'localhost', '127.0.0.1', '0.0.0.0', '::1'
+    if process.env.SKIP_IPV6
+      t.expect 'localhost', '127.0.0.1', '0.0.0.0'
+    else
+      t.expect 'localhost', '127.0.0.1', '0.0.0.0', '::1'
     t.wait 3000
 
     zapp = zappa ->
@@ -15,8 +18,9 @@ port = 15800
     c2.get '/', (err, res) -> t.equal '127.0.0.1', res.body, 'default'
     c3 = t.client 'http://0.0.0.0:3000'
     c3.get '/', (err, res) -> t.equal '0.0.0.0', res.body, 'default'
-    c4 = t.client 'http://[::1]:3000'
-    c4.get '/', (err, res) -> t.equal '::1', res.body, 'default'
+    unless process.env.SKIP_IPV6
+      c4 = t.client 'http://[::1]:3000'
+      c4.get '/', (err, res) -> t.equal '::1', res.body, 'default'
 
   'default host, specified port as number': (t) ->
     t.expect 'localhost', '127.0.0.1'
