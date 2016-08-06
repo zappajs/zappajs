@@ -37,7 +37,7 @@ class Client
     {pathname,search} = url.parse path
     opts.url = url.format
       protocol: 'http:'
-      hostname: @host
+      hostname: if @host is '::' then '127.0.0.1' else @host
       port: @port
       pathname: pathname
       search: search
