@@ -14,7 +14,19 @@ You might also be interested by
 - the [client plugin](https://github.com/zappajs/zappajs-plugin-client), to embed client-side code in your Zappa application;
 - the [CSS plugin](https://github.com/zappajs/zappajs-plugin-css), to serve CSS using your preferred CSS engine.
 
-For client-side code, you should review [zappajs-client](https://github.com/zappajs/zappajs-client).
+For client-side code, you should review [zappajs-client](https://github.com/zappajs/zappajs-client). This module is especially designed to ensure you can easily share session data between multiple Express and Socket.io instances, even on different servers.
+
+## Associating Express and Socket.io sessions
+
+ZappaJS allows you to easily share session data between Express and Socket.io.
+
+The Socket.IO and Express applications can run on the same host using Node.js clustering, on the same host but in different Node.js processes, or on different hosts. Express and Socket.io can thus be scaled independently.
+
+The association is done automatically for the default, local Express session and local Socket.IO server by [`zappajs-client`](https://github.com/zappajs/zappajs-client#usage). `zappajs-client` also allows you to specify a separate Socket.IO server, in which case it will automatically associate that server's session with the current ExpressJS session.
+
+Note: You must use Zappa's `@use session:....` instead of directly calling `@use 'express-session'` if you plan to use this feature.
+
+See `examples/share_*.coffee` for a complete example that shows how to use separate servers for Socket.IO and Express.
 
 ## References
 
@@ -26,7 +38,7 @@ A lot of Zappa methods are shortcuts or extensions of the [Express API](http://e
 
 Zappa uses [`debug`](https://github.com/visionmedia/debug) with the `zappajs` name.
 
-## EXPORTS
+## MODULE EXPORTS
 
 `require 'zappajs'` returns a function with the following attributes:
 
@@ -38,9 +50,9 @@ Zappa uses [`debug`](https://github.com/visionmedia/debug) with the `zappajs` na
 
 Builds an app with express/socket.io, based on the function you provided.
 
-The function you provided will be called with the value of `this`/`@` set to an object with all the attributes described in the **root scope** section.
+The function you provided will be called with the value of `this`/`@` set to an object with all the attributes described in the [**root scope**](#root-scope) section.
 
-You might also provide an object containing options, see their description in the following section.
+You might also provide an object containing options: see their description in the following section.
 
 Returns the **root scope**.
 
@@ -52,7 +64,7 @@ or, simply:
 
     zappa [port,] [host,] [options,] function
 
-Same as `zappa.app`, but calls `server.listen` for you. To know when the server is ready, listen for the `listening` event on the `server` field of the **root scope**.
+Same as `zappa.app`, but calls `server.listen` for you. To know when the server is ready, wait for the `listening` event on the `server` field of the [**root scope**](#root-scope):
 
     z = require('zappajs') ->
       @get '/': 'hi'
@@ -115,7 +127,7 @@ Define handlers for HTTP requests.
 
 Shortcuts to express' `app[verb]`. Params will just be passed forward unmodified (except for the handler functions, which will be re-scoped), unless a single object is passed. In which case, each key in the object will be a route path, and the value its respective handler. The handler can be a function or a string. In the latter case, the handler passed to express will be a function that only calls `res.send` with this string.
 
-The handler functions will have access to all variables described in the **request handlers scope** section. The middleware functions can also get access to those variables, but for performance reasons this is not enabled by default, use `@wrap` to give them access.
+The handler functions will have access to all variables described in the [**request handlers scope**](#request-handler-scope) section. The middleware functions can also get access to those variables, but for performance reasons this is not enabled by default, use `@wrap` to give them access.
 
 If a handler returns a string, `res.send(string)` will be called automatically.
 
@@ -140,19 +152,19 @@ Ex.:
       '/wiki': 'wiki'
       '/chat': -> @response.send 'chat'
 
-Assuming `user_db.get` and `group_db.get` are async and return Promises.
+Assuming `user_db.get` and `group_db.get` are async and return Promises:
 
     @get '/user/:name', ->
       user = yield user_db.get @params.name
       group = yield group_db.get user.group
       @json {user,group}
 
-Example using a Route Middleware
+Example using a Route Middleware:
 
     load_user = @wrap ->
       user = users[@params.id]
       if user
-        @request.user = user
+        @locals.user = user
         @next()
       else
         @next "Failed to load user #{@params.id}"
@@ -191,7 +203,7 @@ Define handlers for events emitted by the client through socket.io.
 
 Shortcut to socket.io's `socket.on 'event'`.
 
-The handler functions will have access to all variables described in the **socket handler scope** section. They won't have access to their parent scope. To make variables available from the parent scope to these handlers, use `helper`.
+The handler functions will have access to all variables described in the [**socket handler scope**](#socket-handler-scope) section. They won't have access to their parent scope. To make variables available from the parent scope to these handlers, use [`@helper`](#helper).
 
 If a handler returns a generator, that generator will be assumed to be an async function and will be passed through `seem` to yield a result.
 
@@ -201,7 +213,7 @@ Some standard events are generated automatically by Socket.IO: `connection`, `di
 
 Helpers content is made available to both the [request handler](#request-handler-scope) and [socket handler](#socket-handler-scope) scopes.
 
-When you create a helper with the name `name`, the content of the helper is available as `@name` in the [request handler scope](#request-handler-scope) and the [socket handler scope](#socket-handler-scope).
+When you create a helper with the name `name`, the value of the helper is available as `@name` in the [request handler scope](#request-handler-scope) and the [socket handler scope](#socket-handler-scope).
 
 #### @helper (data)
 
@@ -213,7 +225,7 @@ The helper will provide the associated data.
 
     @helper name: function
 
-A function that will be available to both the request handler and socket handler scopes. It will have access to the same variables as whatever called it. Ex.:
+The function will be available to both the [request handler](#request-handler-scope) and [socket handler](#socket-handler-scope) scopes. It will have access to the same context (scope) as whatever called it. Ex.:
 
     @get '/': ->
       @sum 5, 7
@@ -261,7 +273,7 @@ The parameters are also available explicitely:
 
     {ul,li} = @teacup
     @view index: ({items}) ->
-      ul =>
+      ul ->
         for item in items
           li item
 
@@ -663,7 +675,7 @@ Example:
 
 ### @emit
 
-Send a Socket.IO message to the local socket.
+Send a Socket.IO message to the client's socket, assuming the Express and the Socket.io sessions have been associated.
 
     @emit 'message', data
 
@@ -688,7 +700,15 @@ The object returned by `require('socket.io').listen`.
 
 The `socket.id` of the client. Only available after the express and the socket.io sessions have been associated.
 
-The local socket was automatically referenced using the channel-name `__local` if using the ZappaJS client.
+### @app
+
+The object returned by `express()`.
+
+[Express Application API](http://expressjs.com/api.html#application)
+
+### @settings
+
+Shortcut to `@app.settings`.
 
 ## SOCKET HANDLER SCOPE
 
@@ -777,11 +797,25 @@ Note: You must use Zappa's `@use session:....` instead of directly calling `@use
 
 See `examples/share_*.coffee` for a complete example using separate servers for Socket.IO and Express. The Socket.IO and Express applications can run on the same host using Node.js clustering, on the same host but in different Node.js processes, or on different hosts.
 
+### @io
+
+The object returned by `require('socket.io').listen`.
+
+### @app
+
+The object returned by `express()`.
+
+[Express Application API](http://expressjs.com/api.html#application)
+
+### @settings
+
+Shortcut to `@app.settings`.
+
 ## APP SETTINGS
 
 You can use the following options with `@set`, `@enable` and `@disable`.
 
-Any of Express' options are available as well.
+Any of Express' options are available. The following settings are specific to ZappaJS.
 
 ### `minify`
 
@@ -797,4 +831,4 @@ Normally a prefix of `/zappa` is used for all Zappa-specific URIs. This settings
 
 ### `zappa_channel`
 
-The name of Zappa's local channel, used between ZappaJS and ZappaJS-client. Default to `__local`.
+The name of Zappa's local channel, used between ZappaJS and ZappaJS-client. Defaults to `__local`.
