@@ -869,12 +869,13 @@ Takes a function and runs it as a zappa app. Optionally accepts a port number, a
 
         """
 
-      if is_ipc
-        server.listen ipc_path
-      if host
-        server.listen port, host
-      else
-        server.listen port
+      switch
+        when is_ipc
+          server.listen ipc_path
+        when host
+          server.listen port, host
+        else
+          server.listen port
 
 The value returned by `Zappa.run` (aka `Zappa`) is the global context.
 
