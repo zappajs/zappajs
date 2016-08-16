@@ -837,6 +837,7 @@ Takes a function and runs it as a zappa app. Optionally accepts a port number, a
     zappa.run = ->
       host = process.env.ZAPPA_HOST ? null
       port = process.env.ZAPPA_PORT ? 3000
+      ipc_path = process.env.ZAPPA_PATH ? null
       root_function = null
       options = {}
 
@@ -852,19 +853,24 @@ Takes a function and runs it as a zappa app. Optionally accepts a port number, a
               switch k
                 when 'host' then host = v
                 when 'port' then port = v
+                when 'path' then ipc_path = v
                 else options[k] = v
 
       zapp = zappa.app(root_function,options)
       {server,app} = zapp
 
+      is_ipc = typeof ipc_path is 'string'
+
       server.on 'listening', ->
-        addr = server.address()
+        channel = if is_ipc then ipc_path else do (addr = server.address()) -> "#{addr.address}:#{addr.port}"
         debug """
-          Express server listening on #{addr.address}:#{addr.port} in #{app.settings.env} mode.
+          Express server listening on #{channel} in #{app.settings.env} mode.
           Zappa #{zappa.version} orchestrating the show.
 
         """
 
+      if is_ipc
+        server.listen ipc_path
       if host
         server.listen port, host
       else
