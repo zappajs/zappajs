@@ -59,3 +59,18 @@ port = 15800
       c2 = t.client 'http://127.0.0.1:15803'
       c2.get '/', (err, res) -> t.equal '127.0.0.1', res.body, 'host + string port'
     , 1000
+
+  'path (IPC)': (t) ->
+    t.expect 'ipc'
+
+    zapp = zappa path:'/tmp/zappa_ipc', ->
+      @get '/': 'ipc'
+
+    zapp.server.on 'listening', ->
+      request = require 'request'
+      request.get ('http://unix:/tmp/zappa_ipc:' + '/'), (err,res) ->
+        console.log(err);
+        t.equal 'ipc', res.body, 'ipc'
+
+        zapp.server.close ->
+          (require 'fs').unlink '/tmp/zappa_ipc', -> true
