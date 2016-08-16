@@ -22,7 +22,7 @@
     "socket.io": "^1.4.8",
     "socket.io-client": "^1.4.8",
     "teacup": "^2.0.0",
-    "uglify-js": "^2.7.0"
+    "uglify-js": "^2.7.1"
   },
   "devDependencies": {
     "basic-auth": "^1.0.4",
@@ -35,12 +35,12 @@
     "docco": "^0.7.0",
     "domready": "^1.0.8",
     "eco": "1.1.0-rc-3",
-    "jsdom": "^9.4.1",
+    "jsdom": "^9.4.2",
     "less": "^2.7.1",
     "method-override": "^2.3.6",
-    "mocha": "^3.0.1",
+    "mocha": "^3.0.2",
     "morgan": "^1.7.0",
-    "pug": "^2.0.0-beta4",
+    "pug": "^2.0.0-beta5",
     "request": "^2.74.0",
     "response-time": "^2.3.1",
     "socket.io-redis": "^1.0.0",
