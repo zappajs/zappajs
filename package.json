@@ -104,7 +104,8 @@
     "audreyt@audreyt.org",
     "Andreas Schmelas <andreas@invertednothing.com>",
     "datashaman",
-    "Diwank Singh Tomer <singh@diwank.name>"
+    "Diwank Singh Tomer <singh@diwank.name>",
+    "Atif Aziz"
   ],
   "publishConfig": {
     "tag": "latest"
