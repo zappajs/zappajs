@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Core API Reference (v5.1)
+title: Core API Reference (v5.2)
 ---
 
 # {{page.title}}
@@ -102,6 +102,7 @@ You can also pass the parameters in the `options` object. The following options 
         # Start a HTTPS server on port 443
         require('zappajs') 443, https:{ key: ... , cert: ... }, ->
           @get '/': 'hi'
+* `path`: IPC path; if present, ZappaJS will start an [IPC server](https://nodejs.org/api/net.html#net_server_listen_path_backlog_callback) instead of a TCP/IP server.
 
 The following options are available, but using them will void your warranty:
 
