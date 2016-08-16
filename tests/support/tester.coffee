@@ -163,6 +163,8 @@ finish_him = ->
 
   log line + line
 
+  exit_code = 0
+
   if failed is 0 and timedout is 0 and errors is 0 and uncaught.length is 0
     print "#{green}All passing#{reset} | "
   else
@@ -170,11 +172,12 @@ finish_him = ->
     print "#{red}#{timedout} not reached#{reset} | " if timedout > 0
     print "#{red}#{errors} error(s)#{reset} | " if errors > 0
     print "#{red}#{uncaught.length} uncaught error(s)#{reset} | " if uncaught.length > 0
+    exit_code = 1
 
   print "#{_(tests).size()} tests | "
   log "#{new Date - start} ms\n"
 
-  process.exit()
+  process.exit exit_code
 
 process.on 'uncaughtException', (err) ->
   uncaught.push err
