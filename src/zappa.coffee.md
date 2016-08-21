@@ -207,42 +207,53 @@ Register a route with express.
 
       route = (require './route') {context,apply_helpers,seemify}
 
+Middleware handling
+===================
+
+Turn a function such as `route` or `receive` into a middleware-supporting function.
+
+      middlewarify = (handler,verb = null) ->
+        (args...) ->
+          arity = args.length
+
+Multiple arguments: path, middleware..., handler
+
+          if arity > 1
+            handler
+              verb: verb
+              path: args[0]
+              middleware: flatten args[1...arity-1]
+              handler: args[arity-1]
+
+Single argument: multiple routes in an object.
+
+          else
+            for k, v of args[0]
+
+For each individual entry, if the value is an array, its content must be `middleware..., handler`.
+
+              if v instanceof Array
+                handler
+                  verb: verb
+                  path: k
+                  middleware: flatten v[0...v.length-1]
+                  handler: v[v.length-1]
+
+Otherwise, the value is simply the handler.
+
+              else
+                handler
+                  verb: verb
+                  path: k
+                  handler: v
+            return
+
 Verbs (aka HTTP methods)
 ========================
 
       for verb in [methods...,'all']
         do (verb) ->
-          context[verb] = (args...) ->
-            arity = args.length
-
-Multiple arguments: path, middleware..., handler
-
-            if arity > 1
-              route
-                verb: verb
-                path: args[0]
-                middleware: flatten args[1...arity-1]
-                handler: args[arity-1]
-
-Single argument: multiple routes in an object.
-
-            else
-              for k, v of arguments[0]
-
-For each individual entry, if the value is an array, its content must be `middleware..., handler`.
-
-                if v instanceof Array
-                  route
-                    verb: verb
-                    path: k
-                    middleware: flatten v[0...v.length-1]
-                    handler: v[v.length-1]
-
-Otherwise, the value is simply the handler.
-
-                else
-                  route verb: verb, path: k, handler: v
-            return
+          context[verb] = middlewarify route, verb
 
 .route
 ======
