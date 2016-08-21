@@ -127,4 +127,3 @@ We can then handle the Promise.
 
         else
           throw new Error "ZappaJS invalid handler of type #{typeof r.handler}: #{util.inspect r.handler}"
-
