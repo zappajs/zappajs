@@ -358,22 +358,40 @@ This is the context available to Zappa middleware.
 
           ctx =
             app: app
+            io: io
             settings: app.settings
             locals: res.locals
+            session: req.session
+
+# Express-only
+
             request: req
             req: req
             query: req.query
             params: req.params
             body: req.body
-            session: req.session
             response: res
             res: res
             next: next
+
             send: -> res.send.apply res, arguments
             json: -> res.json.apply res, arguments
             jsonp: -> res.jsonp.apply res, arguments
             redirect: -> res.redirect.apply res, arguments
             format: -> res.format.apply res, arguments
+
+# IO-only
+
+            socket: req.socket
+            client: req.client
+            data: req.data
+            ack: req.ack
+
+            join: -> req.join.apply req, arguments
+            leave: -> req.leave.apply req, arguments
+            emit: -> req.emit.apply req, arguments
+            broadcast: -> req.broadcast.apply req, arguments
+            broadcast_to: -> req.broadcast_to.apply req, arguments
 
           apply_helpers ctx
           seemify f, ctx, [req, res, next]
