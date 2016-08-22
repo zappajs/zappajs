@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Core API Reference (v5.2)
+title: Core API Reference (v5.3)
 ---
 
 # {{page.title}}
@@ -209,6 +209,16 @@ The handler functions will have access to all variables described in the [**sock
 If a handler returns a generator, that generator will be assumed to be an async function and will be passed through `seem` to yield a result.
 
 Some standard events are generated automatically by Socket.IO: `connection`, `disconnect`.
+
+    @on event, middleware, ..., handler
+
+    @on event, [middleware, ...], handler
+
+    @on event: [middleware,...,handler]
+
+These form are all equivalent and allow per-event middleware.
+
+Socket.IO middleware has access to
 
 ### @helper
 
@@ -446,6 +456,18 @@ Wraps a middleware function so that it supports both the Express API and the Zap
     # Or as route middleware
     @get '/user', mw, ->
       @send @locals.user
+
+### `@io_use`
+
+Inject middleware for all Socket.io messages.
+
+ZappaJS provides one internal middleware.
+
+#### `@io_use session: ...`
+
+Used to provide Zappa with the session-store (see the section on `session` for the Zappa Express middleware).
+Use it when you run a Socket.IO-only version of your application, and the Express session is not needed.
+Otherwise use `@use session: ...` as usual to support both Express and Socket.io.
 
 ### @set
 
@@ -723,6 +745,10 @@ Directly from socket.io.
 
 Directly from socket.io. The data sent by the client in the message.
 
+### @body
+
+Directly from socket.io. The data sent by the client in the message.
+
 ### @ack
 
 Directly from socket.io. Used to provide acknowledgement of messages sent by `@emit` on the client.
@@ -797,6 +823,28 @@ The association is done automatically for the default, local Express session and
 Note: You must use Zappa's `@use session:....` instead of directly calling `@use 'express-session'` if you plan to use this feature.
 
 See `examples/share_*.coffee` for a complete example using separate servers for Socket.IO and Express. The Socket.IO and Express applications can run on the same host using Node.js clustering, on the same host but in different Node.js processes, or on different hosts.
+
+`@req.session` is provided for compatibility with Express middleware.
+
+### @req, @request
+
+Provided for compatibility with Express middleware.
+
+#### @req.body
+
+The data sent by the client in the message.
+
+#### @req.session
+
+The session object associated with the socket, see `@session`.
+
+### @res, @response
+
+Provided for compatibility with Express middleware.
+
+#### @res.locals
+
+Used to pass values between middlewares on the same event handler.
 
 ### @io
 
