@@ -302,8 +302,64 @@ Verbs (aka HTTP methods)
 .on
 ===
 
-      context.on = invariate (k,v) ->
-        ws_handlers[k] = v
+
+A ws_handler has signature `(ctx) ->` (they are only used internally).
+A middleware has signature `(ctx,res,next) ->` (to be compatible with existing middleware).
+A final handler has signature `(data,ack) ->` (to be compatible with existing socket handlers).
+
+      receive = (r) ->
+
+The final handler is wrapped.
+
+        handler = (ctx) ->
+          seemify r.handler, ctx, [ctx.data, ctx.ack]
+
+Message-specific and global middlewares are applied.
+
+Translate a `middleware` and a `ws_handler` into a single `ws_handler`.
+
+        functor = (m,next) ->
+          (ctx) ->
+            m ctx, ctx.res, (error) ->
+              if error?
+                throw error
+              else
+                next ctx
+
+        if r.middleware?
+          for m in r.middleware.reverse()
+            handler = functor m, handler
+        if ws_use?
+          for m in ws_use.reverse()
+            handler = functor m, handler
+
+The socket handler is created.
+
+        (ws_handlers[r.path] ?= []).push handler
+
+      context.on = middlewarify receive
+
+      ws_use = []
+
+      context.io_use = ->
+        zappa_middleware =
+          session: (options) ->
+            context.session_store = options.store
+
+        use = (name, arg = null) ->
+          if zappa_middleware[name]
+            ws_use.push zappa_middleware[name](arg)
+          else
+            ws_use.push (require name)(arg)
+
+        for a in arguments
+          switch typeof a
+            when 'function'
+              ws_use.push a
+            when 'string'
+              use a
+            when 'object'
+              use k, v for k, v of a
         return
 
 .view
@@ -491,9 +547,8 @@ Zappa local channel (the default channel used for @emit inside Zappa's own @get 
 
 Register socket.io handlers.
 
-      io?.sockets.on 'connection', (socket) ->
+      io?.sockets.on 'connection', (socket,ack) ->
         c = {}
-        session_id = null
 
         build_ctx = (o) ->
 
@@ -534,44 +589,49 @@ Context available inside the Socket.IO `on` functions.
             ctx[k] = v for own k,v of o
           ctx
 
-On `connection`
----------------
+Wrap event handlers
 
-Wrap the handler for `connection`
+        wrap_handler = (event,handler) ->
+          (data,ack) ->
 
-        ctx = build_ctx()
-        seemify ws_handlers.connection, ctx if ws_handlers.connection?
+Provide req.body just like a body parser middleware would.
 
-On `disconnect`
----------------
+            req =
+              body: data
 
-Wrap the handler for `disconnect`
+Provide res.locals just like Express does.
 
-        socket.on 'disconnect', ->
-          ctx = build_ctx()
-          seemify ws_handlers.disconnect, ctx if ws_handlers.disconnect?
+            res =
+              locals: {}
 
-Wrap all other (event) handlers
+Provide a socket-handler context.
 
+            ctx = build_ctx
+              event: event
+              data: data
+              body: data
+              ack: ack
+              res: res
+              response: res
+              req: req
+              request: req
 
-        for name, h of ws_handlers
-          do (name, h) ->
-            if name isnt 'connection' and name isnt 'disconnect'
-              socket.on name, (data, ack) ->
-                ctx = build_ctx
-                  event: name
-                  data: data
-                  ack: ack
-                get_session (session) ->
-                  ctx.session = session
-                  v = seemify h, ctx, [data, ack]
-                  if v?.then?
-                    v.then -> session?.save()
-                  else
-                    session?.save()
-            return
+            handler ctx, res
+
+        for event, handlers of ws_handlers when event isnt 'connection'
+          do (event,handlers) ->
+            for handler in handlers
+              socket.on event, wrap_handler event, handler
 
         debug 'Socket.IO ready'
+
+Trigger any handler for the `connection` event that the app might have installed.
+
+        handlers = ws_handlers.connection
+
+        if handlers?
+          for handler in handlers
+            (wrap_handler 'connection', handler) null, ack
         return
 
 .with

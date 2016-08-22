@@ -123,7 +123,10 @@ Retrieve the session data stored by Express
               debug "get_session() #{error}"
               next()
               return
-            req.session = new context.session.Session req, data
+
+Set `@req.session` just like Express-session does, and add a `@session` shortcut just like Zappa does.
+
+            ctx.session = ctx.req.session = new context.session.Session req, data
             next()
             return
 

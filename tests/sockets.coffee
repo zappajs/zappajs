@@ -13,6 +13,56 @@ port = 15700
     c = t.client(zapp.server)
     c.connect()
 
+  'supports global middleware': (t) ->
+    t.expect 1, 2
+    t.wait 3000
+
+    zapp = zappa port++, ->
+      @io_use @wrap ->
+        @res.locals.hello = 'bear'
+        @next()
+      @on connection: ->
+        t.equal 1, @res.locals.hello, 'bear'
+        @emit 'welcome'
+      @on welcome: ->
+        t.equal 2, @res.locals.hello, 'bear'
+
+    c = t.client(zapp.server)
+    c.connect()
+    c.on 'welcome', ->
+      c.emit 'welcome'
+
+  'supports event middleware': (t) ->
+    t.expect 1, 2, 3, 4, 5, 6
+    t.wait 3000
+
+    zapp = zappa port++, ->
+      f1 = @wrap ->
+        @res.locals.hello = 'bear'
+        @next()
+      f2 = @wrap ->
+        @res.locals.hello = @data ? 'none'
+        @next()
+      @on 'connection', f1, ->
+        t.equal 1, @res.locals.hello, 'bear'
+        @emit 'welcome'
+      @on 'welcome', f1, ->
+        t.equal 2, @res.locals.hello, 'bear'
+      @on 'connection', [f2], ->
+        t.equal 3, @res.locals.hello, 'none'
+      @on welcome: [f2, ->
+        t.equal 4, @res.locals.hello, 'cat'
+      ]
+      @on 'connection', f1, f2, ->
+        t.equal 5, @res.locals.hello, 'none'
+      @on 'welcome', f1, f2, ->
+        t.equal 6, @res.locals.hello, 'cat'
+
+    c = t.client(zapp.server)
+    c.connect()
+    c.on 'welcome', ->
+      c.emit 'welcome', 'cat'
+
   'server emits': (t) ->
     t.expect 1
     t.wait 3000
