@@ -16,6 +16,7 @@ Zappa
 
     session = require 'express-session'
     io_session = require './io-session'
+    zappa_settings = require './settings'
 
 Soft dependencies:
 
@@ -594,6 +595,7 @@ Express-side API to bind with Socket.IO
 =======================================
 
       io_session.bind {app,context}
+      zappa_settings {context}
 
       context
 
