@@ -1,12 +1,13 @@
     pkg = require '../package.json'
-    debug = (require 'debug') "#{pkg.name}:bind-io-session"
+    debug = (require 'debug') "#{pkg.name}:io-session"
 
 Express-side API to bind with Socket.IO
 =======================================
 
 API used by the client (e.g. `zappajs-client`) to create an Express-side key that will be used to bind Express and Socket.io sessions.
 
-    exports.bind = ({app,context}) ->
+    module.exports = ({context}) ->
+        {app} = context
 
         zappa_prefix = app.settings.zappa_prefix
         context.get zappa_prefix+'/socket/:channel_name/:socket_id', ->
@@ -68,14 +69,13 @@ Retrieve the session
 
 Socket.io-side retrieval of the bound session.
 
-    exports.get = ({socket,app,context}) ->
-
 Bind with Express
 -----------------
 
 The special event `__zappa_key` is used by the client to notify us of the key provided by Express.
 
-        socket.on '__zappa_key', ({key},ack) ->
+        context.on '__zappa_key', ({key},ack) ->
+
           unless ack?
             debug 'Client did not request `ack` for __zappa_key'
             return
@@ -90,7 +90,7 @@ The special event `__zappa_key` is used by the client to notify us of the key pr
 
 Retrieve the data record associated with the key.
 
-          context.session_store.get key, (err,data) ->
+          context.session_store.get key, (err,data) =>
             if err?
               debug 'session_store.get #{key}: #{err}'
               ack error:err.toString()
@@ -102,13 +102,14 @@ Retrieve the data record associated with the key.
 
 Bind the session.id so that the handlers can access the session.
 
-            session_id = data.id
+            @client.__session_id = data.id
             ack {key}
 
-        get_session = (next) ->
+        get_session = (ctx,next) ->
+          session_id = ctx.client.__session_id
           unless context.session_store? and session_id?
             debug 'Session Store is not ready, `@session` will not be available.'
-            next null
+            next()
             return
 
           req =
@@ -120,7 +121,16 @@ Retrieve the session data stored by Express
           context.session_store.get session_id, (error,data) ->
             if error
               debug "get_session() #{error}"
-              next null
+              next()
               return
             req.session = new context.session.Session req, data
-            next req.session
+            next()
+            return
+
+        context.io_use (ctx,res,next) ->
+          get_session ->
+            v = next()
+            if v?.then?
+              v.then -> session?.save()
+            else
+              session?.save()

@@ -553,7 +553,6 @@ Wrap the handler for `disconnect`
 
 Wrap all other (event) handlers
 
-        get_session = io_session.get {socket,app,context}
 
         for name, h of ws_handlers
           do (name, h) ->
@@ -594,7 +593,7 @@ Go!
 Express-side API to bind with Socket.IO
 =======================================
 
-      io_session.bind {app,context}
+      io_session {context}
       zappa_settings {context}
 
       context
