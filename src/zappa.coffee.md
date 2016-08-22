@@ -496,8 +496,8 @@ Zappa middleware available as `@use 'zappa'`, `@use session:options`.
 
       context.settings = app.settings
 
-.local
-======
+.locals
+=======
 
       context.locals = app.locals
 
