@@ -1,12 +1,13 @@
     pkg = require '../package.json'
     debug = (require 'debug') "#{pkg.name}:io-session"
+    uuid = require 'node-uuid'
 
 Express-side API to bind with Socket.IO
 =======================================
 
 API used by the client (e.g. `zappajs-client`) to create an Express-side key that will be used to bind Express and Socket.io sessions.
 
-    module.exports = ({context}) ->
+    @bind_express = ({context}) ->
         {app} = context
 
         zappa_prefix = app.settings.zappa_prefix
@@ -74,6 +75,8 @@ Bind with Express
 
 The special event `__zappa_key` is used by the client to notify us of the key provided by Express.
 
+    @bind_io = ({context}) ->
+
         context.on '__zappa_key', ({key},ack) ->
 
           unless ack?
@@ -105,6 +108,11 @@ Bind the session.id so that the handlers can access the session.
             @client.__session_id = data.id
             ack {key}
 
+Middleware for sockets
+======================
+
+    @bind_middleware = ({context}) ->
+
         get_session = (ctx,next) ->
           session_id = ctx.client.__session_id
           unless context.session_store? and session_id?
@@ -131,9 +139,9 @@ Set `@req.session` just like Express-session does, and add a `@session` shortcut
             return
 
         context.io_use (ctx,res,next) ->
-          get_session ->
+          get_session ctx, ->
             v = next()
             if v?.then?
-              v.then -> session?.save()
+              v.then -> ctx.session?.save()
             else
-              session?.save()
+              ctx.session?.save()
