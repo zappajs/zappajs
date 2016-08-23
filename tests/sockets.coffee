@@ -19,13 +19,13 @@ port = 15700
 
     zapp = zappa port++, ->
       @io_use @wrap ->
-        @res.locals.hello = 'bear'
+        @locals.hello = 'bear'
         @next()
       @on connection: ->
         t.equal 1, @res.locals.hello, 'bear'
         @emit 'welcome'
       @on welcome: ->
-        t.equal 2, @res.locals.hello, 'bear'
+        t.equal 2, @locals.hello, 'bear'
 
     c = t.client(zapp.server)
     c.connect()

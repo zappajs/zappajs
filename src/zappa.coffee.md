@@ -558,7 +558,6 @@ Context available inside the Socket.IO `on` functions.
             app: app
             io: io
             settings: app.settings
-            locals: app.locals
             socket: socket
             id: socket.id
             client: c
@@ -615,6 +614,7 @@ Provide a socket-handler context.
               response: res
               req: req
               request: req
+              locals: res.locals
 
             handler ctx, res
 

@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Core API Reference (v5.3)
+title: Core API Reference (v6.0)
 ---
 
 # {{page.title}}
@@ -826,6 +826,10 @@ See `examples/share_*.coffee` for a complete example using separate servers for 
 
 `@req.session` is provided for compatibility with Express middleware.
 
+### @locals, @res.locals, @response.locals
+
+Object shared on a given socket.io handler, available to middlewares and the final event handler.
+
 ### @req, @request
 
 Provided for compatibility with Express middleware.
@@ -842,7 +846,7 @@ The session object associated with the socket, see `@session`.
 
 Provided for compatibility with Express middleware.
 
-#### @res.locals
+#### @res.locals, @response.locals
 
 Used to pass values between middlewares on the same event handler.
 
