@@ -95,6 +95,19 @@ Set `options.io` to socket.io's parameters otherwise (optional).
 Default is to enable Socket.IO with its default options.
 
       io = null
+
+IO wrapper for sockjs
+
+      if options.sockjs?
+        io = context.io =
+          on: (event,cb) ->
+            return unless event is 'connection'
+            options.sockjs.on event, (conn) ->
+              conn.emit = conn.write
+              cb conn
+
+Native support for Socket.io
+
       if options.io isnt false
         socketio = options.socketio ? require 'socket.io'
         io = context.io = socketio context.server, options.io ? {}
@@ -547,7 +560,7 @@ Zappa local channel (the default channel used for @emit inside Zappa's own @get 
 
 Register socket.io handlers.
 
-      io?.sockets.on 'connection', (socket,ack) ->
+      io?.on 'connection', (socket,ack) ->
         c = {}
 
         build_ctx = (o) ->
