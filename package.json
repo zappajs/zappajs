@@ -75,7 +75,7 @@
   ],
   "scripts": {
     "pretest": "npm install -d",
-    "test": "coffee tests/index.coffee && mocha --compilers coffee:coffee-script/register mocha/tests/",
+    "test": "coffee tests/index.coffee && mocha --compilers coffee.md:coffee-script/register mocha/tests/",
     "prepublish": "coffee -o lib -c -m src/*.coffee.md",
     "docs": "docco src/*.coffee.md",
     "clean": "rm lib/*.js lib/*.js.map benchmarks/out/*.dat benchmarks/out/*.out tests/*.js",
