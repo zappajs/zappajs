@@ -540,7 +540,6 @@ Known plugins:
 Install the function/module as plugin.
 
 #### @with 'name'
-#### @with name: arguments
 
 Install the module `zappajs-plugin-#{name}` as plugin.
 
@@ -557,6 +556,10 @@ is a shortcut for
 which means the [Client Plugin](https://github.com/zappajs/zappajs-plugin-client) must be present in your application.
 
 Use `npm install --save zappajs-plugin-client` to add the `client` plugin to your application.
+
+#### @with name: arguments
+
+Similar to `@with 'name'`; the arguments are passed to the module's main export function.
 
 ### @zappa
 
@@ -578,11 +581,11 @@ The object returned by `require('socket.io').listen`.
 
 The object returned by `express()`.
 
-[Express Application API](http://expressjs.com/api.html#application)
+[Express Application API](http://expressjs.com/en/4x/api.html#app)
 
 ### @teacup
 
-A shortcut to the [`teacup`](http://goodeggs.github.io/teacup/) module.
+A shortcut to the [`teacup`](https://github.com/goodeggs/teacup#readme) module.
 
 ### @id
 
@@ -600,7 +603,7 @@ Directly from express.
 
 Shortcut: `@res` is a synonym for `@response`.
 
-[Express Response API](http://expressjs.com/api.html#response)
+[Express Response API](http://expressjs.com/en/4x/api.html#res)
 
 ### @request
 
@@ -608,7 +611,7 @@ Directly from express.
 
 Shortcut: `@req` is a synonym for `@request`.
 
-[Express Request API](http://expressjs.com/api.html#request)
+[Express Request API](http://expressjs.com/en/4x/api.html#req)
 
 ### @next
 
@@ -698,7 +701,7 @@ Example:
 
 ### @emit
 
-Send a Socket.IO message to the client's socket, assuming the Express and the Socket.io sessions have been associated.
+Send a Socket.IO message to the client's socket, assuming the Express and the Socket.io sessions [have been associated](#associating-express-and-socketio-sessions).
 
     @emit 'message', data
 
@@ -727,7 +730,7 @@ The `socket.id` of the client. Only available after the express and the socket.i
 
 The object returned by `express()`.
 
-[Express Application API](http://expressjs.com/api.html#application)
+[Express Application API](http://expressjs.com/en/4x/api.html#app)
 
 ### @settings
 
@@ -854,7 +857,7 @@ The object returned by `require('socket.io').listen`.
 
 The object returned by `express()`.
 
-[Express Application API](http://expressjs.com/api.html#application)
+[Express Application API](http://expressjs.com/en/4x/api.html#app)
 
 ### @settings
 

@@ -125,7 +125,7 @@ Another is that you can define inline views:
           h1 @title
           p @foo
 
-Note that zappa comes with a default templating engine, [teacup](https://goodeggs.github.io/teacup), and you don't have to setup anything to use it. You can also easily use other engines by specifying the file extension or the `'view engine'` setting; it's just express. Well, express + inline views support:
+Note that zappa comes with a default templating engine, [teacup](https://github.com/goodeggs/teacup#readme), and you don't have to setup anything to use it. You can also easily use other engines by specifying the file extension or the `'view engine'` setting; it's just express. Well, express + inline views support:
 
     @engine 'eco', require('consolidate').eco
     @set 'view engine': 'eco'
