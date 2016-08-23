@@ -741,11 +741,7 @@ The function you pass to `@on` will be called with `this`/`@` set to an object w
 
 Directly from socket.io.
 
-### @data
-
-Directly from socket.io. The data sent by the client in the message.
-
-### @body
+### @data, @body, @req.body
 
 Directly from socket.io. The data sent by the client in the message.
 
@@ -812,7 +808,7 @@ Shortcut to `@io.in(room).emit`.
 
 Broadcast to a room.
 
-### @session
+### @session, @req.session
 
 If available, the Express session object associated with the Socket.io socket.
 
