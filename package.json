@@ -63,20 +63,15 @@
   "main": "lib/zappa.js",
   "files": [
     "lib/zappa.js",
-    "lib/zappa.js.map",
     "lib/io-session.js",
-    "lib/io-session.js.map",
     "lib/route.js",
-    "lib/route.js.map",
     "lib/seemify.js",
-    "lib/seemify.js.map",
-    "lib/settings.js",
-    "lib/settings.js.map"
+    "lib/settings.js"
   ],
   "scripts": {
     "pretest": "npm install -d",
     "test": "coffee tests/index.coffee && mocha --compilers coffee.md:coffee-script/register mocha/tests/",
-    "prepublish": "coffee -o lib -c -m src/*.coffee.md",
+    "prepublish": "coffee -o lib -c -M src/*.coffee.md",
     "docs": "docco src/*.coffee.md",
     "clean": "rm lib/*.js lib/*.js.map benchmarks/out/*.dat benchmarks/out/*.out tests/*.js",
     "bench": "cd benchmarks && ./run"
