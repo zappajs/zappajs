@@ -4,6 +4,8 @@ Zappa is a [CoffeeScript](http://coffeescript.org)-optimized interface to [Expre
 
 ## Synopsis
 
+[![Join the chat at https://gitter.im/zappajs/zappajs](https://badges.gitter.im/zappajs/zappajs.svg)](https://gitter.im/zappajs/zappajs?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ```coffee
 require('./zappajs') ->
 
