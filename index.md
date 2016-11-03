@@ -7,6 +7,8 @@ title: CoffeeScript-optimized interface for building web apps on Node.js with Ex
 
 web application framework for node built on [express](http://expressjs.com) and [socket.io](http://socket.io).
 
+[![Build Status](https://secure.travis-ci.org/zappajs/zappajs.png?branch=6.x)](http://travis-ci.org/zappajs/zappajs) [![Join the chat at https://gitter.im/zappajs/zappajs](https://badges.gitter.im/zappajs/zappajs.svg)](https://gitter.im/zappajs/zappajs)
+
 ## Learn
 
 - Get the gist with the [guide](docs/crashcourse)
