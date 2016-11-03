@@ -329,9 +329,8 @@ Translate a `middleware` and a `ws_handler` into a single `ws_handler`.
         if r.middleware?
           for m in r.middleware.reverse()
             handler = functor m, handler
-        if ws_use?
-          for m in ws_use.reverse()
-            handler = functor m, handler
+        for m in ws_use.reverse()
+          handler = functor m, handler
 
 The socket handler is created.
 
@@ -648,13 +647,18 @@ Applies a plugin to the current context.
 Go!
 ===
 
+      zappa_settings {context}
+      io_session.bind_middleware {context}
+
       func.apply context
 
 Express-side API to bind with Socket.IO
 =======================================
 
-      io_session {context}
-      zappa_settings {context}
+These need to be _after_ the call to the main function to benefit from the session-store.
+
+      io_session.bind_express {context}
+      io_session.bind_io {context}
 
       context
 

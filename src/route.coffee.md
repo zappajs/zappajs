@@ -2,6 +2,7 @@ route
 =====
 
     invariate = require 'invariate'
+    util = require 'util'
 
 Register a route with express.
 
