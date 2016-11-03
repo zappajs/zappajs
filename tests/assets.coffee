@@ -21,9 +21,9 @@ CSS_TYPE = 'text/css; charset=utf-8'
         pos = res.body.indexOf '''
           require('zappajs-plugin-client').client( function(){
         '''
-        t.ok 1, 1228500 < pos < 1240000
+        t.ok 1, 1417000 < pos < 1418000
         t.equal 2, res.headers['content-type'], JS_TYPE
-        t.ok 3, 1232800 < res.body.length < 1250000
+        t.ok 3, 1421000 < res.body.length < 1422000
     , 10000
 
   browserify: (t) ->
@@ -236,7 +236,7 @@ CSS_TYPE = 'text/css; charset=utf-8'
     c = t.client(zapp.server)
     c.get '/socket.io/socket.io.js', (err, res) ->
       t.equal 'content-type', res.headers['content-type'], 'application/javascript'
-      t.equal 'body-length', res.body.length, 196418
+      t.equal 'body-length', res.body.length, 196344
 
  zappa_prefix: (t) ->
     t.expect 1, 2, 3
