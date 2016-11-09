@@ -85,10 +85,21 @@ The application itself is ExpressJS'.
 
 Use the `https` options to create a HTTP web server, create a plain HTTP server otherwise.
 
-      if options.https?
-        context.server = require('https').createServer options.https, app
-      else
-        context.server = require('http').createServer app
+      http_module = switch
+        when options.http_module?
+          options.http_module
+        when options.https?
+          require 'https'
+        else
+          require 'http'
+
+      context.server = switch
+        when options.server?
+          options.server
+        when options.https?
+          http_module.createServer options.https, app
+        else
+          http_module.createServer app
 
 Set `options.io` to `false` to disable socket.io.
 Set `options.io` to socket.io's parameters otherwise (optional).
@@ -97,7 +108,7 @@ Default is to enable Socket.IO with its default options.
       io = null
       if options.io isnt false
         socketio = options.socketio ? require 'socket.io'
-        io = context.io = socketio context.server, options.io ? {}
+        io = context.io = options.io_handler ? socketio context.server, options.io ? {}
 
 ZappaView
 =========
@@ -692,7 +703,7 @@ Takes a function and runs it as a zappa app. Optionally accepts a port number, a
       zapp = zappa.app(root_function,options)
       {server,app} = zapp
 
-      server.on 'listening', ->
+      server.once 'listening', ->
         addr = server.address()
         channel = if typeof addr is 'string' then addr else addr.address + ':' + addr.port
         debug """
@@ -700,6 +711,9 @@ Takes a function and runs it as a zappa app. Optionally accepts a port number, a
           Zappa #{zappa.version} orchestrating the show.
 
         """
+
+      if options.ready?
+        server.once 'listening', -> options.ready zapp
 
       switch
         when ipc_path
