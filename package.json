@@ -1,7 +1,7 @@
 {
   "name": "zappajs",
   "description": "CoffeeScript minimalist interface to express, socket.io and others",
-  "version": "6.0.4",
+  "version": "6.1.0",
   "author": "Stephane Alnet <stephane@shimaore.net>",
   "homepage": "http://zappajs.github.com/zappajs/",
   "repository": {
