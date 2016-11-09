@@ -21,9 +21,9 @@ CSS_TYPE = 'text/css; charset=utf-8'
         pos = res.body.indexOf '''
           require('zappajs-plugin-client').client( function(){
         '''
-        t.ok 1, 1417000 < pos < 1418000
+        t.ok 1, 0 < pos < res.body.length
         t.equal 2, res.headers['content-type'], JS_TYPE
-        t.ok 3, 1421000 < res.body.length < 1422000
+        t.ok 3, 1000000 < res.body.length < 2000000
     , 10000
 
   browserify: (t) ->
