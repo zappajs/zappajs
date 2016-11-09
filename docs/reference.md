@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Core API Reference (v6.0)
+title: Core API Reference (v6.1)
 ---
 
 # {{page.title}}
@@ -113,6 +113,7 @@ You can also pass the parameters in the `options` object; they are described in 
 * `port`: the port number for the web server.
 * `host`: the hostname or IP address for the web server.
 * `path`: IPC path; if present, ZappaJS will start an [IPC server](https://nodejs.org/api/net.html#net_server_listen_path_backlog_callback) instead of a TCP/IP server.
+* `ready`: this function is called once the server is ready to accept requests.
 
 The default port and host may also be specified as part of the environment variables, using `ZAPPA_PORT` and `ZAPPA_HOST`, respectively.
 
