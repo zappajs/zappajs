@@ -52,9 +52,25 @@ Builds an app with express/socket.io, based on the function you provided.
 
 The function you provided will be called with the value of `this`/`@` set to an object with all the attributes described in the [**root scope**](#root-scope) section.
 
-You might also provide an object containing options: see their description in the following section.
+You might also provide an object containing options. The following options are available:
 
-Returns the **root scope**.
+* `io`: options for the Socket.IO server. Set to `false` to disable Socket.IO. Defaults to `{}`.
+* `https`: object containing [options for HTTPS](http://nodejs.org/api/tls.html#tls_tls_createserver_options_secureconnectionlistener). Generally `key` and `cert` are all you need:
+
+        # Start a HTTPS server on port 443
+        require('zappajs') 443, https:{ key: ... , cert: ... }, ->
+          @get '/': 'hi'
+
+The following options are available, but using them will void your warranty:
+
+* `express`: override the default express module with this one. Defaults to `require('express')`.
+* `socketio`: override the default Socket.io module with this one. Defaults to `require('socket.io')`.
+* `http_module`: override the default http/https module used to create a server with this one. Defaults to `require('https')` if `options.https` is present, to `require('http')` otherwise.
+* `server`: override the default HTTP or HTTPS server normally created by ZappaJS with this one.
+* `io_handler`: override the default Socket.io server normally created by ZappaJS with this one.
+* `seem`: override the default async module (for example if you'd rather use [`co` v4](https://www.npmjs.com/package/co) than [`seem`](https://www.npmjs.com/package/seem)).
+
+Returns the [**root scope**](#root-scope).
 
 ### zappa.run
 
@@ -92,23 +108,13 @@ As noted, the base export is actually a reference to `zappa.run`, so these are e
 
 You can pass the parameters in any order. Number is port, string is host, object is options, and function is your application. Port and host are optional. Omitted params will also be omitted in the `server.listen` call to express (defaulting to port 3000 and binding to `INADDR_ANY`).
 
-You can also pass the parameters in the `options` object. The following options are available:
+You can also pass the parameters in the `options` object; they are described in the previous section, with the addition of the following options:
 
-* `port`
-* `host`
-* `io`: options for the Socket.IO server. Set to `false` to disable Socket.IO.
-* `https`: object containing [options for HTTPS](http://nodejs.org/api/tls.html#tls_tls_createserver_options_secureconnectionlistener). Generally `key` and `cert` are all you need:
-
-        # Start a HTTPS server on port 443
-        require('zappajs') 443, https:{ key: ... , cert: ... }, ->
-          @get '/': 'hi'
+* `port`: the port number for the web server.
+* `host`: the hostname or IP address for the web server.
 * `path`: IPC path; if present, ZappaJS will start an [IPC server](https://nodejs.org/api/net.html#net_server_listen_path_backlog_callback) instead of a TCP/IP server.
 
-The following options are available, but using them will void your warranty:
-
-* `express`: override the default express module with this one.
-* `socketio`: override the default Socket.io module with this one.
-* `seem`: override the default async module (for example if you'd rather use [`co` v4](https://www.npmjs.com/package/co) than [`seem`](https://www.npmjs.com/package/seem)).
+The default port and host may also be specified as part of the environment variables, using `ZAPPA_PORT` and `ZAPPA_HOST`, respectively.
 
 ### zappa.version
 
@@ -567,15 +573,25 @@ The same object that is exported when you `require 'zappajs'`.
 
 ### @express
 
-The object returned by `require 'express'`.
+The object returned by `require 'express'`, or the `options.express` field of the options provided to zappa.
 
 ### @session
 
 The object returned by `require 'express-session'`.
 
+### @server
+
+The HTTPS or HTTP server created by zappa.
+
+Normally created using `options.http_module.createServer()`. Since `options.http_module` defaults to `require('https')` if `options.https` is present, to `require('http')`, the server is enabled by default and does not require configuration.
+
+Uses `options.server` if present.
+
 ### @io
 
-The object returned by `require('socket.io').listen`.
+The Socket.io object returned created by zappa. Normally created using `options.socketio(@server,options.io)`. Since `options.socketio` defaults to `require('socket.io')` and `options.io` defaults to `{}`, Socket.io is enabled by default and does not require configuration.
+
+Uses `options.io_handler` if present, unless `options.io` is `false`.
 
 ### @app
 
@@ -720,7 +736,7 @@ Broadcast to a room.
 
 ### @io
 
-The object returned by `require('socket.io').listen`.
+The object returned by `require('socket.io').listen`. Same as in the root scope.
 
 ### @id
 
@@ -851,7 +867,7 @@ Used to pass values between middlewares on the same event handler.
 
 ### @io
 
-The object returned by `require('socket.io').listen`.
+The object returned by `require('socket.io').listen`. Same as in the root scope.
 
 ### @app
 
