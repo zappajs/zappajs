@@ -286,7 +286,10 @@ Verbs (aka HTTP methods)
 ===
 
       context.js = invariate (k,v) ->
-        js = String(v)
+        if typeof v is 'function'
+          js = "(#{String(v)}).call(this);"
+        else
+          js = String(v)
         js = minify(js) if app.settings['minify']
         route verb: 'get', path: k, handler: js, type: 'js'
         return

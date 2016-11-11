@@ -98,18 +98,23 @@ CSS_TYPE = 'text/css; charset=utf-8'
       vm.runInNewContext res.body, sandbox
 
   js: (t) ->
-    t.expect 1, 2
+    t.expect 1, 2, 3, 4
     t.wait 3000
 
     zapp = zappa port++, ->
       @js '/js.js': '''
         alert('hi');
       '''
+      @js '/js2.js': ->
+        alert 'hi'
 
     c = t.client(zapp.server)
     c.get '/js.js', (err, res) ->
       t.equal 1, res.body, "alert('hi');"
       t.equal 2, res.headers['content-type'], JS_TYPE
+    c.get '/js2.js', (err, res) ->
+      t.equal 3, res.body, "(function () {\n            return alert('hi');\n          }).call(this);"
+      t.equal 4, res.headers['content-type'], JS_TYPE
 
   css: (t) ->
     t.expect 1, 2
