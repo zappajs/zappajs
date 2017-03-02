@@ -1,6 +1,6 @@
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"
 
-    request = (require 'superagent-as-promised') require 'superagent'
+    request = require 'superagent'
 
     port = 25674
 

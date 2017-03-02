@@ -48,7 +48,6 @@
     "spdy": "^3.4.4",
     "stylus": "^0.54.5",
     "superagent": "^3.1.0",
-    "superagent-as-promised": "^4.0.0",
     "supertest": "^2.0.1",
     "underscore": "^1.8.3",
     "zappajs-client": "^2.4.0",
