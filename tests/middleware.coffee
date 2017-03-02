@@ -226,7 +226,7 @@ port = 15500
 
       @all '/*', ->
         if @query.hello is 'hi' then @next()
-        else @next 'Where is your manners?'
+        else @next new Error 'Where is your manners?'
 
       @get '/bonjour', ->
         @send 'bonjour'
@@ -238,8 +238,8 @@ port = 15500
     c.get '/bonjour?hello=hi', (err, res) ->
       t.equal '1', res.body, 'bonjour'
     c.get '/bonjour', (err, res) ->
-      t.equal '2', res.body, 'Where is your manners?\n'
+      t.ok '2', res.body.match /Where is your manners\?/
     c.get '/hola?hello=hi', (err, res) ->
       t.equal '3', res.body, 'hola!'
     c.get '/hola?hello=boo', (err, res) ->
-      t.equal '4', res.body, 'Where is your manners?\n'
+      t.ok '4', res.body.match /Where is your manners\?/
