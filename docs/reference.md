@@ -114,6 +114,7 @@ You can also pass the parameters in the `options` object; they are described in 
 * `host`: the hostname or IP address for the web server.
 * `path`: IPC path; if present, ZappaJS will start an [IPC server](https://nodejs.org/api/net.html#net_server_listen_path_backlog_callback) instead of a TCP/IP server.
 * `ready`: this function is called once the server is ready to accept requests.
+* `server`: if the `server` option is set to the string `cluster`, ZappaJS will use `throng` to start and manage a Node.js cluster. In this case the function will not return anything useful; use the `ready` option to handle server startup.
 
 The default port and host may also be specified as part of the environment variables, using `ZAPPA_PORT` and `ZAPPA_HOST`, respectively.
 

@@ -22,6 +22,7 @@
     "socket.io": "^1.7.3",
     "socket.io-client": "^1.7.3",
     "teacup": "^2.0.0",
+    "throng": "^4.0.0",
     "uglify-js": "^2.8.4"
   },
   "devDependencies": {
@@ -73,7 +74,7 @@
   ],
   "scripts": {
     "pretest": "npm install -d",
-    "test": "coffee tests/index.coffee && mocha --compilers coffee.md:coffee-script/register mocha/tests/",
+    "test": "coffee tests/index.coffee && mocha --compilers coffee.md:coffee-script/register mocha/tests/ && coffee tests/cluster.coffee.md",
     "prepublish": "coffee -o lib -c -M src/*.coffee.md",
     "docs": "docco src/*.coffee.md",
     "clean": "rm lib/*.js lib/*.js.map benchmarks/out/*.dat benchmarks/out/*.out tests/*.js",

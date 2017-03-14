@@ -44,6 +44,14 @@ Flatten array recursively (copied from Express's utils.js)
           ret.push o
       ret
 
+Address-hash
+
+    connection_hash = ({remoteAddress},len) ->
+      sum = 0
+      for i in [0...remoteAddress.len]
+        sum += remoteAddress.charCodeAt 1
+      i % len
+
 Zappa Application
 =================
 
@@ -703,30 +711,108 @@ Takes a function and runs it as a zappa app. Optionally accepts a port number, a
                 when 'path' then ipc_path = v
                 else options[k] = v
 
-      zapp = zappa.app(root_function,options)
-      {server,app} = zapp
+Listen for connections
+----------------------
 
-      server.once 'listening', ->
-        addr = server.address()
-        channel = if typeof addr is 'string' then addr else addr.address + ':' + addr.port
-        debug """
-          Express server listening on #{channel} in #{app.settings.env} mode.
-          Zappa #{zappa.version} orchestrating the show.
+      listen = (zapp) ->
 
-        """
+        {server} = zapp
 
-      if options.ready?
-        server.once 'listening', -> options.ready zapp
+        server.once 'listening', ->
+          addr = server.address()
+          channel = if typeof addr is 'string' then addr else addr.address + ':' + addr.port
+          debug """
+            Express server listening on #{channel},
+            Zappa #{zappa.version} orchestrating the show.
 
-      switch
-        when ipc_path
-          server.listen ipc_path
-        when host
-          server.listen port, host
-        else
-          server.listen port
+          """
 
-The value returned by `Zappa.run` (aka `Zappa`) is the global context.
+          if options.ready?
+            options.ready zapp
+
+          return
+
+        switch
+          when ipc_path
+            server.listen ipc_path
+          when host
+            server.listen port, host
+          else
+            server.listen port
+
+Cluster mode
+------------
+
+Inspired by https://github.com/elad/node-cluster-socket.io
+
+      if options.server is 'cluster'
+
+        throng = require 'throng'
+        cluster = require 'cluster'
+        net = require 'net'
+
+
+Cluster master
+--------------
+
+        master = ->
+          workers = []
+
+          cluster.on 'fork', (worker) ->
+            debug 'Adding worker', worker.id
+            workers.push worker
+            null
+          cluster.on 'exit', (worker) ->
+            index = workers.indexOf worker
+            debug 'Removing worker', worker.id, index
+            if index >= 0
+              workers.splice index, 1
+            null
+
+          server_options = pauseOnConnect: true
+
+          if options.https?
+            for own k,v of options.https
+              server_options[k] ?= v
+
+          server = net.createServer server_options, (connection) ->
+            worker = workers[ connection_hash connection, workers.length ]
+            worker.send 'sticky-session:connection', connection
+
+          zapp = {server}
+          listen zapp
+
+        start = (id) ->
+          debug "Starting worker #{id}"
+
+          http_module = switch
+            when options.http_module?
+              options.http_module
+            when options.https?
+              require 'https'
+            else
+              require 'http'
+
+          server = options.server = http_module.createServer()
+          {app} = zappa.app root_function, options
+          server.on 'request', app
+          process.on 'message', (message, connection) ->
+            return unless message is 'sticky-session:connection'
+            server.emit 'connection', connection
+            connection.resume()
+
+        throng {master,start}
+        zapp = null
+
+Non-cluster (legacy) mode
+-------------------------
+
+      else
+
+        zapp = zappa.app root_function, options
+        listen zapp
+
+The value returned by `Zappa.run` (aka `Zappa`) is the global context in legacy mode, `null` in cluster mode.
 
       zapp
 
