@@ -63,6 +63,8 @@ port = 15800
   'path (IPC)': (t) ->
     t.expect 'ipc'
 
+    (require 'fs').unlink '/tmp/zappa_ipc', -> true
+
     zapp = zappa path:'/tmp/zappa_ipc', ->
       @get '/': 'ipc'
 

@@ -10,17 +10,17 @@ port = 15300
 
       @param 'user_id': ->
         if not @param.match /^[0-9A-F]{24,24}$/i
-          @next "Invalid user_id"
+          @next new Error "Invalid user_id"
         else @next()
 
       @param
         'user': ->
           if not @param.match /^[0-9A-F]{24,24}$/i
-            @next "Invalid user"
+            @next new Error "Invalid user"
           else @next()
         'camper': ->
           if not @param.match /^[0-9A-F]{24,24}$/i
-            @next "Invalid camper"
+            @next new Error "Invalid camper"
           else @next()
 
       @get '/:user_id', ->
@@ -34,19 +34,19 @@ port = 15300
 
     c = t.client(zapp.server)
     c.get '/no-such-user-id', (err, res) ->
-      t.equal 1, res.body, 'Invalid user_id\n'
+      t.ok 1, res.body.match /Invalid user_id/
 
     c.get '/123456789012345678901234', (err, res) ->
       t.equal 2, res.body, '123456789012345678901234'
 
     c.get '/camper/no-such-user-id', (err, res) ->
-      t.equal 3, res.body, 'Invalid camper\n'
+      t.ok 3, res.body.match /Invalid camper/
 
     c.get '/camper/123456789012345678901234', (err, res) ->
       t.equal 4, res.body, '123456789012345678901234'
 
     c.get '/user/no-such-user-id', (err, res) ->
-      t.equal 5, res.body, 'Invalid user\n'
+      t.ok 5, res.body.match /Invalid user/
 
     c.get '/user/123456789012345678901234', (err, res) ->
       t.equal 6, res.body, '123456789012345678901234'

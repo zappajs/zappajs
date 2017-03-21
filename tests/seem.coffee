@@ -54,6 +54,6 @@ seem = require 'seem'
       t.equal 4, body.group.name, 'admin'
       t.equal 5, body.group.roles[0], '_admin'
 
-    c.get '/user/nathan', (err,res) ->
+    c.get '/user/nathan', headers:{Accept: 'application/binary'}, (err,res) ->
       t.equal 6, res.statusCode, 500
-      t.ok 7, res.body.match /^Error: No such user nathan/
+      t.ok 7, res.body.match /Error: No such user nathan/

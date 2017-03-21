@@ -50,6 +50,7 @@ Update the store.
             cookie: {}
           context.session_store.set key, data, (err) =>
             if err
+              @res.status 500
               @json error: err.toString()
               return
 
