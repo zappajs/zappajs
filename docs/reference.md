@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Core API Reference (v6.1)
+title: Core API Reference (v6.4)
 ---
 
 # {{page.title}}
