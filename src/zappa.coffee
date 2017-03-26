@@ -722,7 +722,9 @@ zappa.run = ->
   for a in arguments
     switch typeof a
       when 'string'
-        if isNaN( (Number) a ) then host = a
+        if isNaN( (Number) a )
+          if ///^\\\\.\\pipe\\///.test a then port = a
+          else host = a
         else port = (Number) a
       when 'number' then port = a
       when 'function' then root_function = a
