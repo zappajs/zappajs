@@ -710,11 +710,13 @@ zappa.app = ->
 # zappa.run [host,] [port,] [{options},] root_function
 # Takes a function and runs it as a zappa app. Optionally accepts a port
 # number, and/or a hostname (any order). The hostname must be a string, and
-# the port number must be castable as a number.
+# the port number must be castable as a number. If the hostname starts with
+# "\\.\pipe\" then it is assumed be an IPC socket.
 
 zappa.run = ->
   host = null
   port = 3000
+  ipc_path = null
   root_function = null
   options =
     disable_io: false
@@ -723,7 +725,7 @@ zappa.run = ->
     switch typeof a
       when 'string'
         if isNaN( (Number) a )
-          if ///^\\\\.\\pipe\\///.test a then port = a
+          if ///^\\\\.\\pipe\\///.test a then ipc_path = a
           else host = a
         else port = (Number) a
       when 'number' then port = a
@@ -733,20 +735,27 @@ zappa.run = ->
           switch k
             when 'host' then host = v
             when 'port' then port = v
+            when 'path' then ipc_path = v
             else options[k] = v
 
   zapp = zappa.app(root_function,options)
   app = zapp.app
 
+  is_ipc = typeof ipc_path is 'string'
+
   express_ready = ->
-    log 'Express server listening on port %d in %s mode',
-      zapp.server.address()?.port, app.settings.env
+    channel = if is_ipc then ipc_path else do (port = zapp.server.address()?.port) -> "port #{port}"
+    log 'Express server listening on %s in %s mode',
+      channel, app.settings.env
     log "Zappa #{zappa.version} \"#{codename}\" orchestrating the show"
 
-  if host
-    zapp.server.listen port, host, express_ready
-  else
-    zapp.server.listen port, express_ready
+  switch
+    when is_ipc
+      zapp.server.listen ipc_path, express_ready
+    when host
+      zapp.server.listen port, host, express_ready
+    else
+      zapp.server.listen port, express_ready
 
   zapp
 
