@@ -715,6 +715,7 @@ zappa.app = ->
 zappa.run = ->
   host = null
   port = 3000
+  ipc_path = process.env.ZAPPA_PATH ? null
   root_function = null
   options =
     disable_io: false
@@ -731,6 +732,7 @@ zappa.run = ->
           switch k
             when 'host' then host = v
             when 'port' then port = v
+            when 'path' then ipc_path = v
             else options[k] = v
 
   zapp = zappa.app(root_function,options)
@@ -741,10 +743,13 @@ zappa.run = ->
       zapp.server.address()?.port, app.settings.env
     log "Zappa #{zappa.version} \"#{codename}\" orchestrating the show"
 
-  if host
-    zapp.server.listen port, host, express_ready
-  else
-    zapp.server.listen port, express_ready
+  switch
+    when ipc_path
+      zapp.server.listen ipc_path, express_ready
+    when host
+      zapp.server.listen port, host, express_ready
+    else
+      zapp.server.listen port, express_ready
 
   zapp
 
