@@ -66,7 +66,8 @@ port = 15800
 
     zapp.server.on 'listening', ->
       request = require 'request'
-      request.get ('http://unix:/tmp/zappa_ipc:' + '/'), (err,res) ->
+      request.get (url:'http://unix:/tmp/zappa_ipc:' + '/'), (err,res) ->
+        console.log err, res
         t.equal 'ipc', res.body, 'ipc'
 
         zapp.server.close ->

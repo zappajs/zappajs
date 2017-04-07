@@ -34,7 +34,7 @@ class Client
     opts.followRedirect ?= no
     opts.jar = false
     opts.method ?= method
-    opts.url = "http://#{@host}:#{@port}#{path}"
+    opts.url ?= "http://#{@host}:#{@port}#{path}"
     opts.encoding ?= 'utf8'
 
     req = request opts, (err, res, body) ->
