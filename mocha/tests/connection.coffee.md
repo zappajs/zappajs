@@ -1,5 +1,6 @@
     pkg = require '../../package.json'
     debug = (require 'debug') "#{pkg.name}:test:connection"
+    seem = require 'seem'
 
     describe 'The ZappaJS client', ->
 
@@ -33,7 +34,7 @@
             debug 'server: GET /', @session.touched
             @json value: @session.touched
 
-          @get '/index.html', '<html><head><title>FooBar</title></head><body></body></html>'
+          @get '/index.html', '<html><head><title>FooBar</title></head><body></body><script src="test.js"></html>'
 
           @on 'check', ->
             debug 'server: On check', @session.touched
@@ -118,17 +119,10 @@ Then the test runner will ask us to
         server.close()
 
       jsdom = require 'jsdom'
+      {JSDOM} = jsdom
 
-      it 'should establish the session server-side', (done) ->
+      it 'should establish the session server-side', seem ->
         @timeout 15*1000
-        debug 'Starting JSDOM'
-        jsdom.env
-          url: "http://127.0.0.1:#{port}/index.html"
-          scripts: ["http://127.0.0.1:#{port}/test.js"]
-          done: (err,window) ->
-            debug "JSDOM Failed: #{err.stack ? err}" if err?
-            debug 'JSDOM Done'
-          virtualConsole: jsdom.createVirtualConsole().sendTo(console)
 
         io = require 'socket.io-client'
         socket = io "http://127.0.0.1:#{port}"
@@ -139,6 +133,19 @@ Then the test runner will ask us to
         socket.on 'was set', ->
           debug 'runner: On was set'
           socket.emit 'get it', null
-        socket.on 'got', (data) ->
-          debug 'runner: On got', data
-          done() if data is another_value
+
+        result = new Promise (done) ->
+          socket.on 'got', (data) ->
+            debug 'runner: On got', data
+            done() if data is another_value
+
+        debug 'Starting JSDOM'
+        virtualConsole = new jsdom.VirtualConsole()
+        virtualConsole.sendTo console
+        dom = yield JSDOM.fromURL "http://127.0.0.1:#{port}/index.html", {
+          resources: 'usable'
+          runScripts: 'dangerously'
+          virtualConsole
+        }
+
+        result
