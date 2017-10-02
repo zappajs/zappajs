@@ -689,14 +689,14 @@ These need to be _after_ the call to the main function to benefit from the sessi
 
 Takes a function and runs it as a zappa app. Optionally accepts a port number, and/or a hostname (any order). The hostname must be a string, and the port number must be castable as a number.
 
-    zappa.run = ->
+    zappa.run = (args...) ->
       host = process.env.ZAPPA_HOST ? null
       port = process.env.ZAPPA_PORT ? 3000
       ipc_path = process.env.ZAPPA_PATH ? null
       root_function = null
       options = {}
 
-      for a in arguments
+      for a in args
         switch typeof a
           when 'string'
             if isNaN( (Number) a ) then host = a
