@@ -362,6 +362,8 @@ The socket handler is created.
 
       ws_use = []
 
+`io_use` wraps middleware, similarly to what `io.use` does (in recent Socket.io).
+
       context.io_use = ->
         zappa_middleware =
           session: (options) ->

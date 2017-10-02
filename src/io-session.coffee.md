@@ -115,12 +115,16 @@ Middleware for sockets
     @bind_middleware = ({context}) ->
 
         get_session = (ctx,next) ->
-          session_id = ctx.client.__session_id
-          unless context.session_store? and session_id?
+
+          unless context.session_store?
             debug 'Session Store is not ready, `@session` will not be available.'
             next()
             return
 
+If no Express session was bound, we use the (local) socket.id as session identifier.
+This allows this code to provide session support in both cases.
+
+          session_id = ctx.client.__session_id ? ctx.id
           req =
             sessionID: session_id
             sessionStore: context.session_store
@@ -128,10 +132,11 @@ Middleware for sockets
 Retrieve the session data stored by Express
 
           context.session_store.get session_id, (error,data) ->
-            if error
-              debug "get_session() #{error}"
-              next()
+            if error and error.code isnt 'ENOENT'
+              next error
               return
+
+            data ?= cookie: __io: true
 
 Set `@req.session` just like Express-session does, and add a `@session` shortcut just like Zappa does.
 
